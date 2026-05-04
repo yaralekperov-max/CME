@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalTopbar } from '@/components/portal/topbar'
+import { EnrollButton } from '@/components/portal/enroll-button'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -36,14 +37,22 @@ export default async function CatalogPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
-  const courses = await db.course.findMany({
-    where: { status: 'PUBLISHED' },
-    include: {
-      organization: { select: { name: true } },
-      _count: { select: { enrollments: true } },
-    },
-    orderBy: { publishedAt: 'desc' },
-  })
+  const [courses, myEnrollments] = await Promise.all([
+    db.course.findMany({
+      where: { status: 'PUBLISHED' },
+      include: {
+        organization: { select: { name: true } },
+        _count: { select: { enrollments: true } },
+      },
+      orderBy: { publishedAt: 'desc' },
+    }),
+    db.enrollment.findMany({
+      where: { userId: session.user.id },
+      select: { courseId: true },
+    }),
+  ])
+
+  const enrolledIds = new Set(myEnrollments.map((e) => e.courseId))
 
   const specializations = [
     ...new Set(courses.flatMap((c) => c.specializations)),
@@ -160,7 +169,10 @@ export default async function CatalogPage() {
                   </span>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="sm">В избранное</Button>
-                    <Button variant="primary" size="sm">Записаться</Button>
+                    <EnrollButton
+                      courseId={course.id}
+                      initialEnrolled={enrolledIds.has(course.id)}
+                    />
                   </div>
                 </div>
               </div>
