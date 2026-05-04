@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedCME — Админ панель</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0F0F11;
+  --surface: #1A1A1F;
+  --surface2: #222228;
+  --surface3: #2A2A32;
+  --border: #2E2E38;
+  --border2: #3A3A46;
+  --text: #F0EFE8;
+  --text2: #9B9A94;
+  --text3: #5E5D58;
+  --accent: #7B6EF6;
+  --accent-dim: #3D3680;
+  --accent-light: #2A2550;
+  --green: #34C77B;
+  --green-dim: #1A6340;
+  --green-bg: #122B1E;
+  --amber: #F0A429;
+  --amber-dim: #7A5010;
+  --amber-bg: #2A1E08;
+  --red: #F05252;
+  --red-dim: #7A2020;
+  --red-bg: #2A1010;
+  --blue: #4A9EF5;
+  --blue-bg: #0E1E35;
+  --r: 10px;
+  --r-sm: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; font-size: 13px; }
+h1,h2,h3,.logo { font-family: 'Manrope', sans-serif; }
+
+.app { display: flex; height: 100vh; }
+
+/* SIDEBAR */
+.sb { width: 220px; min-width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.sb-logo { padding: 18px 18px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.sb-logo-icon { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.sb-logo-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.sb-logo-badge { font-size: 9px; font-weight: 600; background: var(--accent-dim); color: var(--accent); padding: 2px 6px; border-radius: 4px; margin-left: 4px; letter-spacing: .04em; }
+.sb-nav { padding: 10px 8px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.sb-section { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; padding: 10px 10px 4px; }
+.ni { display: flex; align-items: center; gap: 9px; padding: 8px 10px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border-radius: var(--r-sm); transition: all .15s; }
+.ni:hover { background: var(--surface2); color: var(--text); }
+.ni.on { background: var(--accent-light); color: var(--accent); }
+.ni-ic { font-size: 15px; width: 20px; text-align: center; }
+.ni-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--red-dim); color: var(--red); border-radius: 10px; padding: 2px 6px; }
+.ni-badge-ok { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--green-bg); color: var(--green); border-radius: 10px; padding: 2px 6px; }
+.sb-foot { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 9px; }
+.sb-av { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #7B6EF6, #4A9EF5); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.sb-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.sb-role { font-size: 10px; color: var(--text3); }
+
+/* TOPBAR */
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 22px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.topbar-title { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Manrope', sans-serif; letter-spacing: -.02em; }
+.tb-search { flex: 1; max-width: 300px; position: relative; }
+.tb-search input { width: 100%; padding: 7px 11px 7px 32px; font-size: 12px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface2); color: var(--text); outline: none; }
+.tb-search input:focus { border-color: var(--accent-dim); }
+.tb-search-ic { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; }
+.tb-actions { display: flex; gap: 8px; margin-left: auto; }
+.btn { display: flex; align-items: center; gap: 6px; padding: 7px 13px; font-size: 12px; font-weight: 500; border-radius: var(--r-sm); cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: all .15s; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #6A5EE0; }
+.btn-ghost { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface3); color: var(--text); }
+.btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-dim); }
+.btn-success { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.scr { flex: 1; overflow-y: auto; padding: 20px 22px; display: none; flex-direction: column; gap: 16px; }
+.scr.on { display: flex; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Manrope', sans-serif; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.card-link { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 400; }
+
+/* GRIDS */
+.g2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+
+/* METRICS */
+.mc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; }
+.mc-l { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.mc-v { font-size: 26px; font-weight: 800; color: var(--text); font-family: 'Manrope', sans-serif; line-height: 1; }
+.mc-s { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.mc-trend { font-size: 11px; font-weight: 500; margin-top: 6px; }
+.up { color: var(--green); }
+.warn { color: var(--amber); }
+.dn { color: var(--red); }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+tbody td { padding: 11px 12px; font-size: 13px; color: var(--text); vertical-align: middle; }
+.td-muted { color: var(--text2); }
+.td-mono { font-family: monospace; font-size: 12px; color: var(--text2); }
+
+/* TAGS */
+.tag { display: inline-flex; align-items: center; padding: 3px 8px; font-size: 11px; font-weight: 500; border-radius: 5px; white-space: nowrap; }
+.tag-green { background: var(--green-bg); color: var(--green); }
+.tag-amber { background: var(--amber-bg); color: var(--amber); }
+.tag-red { background: var(--red-bg); color: var(--red); }
+.tag-purple { background: var(--accent-light); color: var(--accent); }
+.tag-blue { background: var(--blue-bg); color: var(--blue); }
+.tag-gray { background: var(--surface3); color: var(--text2); }
+
+/* PROGRESS BAR */
+.pb { width: 100%; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.pf { height: 100%; border-radius: 2px; background: var(--accent); }
+.pf-green { background: var(--green); }
+.pf-amber { background: var(--amber); }
+.pf-red { background: var(--red); }
+
+/* FORM */
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; }
+.form-input { padding: 9px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface2); color: var(--text); outline: none; font-family: 'Inter', sans-serif; }
+.form-input:focus { border-color: var(--accent-dim); }
+.form-select { padding: 9px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface2); color: var(--text); outline: none; font-family: 'Inter', sans-serif; }
+.form-textarea { padding: 9px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface2); color: var(--text); outline: none; font-family: 'Inter', sans-serif; resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.form-row3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+
+/* ACTION BUTTONS IN TABLE */
+.act-btn { padding: 4px 10px; font-size: 11px; border-radius: 5px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); font-family: 'Inter', sans-serif; transition: all .15s; }
+.act-btn:hover { background: var(--surface3); color: var(--text); }
+.act-btn.danger { border-color: var(--red-dim); color: var(--red); background: var(--red-bg); }
+
+/* ALERT */
+.alert { border-radius: var(--r-sm); padding: 11px 14px; font-size: 13px; display: flex; align-items: flex-start; gap: 9px; }
+.alert-warn { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-dim); }
+.alert-info { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-dim); }
+.alert-success { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+
+/* FILTER CHIPS */
+.fchip { padding: 5px 12px; font-size: 12px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text2); cursor: pointer; transition: all .15s; }
+.fchip:hover { border-color: var(--accent-dim); color: var(--accent); }
+.fchip.on { background: var(--accent-light); border-color: var(--accent-dim); color: var(--accent); }
+
+/* UPLOAD ZONE */
+.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--r); padding: 28px; text-align: center; cursor: pointer; transition: all .15s; }
+.upload-zone:hover { border-color: var(--accent-dim); background: var(--accent-light); }
+.upload-icon { font-size: 28px; margin-bottom: 8px; }
+.upload-text { font-size: 13px; color: var(--text2); }
+.upload-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* STATS MINI */
+.stat-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { font-size: 13px; color: var(--text2); flex: 1; }
+.stat-track { width: 100px; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.stat-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+.stat-val { font-size: 12px; font-weight: 600; color: var(--accent); min-width: 32px; text-align: right; }
+
+/* STEP INDICATOR */
+.steps { display: flex; gap: 0; margin-bottom: 20px; }
+.step { flex: 1; padding: 10px 14px; font-size: 12px; font-weight: 500; background: var(--surface2); color: var(--text3); border-bottom: 2px solid var(--border); transition: all .2s; cursor: pointer; text-align: center; }
+.step.on { color: var(--accent); border-bottom-color: var(--accent); background: var(--accent-light); }
+.step.done { color: var(--green); border-bottom-color: var(--green); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* NOTIFICATION */
+.notif-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+
+/* MINI CHART (bars) */
+.mini-chart { display: flex; align-items: flex-end; gap: 3px; height: 36px; }
+.mini-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent-dim); }
+.mini-bar.hi { background: var(--accent); }
+
+/* AVATAR ORG */
+.org-av { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sb">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">🏥</div>
+      <div>
+        <span class="sb-logo-name">MedCME</span>
+        <span class="sb-logo-badge">ADMIN</span>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Обзор</div>
+      <div class="ni on" data-s="dash"><span class="ni-ic">◈</span>Дашборд</div>
+
+      <div class="sb-section">Контент</div>
+      <div class="ni" data-s="courses"><span class="ni-ic">📚</span>Курсы<span class="ni-badge-ok">24</span></div>
+      <div class="ni" data-s="add-course"><span class="ni-ic">＋</span>Добавить курс</div>
+      <div class="ni" data-s="orgs"><span class="ni-ic">🏛</span>Организации</div>
+
+      <div class="sb-section">Пользователи</div>
+      <div class="ni" data-s="users"><span class="ni-ic">👥</span>Врачи<span class="ni-badge-ok">1 284</span></div>
+      <div class="ni" data-s="moderation"><span class="ni-ic">⚠️</span>Модерация<span class="ni-badge">3</span></div>
+
+      <div class="sb-section">Финансы</div>
+      <div class="ni" data-s="finance"><span class="ni-ic">💰</span>Финансы</div>
+      <div class="ni" data-s="analytics"><span class="ni-ic">📊</span>Аналитика</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-av">АД</div>
+      <div>
+        <div class="sb-name">Алексей Дмитриев</div>
+        <div class="sb-role">Суперадмин</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="ptitle">Дашборд</div>
+      <div class="tb-search">
+        <span class="tb-search-ic">🔍</span>
+        <input type="text" placeholder="Поиск по платформе...">
+      </div>
+      <div class="tb-actions">
+        <div class="btn btn-ghost">🔔</div>
+        <div class="btn btn-primary" onclick="goTo('add-course')">＋ Добавить курс</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ДАШБОРД ═══════════ -->
+    <div class="scr on" id="s-dash">
+
+      <div class="alert alert-info">📋 3 курса ожидают модерации · <span style="text-decoration:underline;cursor:pointer" onclick="goTo('moderation')">Перейти →</span></div>
+
+      <div class="g4">
+        <div class="mc">
+          <div class="mc-l">Врачей</div>
+          <div class="mc-v">1 284</div>
+          <div class="mc-s">зарегистрировано</div>
+          <div class="mc-trend up">↑ +124 за месяц</div>
+        </div>
+        <div class="mc">
+          <div class="mc-l">Курсов</div>
+          <div class="mc-v">24</div>
+          <div class="mc-s">активных на платформе</div>
+          <div class="mc-trend up">↑ +3 за неделю</div>
+        </div>
+        <div class="mc">
+          <div class="mc-l">Организаций</div>
+          <div class="mc-v">7</div>
+          <div class="mc-s">партнёров</div>
+          <div class="mc-trend warn">2 на подключении</div>
+        </div>
+        <div class="mc">
+          <div class="mc-l">Выручка / мес</div>
+          <div class="mc-v">184к</div>
+          <div class="mc-s">₽ за май 2025</div>
+          <div class="mc-trend up">↑ +34% к апрелю</div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Активность по дням <span class="card-link">Детали →</span></div>
+          <div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:8px" id="act-bars"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3)">
+            <span>29 апр</span><span>3 мая</span><span>5 мая</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Топ курсов по записям</div>
+          <div class="stat-row"><div class="stat-label">Лечение СН — протоколы 2025</div><div class="stat-track"><div class="stat-fill" style="width:88%"></div></div><div class="stat-val">312</div></div>
+          <div class="stat-row"><div class="stat-label">Эхокардиография расширенный</div><div class="stat-track"><div class="stat-fill" style="width:64%"></div></div><div class="stat-val">228</div></div>
+          <div class="stat-row"><div class="stat-label">ЭКГ в клинической практике</div><div class="stat-track"><div class="stat-fill" style="width:52%"></div></div><div class="stat-val">186</div></div>
+          <div class="stat-row"><div class="stat-label">Фибрилляция предсердий 2024</div><div class="stat-track"><div class="stat-fill" style="width:40%"></div></div><div class="stat-val">142</div></div>
+          <div class="stat-row"><div class="stat-label">Кардиоонкология: ведение на ХТ</div><div class="stat-track"><div class="stat-fill" style="width:28%"></div></div><div class="stat-val">98</div></div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Последние регистрации <span class="card-link">Все →</span></div>
+          <table>
+            <thead><tr><th>Врач</th><th>Специализация</th><th>Дата</th></tr></thead>
+            <tbody>
+              <tr><td>Иванова М.С.</td><td class="td-muted">Кардиология</td><td class="td-muted">сегодня, 14:22</td></tr>
+              <tr><td>Петров А.Н.</td><td class="td-muted">Терапия</td><td class="td-muted">сегодня, 11:08</td></tr>
+              <tr><td>Сидорова К.В.</td><td class="td-muted">Хирургия</td><td class="td-muted">вчера, 18:44</td></tr>
+              <tr><td>Козлов Д.И.</td><td class="td-muted">Педиатрия</td><td class="td-muted">вчера, 16:30</td></tr>
+              <tr><td>Новикова Е.А.</td><td class="td-muted">Неврология</td><td class="td-muted">вчера, 09:15</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Организации — статус</div>
+          <table>
+            <thead><tr><th>Организация</th><th>Курсов</th><th>Статус</th></tr></thead>
+            <tbody>
+              <tr><td>РНИМУ им. Пирогова</td><td class="td-muted">8</td><td><span class="tag tag-green">Активна</span></td></tr>
+              <tr><td>СеченовУниверситет</td><td class="td-muted">6</td><td><span class="tag tag-green">Активна</span></td></tr>
+              <tr><td>РМАПО</td><td class="td-muted">4</td><td><span class="tag tag-green">Активна</span></td></tr>
+              <tr><td>НМИЦ кардиологии</td><td class="td-muted">3</td><td><span class="tag tag-green">Активна</span></td></tr>
+              <tr><td>МГУ им. Ломоносова</td><td class="td-muted">2</td><td><span class="tag tag-amber">Подключается</span></td></tr>
+              <tr><td>РУДН — Медицина</td><td class="td-muted">0</td><td><span class="tag tag-amber">Подключается</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ КУРСЫ ═══════════ -->
+    <div class="scr" id="s-courses">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="fchip on">Все</div>
+        <div class="fchip">Опубликованные</div>
+        <div class="fchip">Черновики</div>
+        <div class="fchip">На модерации</div>
+        <div class="fchip" style="margin-left:8px">Кардиология</div>
+        <div class="fchip">Терапия</div>
+        <div class="fchip">Хирургия</div>
+        <div class="fchip">+ ещё</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          Все курсы — 24
+          <div class="btn btn-primary" onclick="goTo('add-course')">＋ Добавить курс</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Курс</th>
+                <th>Организация</th>
+                <th>Баллы</th>
+                <th>Формат</th>
+                <th>Цена</th>
+                <th>Записей</th>
+                <th>Завершили</th>
+                <th>Статус</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="max-width:200px"><div style="font-weight:500">Лечение СН — протоколы 2025</div><div style="font-size:11px;color:var(--text3);margin-top:2px">72 ч. · до 30 июня</div></td>
+                <td class="td-muted">РНИМУ</td>
+                <td><span style="font-weight:600;color:var(--accent)">36</span></td>
+                <td><span class="tag tag-green">Онлайн</span></td>
+                <td class="td-muted">Бесплатно</td>
+                <td style="font-weight:500">312</td>
+                <td><span style="color:var(--green)">187</span></td>
+                <td><span class="tag tag-green">Опубликован</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Ред.</button><button class="act-btn">Стат.</button></div></td>
+              </tr>
+              <tr>
+                <td style="max-width:200px"><div style="font-weight:500">Эхокардиография расширенный</div><div style="font-size:11px;color:var(--text3);margin-top:2px">36 ч. · до 15 июля</div></td>
+                <td class="td-muted">РМАПО</td>
+                <td><span style="font-weight:600;color:var(--accent)">18</span></td>
+                <td><span class="tag tag-green">Онлайн</span></td>
+                <td class="td-muted">Бесплатно</td>
+                <td style="font-weight:500">228</td>
+                <td><span style="color:var(--green)">94</span></td>
+                <td><span class="tag tag-green">Опубликован</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Ред.</button><button class="act-btn">Стат.</button></div></td>
+              </tr>
+              <tr>
+                <td style="max-width:200px"><div style="font-weight:500">Мастер-класс ЧКВ 2025</div><div style="font-size:11px;color:var(--text3);margin-top:2px">36 ч. · 14–16 мая</div></td>
+                <td class="td-muted">НМИЦ</td>
+                <td><span style="font-weight:600;color:var(--accent)">18</span></td>
+                <td><span class="tag tag-amber">Очный</span></td>
+                <td class="td-muted">18 900 ₽</td>
+                <td style="font-weight:500">48</td>
+                <td><span style="color:var(--text3)">—</span></td>
+                <td><span class="tag tag-green">Опубликован</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Ред.</button><button class="act-btn">Стат.</button></div></td>
+              </tr>
+              <tr>
+                <td style="max-width:200px"><div style="font-weight:500">Конгресс кардиологов 2025</div><div style="font-size:11px;color:var(--text3);margin-top:2px">3 дня · 8–10 октября</div></td>
+                <td class="td-muted">РКО</td>
+                <td><span style="font-weight:600;color:var(--accent)">24</span></td>
+                <td><span class="tag tag-purple">Конференция</span></td>
+                <td class="td-muted">12 000 ₽</td>
+                <td style="font-weight:500">142</td>
+                <td><span style="color:var(--text3)">—</span></td>
+                <td><span class="tag tag-green">Опубликован</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Ред.</button><button class="act-btn">Стат.</button></div></td>
+              </tr>
+              <tr>
+                <td style="max-width:200px"><div style="font-weight:500">Острый коронарный синдром 2025</div><div style="font-size:11px;color:var(--text3);margin-top:2px">72 ч. · до 1 сентября</div></td>
+                <td class="td-muted">РНИМУ</td>
+                <td><span style="font-weight:600;color:var(--accent)">36</span></td>
+                <td><span class="tag tag-green">Онлайн</span></td>
+                <td class="td-muted">Бесплатно</td>
+                <td style="font-weight:500">98</td>
+                <td><span style="color:var(--green)">12</span></td>
+                <td><span class="tag tag-green">Опубликован</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Ред.</button><button class="act-btn">Стат.</button></div></td>
+              </tr>
+              <tr style="opacity:.7">
+                <td style="max-width:200px"><div style="font-weight:500">Артериальная гипертензия ESC 2024</div><div style="font-size:11px;color:var(--text3);margin-top:2px">12 ч. · постоянный доступ</div></td>
+                <td class="td-muted">НМИЦ</td>
+                <td><span style="font-weight:600;color:var(--accent)">6</span></td>
+                <td><span class="tag tag-green">Онлайн</span></td>
+                <td class="td-muted">1 800 ₽</td>
+                <td style="font-weight:500">0</td>
+                <td><span style="color:var(--text3)">—</span></td>
+                <td><span class="tag tag-amber">На модерации</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Рев.</button><button class="act-btn danger">Откл.</button></div></td>
+              </tr>
+              <tr style="opacity:.5">
+                <td style="max-width:200px"><div style="font-weight:500">Педиатрическая кардиология</div><div style="font-size:11px;color:var(--text3);margin-top:2px">24 ч. · черновик</div></td>
+                <td class="td-muted">СеченовУ</td>
+                <td><span style="font-weight:600;color:var(--text3)">12</span></td>
+                <td><span class="tag tag-green">Онлайн</span></td>
+                <td class="td-muted">—</td>
+                <td style="font-weight:500">—</td>
+                <td><span style="color:var(--text3)">—</span></td>
+                <td><span class="tag tag-gray">Черновик</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Ред.</button><button class="act-btn">Публ.</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ДОБАВИТЬ КУРС ═══════════ -->
+    <div class="scr" id="s-add-course">
+      <div class="steps" id="course-steps">
+        <div class="step on" data-step="0">1. Основное</div>
+        <div class="step" data-step="1">2. Контент</div>
+        <div class="step" data-step="2">3. НМО и цена</div>
+        <div class="step" data-step="3">4. Публикация</div>
+      </div>
+
+      <!-- Шаг 1 -->
+      <div id="step-0">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">Основная информация</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-group">
+              <div class="form-label">Название курса *</div>
+              <input class="form-input" type="text" placeholder="Например: Лечение сердечной недостаточности — протоколы 2025">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <div class="form-label">Организация *</div>
+                <select class="form-select">
+                  <option>Выберите организацию</option>
+                  <option>РНИМУ им. Пирогова</option>
+                  <option>СеченовУниверситет</option>
+                  <option>РМАПО</option>
+                  <option>НМИЦ кардиологии</option>
+                  <option>МГУ им. Ломоносова</option>
+                  <option>+ Новая организация</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Специализация *</div>
+                <select class="form-select">
+                  <option>Выберите специализацию</option>
+                  <option>Кардиология</option>
+                  <option>Терапия</option>
+                  <option>Хирургия</option>
+                  <option>Педиатрия</option>
+                  <option>Неврология</option>
+                  <option>Онкология</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label">Описание курса *</div>
+              <textarea class="form-textarea" placeholder="Краткое описание для врачей. Что они узнают, какие компетенции получат..."></textarea>
+            </div>
+            <div class="form-row3">
+              <div class="form-group">
+                <div class="form-label">Формат</div>
+                <select class="form-select">
+                  <option>Онлайн</option>
+                  <option>Очный</option>
+                  <option>Вебинар</option>
+                  <option>Конференция</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Длительность (часов)</div>
+                <input class="form-input" type="number" placeholder="Напр. 72">
+              </div>
+              <div class="form-group">
+                <div class="form-label">Дедлайн записи</div>
+                <input class="form-input" type="date">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px">
+          <button class="btn btn-ghost">Сохранить черновик</button>
+          <button class="btn btn-primary" onclick="nextStep()">Далее: Контент →</button>
+        </div>
+      </div>
+
+      <!-- Шаг 2 -->
+      <div id="step-1" style="display:none">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">Загрузка контента</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="upload-zone">
+              <div class="upload-icon">🎬</div>
+              <div class="upload-text">Загрузите видеоматериалы</div>
+              <div class="upload-sub">MP4, MOV · до 2 GB на файл</div>
+            </div>
+            <div class="upload-zone">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">Загрузите учебные материалы</div>
+              <div class="upload-sub">PDF, DOCX, PPT · до 100 MB на файл</div>
+            </div>
+            <div class="form-group">
+              <div class="form-label">Программа курса (по модулям)</div>
+              <textarea class="form-textarea" style="min-height:120px" placeholder="Модуль 1: Патофизиология сердечной недостаточности&#10;Модуль 2: Диагностика и классификация&#10;Модуль 3: Медикаментозное лечение&#10;..."></textarea>
+            </div>
+            <div class="form-group">
+              <div class="form-label">Итоговое тестирование</div>
+              <select class="form-select">
+                <option>Встроенный тест (создать в системе)</option>
+                <option>Внешняя ссылка на тест</option>
+                <option>Без тестирования</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button class="btn btn-ghost" onclick="prevStep()">← Назад</button>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost">Сохранить черновик</button>
+            <button class="btn btn-primary" onclick="nextStep()">Далее: НМО и цена →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Шаг 3 -->
+      <div id="step-2" style="display:none">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">Параметры НМО и стоимость</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-row">
+              <div class="form-group">
+                <div class="form-label">Количество баллов НМО *</div>
+                <input class="form-input" type="number" placeholder="Напр. 36">
+              </div>
+              <div class="form-group">
+                <div class="form-label">Номер аккредитации Минздрава</div>
+                <input class="form-input" type="text" placeholder="Напр. НМО-2025-КР-00412">
+              </div>
+            </div>
+            <div class="alert alert-info">ℹ️ Курс должен быть аккредитован Координационным советом по НМО. Баллы зачтутся только при наличии номера аккредитации.</div>
+            <div class="form-row">
+              <div class="form-group">
+                <div class="form-label">Финансирование</div>
+                <select class="form-select">
+                  <option>Бесплатно (по ОМС / грант)</option>
+                  <option>Платный курс</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Стоимость (₽)</div>
+                <input class="form-input" type="number" placeholder="0 для бесплатных">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <div class="form-label">Комиссия платформы (%)</div>
+                <input class="form-input" type="number" value="15" placeholder="15">
+              </div>
+              <div class="form-group">
+                <div class="form-label">Максимум участников</div>
+                <input class="form-input" type="number" placeholder="Без ограничений">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button class="btn btn-ghost" onclick="prevStep()">← Назад</button>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost">Сохранить черновик</button>
+            <button class="btn btn-primary" onclick="nextStep()">Далее: Публикация →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Шаг 4 -->
+      <div id="step-3" style="display:none">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">Превью и публикация</div>
+          <div class="alert alert-success" style="margin-bottom:14px">✓ Все основные данные заполнены. Курс готов к публикации.</div>
+          <div style="background:var(--surface2);border-radius:var(--r);padding:16px;margin-bottom:14px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Как будет выглядеть в каталоге</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+              <div style="font-size:14px;font-weight:600;color:var(--text)">Лечение сердечной недостаточности — протоколы 2025</div>
+              <div style="padding:4px 10px;background:var(--accent-light);color:var(--accent);border-radius:12px;font-size:12px;font-weight:600;flex-shrink:0;margin-left:12px">36 б.</div>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px">РНИМУ им. Пирогова</div>
+            <div style="display:flex;gap:8px">
+              <span class="tag tag-green">Онлайн</span>
+              <span class="tag tag-blue">ОМС</span>
+              <span class="tag tag-gray">Кардиология</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+              <span style="font-size:14px;font-weight:600;color:var(--green)">Бесплатно</span>
+              <div style="padding:6px 14px;background:var(--accent);color:#fff;border-radius:6px;font-size:12px;font-weight:500">Записаться</div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <div class="form-label">Дата публикации</div>
+            <div style="display:flex;gap:10px">
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--text2)"><input type="radio" name="pub" checked> Опубликовать сейчас</label>
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--text2)"><input type="radio" name="pub"> Запланировать</label>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button class="btn btn-ghost" onclick="prevStep()">← Назад</button>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost">Сохранить черновик</button>
+            <button class="btn btn-primary">🚀 Опубликовать курс</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ОРГАНИЗАЦИИ ═══════════ -->
+    <div class="scr" id="s-orgs">
+      <div style="display:flex;justify-content:flex-end">
+        <button class="btn btn-primary">＋ Добавить организацию</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Партнёрские организации — 7</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Организация</th><th>Контакт</th><th>Курсов</th><th>Врачей обучено</th><th>Выручка</th><th>Статус</th><th>Действия</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="org-av" style="background:#1A4A7A;color:#4A9EF5">РН</div><div><div style="font-weight:500">РНИМУ им. Пирогова</div><div style="font-size:11px;color:var(--text3)">rnimu.ru</div></div></div></td>
+                <td class="td-muted">Миронова А.В.</td>
+                <td style="font-weight:600">8</td>
+                <td style="color:var(--green);font-weight:500">1 204</td>
+                <td style="font-weight:500">0 ₽ <span style="font-size:11px;color:var(--text3)">(ОМС)</span></td>
+                <td><span class="tag tag-green">Активна</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Профиль</button><button class="act-btn">Курсы</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="org-av" style="background:#1A3A2A;color:#34C77B">СУ</div><div><div style="font-weight:500">СеченовУниверситет</div><div style="font-size:11px;color:var(--text3)">sechenov.ru</div></div></div></td>
+                <td class="td-muted">Захаров П.О.</td>
+                <td style="font-weight:600">6</td>
+                <td style="color:var(--green);font-weight:500">892</td>
+                <td style="font-weight:500">84 200 ₽</td>
+                <td><span class="tag tag-green">Активна</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Профиль</button><button class="act-btn">Курсы</button></div></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="org-av" style="background:#3A1A4A;color:#7B6EF6">РМ</div><div><div style="font-weight:500">РМАПО</div><div style="font-size:11px;color:var(--text3)">rmapo.ru</div></div></div></td>
+                <td class="td-muted">Белова С.И.</td>
+                <td style="font-weight:600">4</td>
+                <td style="color:var(--green);font-weight:500">548</td>
+                <td style="font-weight:500">0 ₽ <span style="font-size:11px;color:var(--text3)">(ОМС)</span></td>
+                <td><span class="tag tag-green">Активна</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Профиль</button><button class="act-btn">Курсы</button></div></td>
+              </tr>
+              <tr style="opacity:.75">
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="org-av" style="background:#2A1A08;color:#F0A429">МГ</div><div><div style="font-weight:500">МГУ им. Ломоносова</div><div style="font-size:11px;color:var(--text3)">msu.ru</div></div></div></td>
+                <td class="td-muted">Орлов К.Н.</td>
+                <td style="font-weight:600">0</td>
+                <td class="td-muted">—</td>
+                <td class="td-muted">—</td>
+                <td><span class="tag tag-amber">Подключается</span></td>
+                <td><div style="display:flex;gap:5px"><button class="act-btn">Профиль</button><button class="act-btn">Активировать</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ВРАЧИ ═══════════ -->
+    <div class="scr" id="s-users">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="fchip on">Все врачи</div>
+        <div class="fchip">Активные</div>
+        <div class="fchip">Новые (7 дней)</div>
+        <div class="fchip">Риск не успеть</div>
+        <div class="fchip" style="margin-left:8px">Кардиология</div>
+        <div class="fchip">Терапия</div>
+        <div class="fchip">Хирургия</div>
+      </div>
+      <div class="g4">
+        <div class="mc"><div class="mc-l">Всего врачей</div><div class="mc-v">1 284</div><div class="mc-trend up">↑ +124 за месяц</div></div>
+        <div class="mc"><div class="mc-l">Активных (30 дней)</div><div class="mc-v">847</div><div class="mc-trend up">66% retention</div></div>
+        <div class="mc"><div class="mc-l">Курс проходят</div><div class="mc-v">312</div><div class="mc-trend warn">прямо сейчас</div></div>
+        <div class="mc"><div class="mc-l">Риск не успеть</div><div class="mc-v" style="color:var(--red)">184</div><div class="mc-trend dn">нужно внимание</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Список врачей <span class="card-link">Экспорт CSV →</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Врач</th><th>Специализация</th><th>Место работы</th><th>Баллов</th><th>До дедлайна</th><th>Статус</th><th>Последний вход</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div style="font-weight:500">Смирнов А.И.</div><div class="td-mono">a.smirnov@nmts.ru</div></td>
+                <td class="td-muted">Кардиология</td>
+                <td class="td-muted">НМИЦ</td>
+                <td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600">86/250</span><div class="pb" style="width:60px"><div class="pf" style="width:34%"></div></div></div></td>
+                <td><span class="tag tag-amber">31 мес.</span></td>
+                <td><span class="tag tag-amber">Риск</span></td>
+                <td class="td-muted">сегодня</td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Иванова М.С.</div><div class="td-mono">ivanova@gkb1.ru</div></td>
+                <td class="td-muted">Кардиология</td>
+                <td class="td-muted">ГКБ №1</td>
+                <td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600">182/250</span><div class="pb" style="width:60px"><div class="pf pf-green" style="width:73%"></div></div></div></td>
+                <td><span class="tag tag-green">31 мес.</span></td>
+                <td><span class="tag tag-green">На плане</span></td>
+                <td class="td-muted">вчера</td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Петров А.Н.</div><div class="td-mono">petrov@cb2.ru</div></td>
+                <td class="td-muted">Терапия</td>
+                <td class="td-muted">ЦБ №2</td>
+                <td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600">44/250</span><div class="pb" style="width:60px"><div class="pf pf-red" style="width:18%"></div></div></div></td>
+                <td><span class="tag tag-red">18 мес.</span></td>
+                <td><span class="tag tag-red">Критично</span></td>
+                <td class="td-muted">3 дня назад</td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Козлова Е.В.</div><div class="td-mono">kozlova@moniki.ru</div></td>
+                <td class="td-muted">Хирургия</td>
+                <td class="td-muted">МОНИКИ</td>
+                <td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600">210/250</span><div class="pb" style="width:60px"><div class="pf pf-green" style="width:84%"></div></div></div></td>
+                <td><span class="tag tag-green">31 мес.</span></td>
+                <td><span class="tag tag-green">На плане</span></td>
+                <td class="td-muted">сегодня</td>
+              </tr>
+              <tr>
+                <td><div style="font-weight:500">Новиков Д.С.</div><div class="td-mono">novikov@gb12.ru</div></td>
+                <td class="td-muted">Педиатрия</td>
+                <td class="td-muted">ГБ №12</td>
+                <td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600">68/250</span><div class="pb" style="width:60px"><div class="pf pf-amber" style="width:27%"></div></div></div></td>
+                <td><span class="tag tag-amber">24 мес.</span></td>
+                <td><span class="tag tag-amber">Риск</span></td>
+                <td class="td-muted">неделю назад</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ МОДЕРАЦИЯ ═══════════ -->
+    <div class="scr" id="s-moderation">
+      <div class="alert alert-warn">⚠️ 3 курса ожидают проверки перед публикацией</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Артериальная гипертензия: стандарты ESC 2024</div>
+              <div style="font-size:12px;color:var(--text3)">НМИЦ кардиологии · 12 ч. · 6 баллов · Онлайн · 1 800 ₽</div>
+            </div>
+            <span class="tag tag-amber">На модерации</span>
+          </div>
+          <div style="background:var(--surface2);border-radius:var(--r-sm);padding:12px;margin-bottom:12px;font-size:13px;color:var(--text2);line-height:1.6">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Описание курса</div>
+            Курс посвящён современным стандартам диагностики и лечения артериальной гипертензии согласно рекомендациям Европейского общества кардиологов 2024 года. Рассматриваются вопросы стратификации риска, выбора антигипертензивной терапии и мониторинга пациентов.
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <div class="form-group" style="flex:1">
+              <div class="form-label">Номер аккредитации НМО</div>
+              <input class="form-input" type="text" value="НМО-2024-КГ-00892" style="font-family:monospace">
+            </div>
+            <div class="form-group" style="flex:1">
+              <div class="form-label">Комментарий редактора</div>
+              <input class="form-input" type="text" placeholder="Необязательно">
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-success">✓ Одобрить и опубликовать</button>
+            <button class="btn btn-danger">✕ Отклонить</button>
+            <button class="btn btn-ghost">Запросить правки</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Педиатрическая кардиология: ВПС у детей</div>
+              <div style="font-size:12px;color:var(--text3)">СеченовУниверситет · 24 ч. · 12 баллов · Онлайн · Бесплатно</div>
+            </div>
+            <span class="tag tag-amber">На модерации</span>
+          </div>
+          <div class="alert alert-warn" style="margin-bottom:12px">⚠️ Номер аккредитации НМО не указан. Баллы не будут зачтены официально.</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-success" style="opacity:.4;cursor:not-allowed">✓ Одобрить</button>
+            <button class="btn btn-danger">✕ Отклонить</button>
+            <button class="btn btn-ghost">Запросить номер аккредитации</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Нейрохирургия: минимально инвазивные техники</div>
+              <div style="font-size:12px;color:var(--text3)">РУДН Медицина · 36 ч. · 18 баллов · Очный · 24 000 ₽</div>
+            </div>
+            <span class="tag tag-amber">На модерации</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-success">✓ Одобрить и опубликовать</button>
+            <button class="btn btn-danger">✕ Отклонить</button>
+            <button class="btn btn-ghost">Запросить правки</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ФИНАНСЫ ═══════════ -->
+    <div class="scr" id="s-finance">
+      <div class="g4">
+        <div class="mc"><div class="mc-l">Выручка за май</div><div class="mc-v">184к ₽</div><div class="mc-trend up">↑ +34% к апрелю</div></div>
+        <div class="mc"><div class="mc-l">Комиссия платформы</div><div class="mc-v">27.6к ₽</div><div class="mc-s">15% от транзакций</div></div>
+        <div class="mc"><div class="mc-l">Выплачено орг-циям</div><div class="mc-v">156.4к ₽</div><div class="mc-s">за май 2025</div></div>
+        <div class="mc"><div class="mc-l">Транзакций</div><div class="mc-v">847</div><div class="mc-trend up">↑ +212 к апрелю</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Выручка по организациям</div>
+          <div class="stat-row"><div class="stat-label">СеченовУниверситет</div><div class="stat-track"><div class="stat-fill" style="width:88%"></div></div><div class="stat-val">84.2к</div></div>
+          <div class="stat-row"><div class="stat-label">НМИЦ кардиологии</div><div class="stat-track"><div class="stat-fill" style="width:60%"></div></div><div class="stat-val">57.8к</div></div>
+          <div class="stat-row"><div class="stat-label">РУДН Медицина</div><div class="stat-track"><div class="stat-fill" style="width:44%"></div></div><div class="stat-val">42.0к</div></div>
+          <div class="stat-row"><div class="stat-label">МГУ им. Ломоносова</div><div class="stat-track"><div class="stat-fill" style="width:0%"></div></div><div class="stat-val">0 ₽</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Последние транзакции</div>
+          <table>
+            <thead><tr><th>Врач</th><th>Курс</th><th>Сумма</th><th>Дата</th></tr></thead>
+            <tbody>
+              <tr><td class="td-muted">Смирнов А.</td><td class="td-muted">ЧКВ 2025</td><td style="color:var(--green);font-weight:500">18 900 ₽</td><td class="td-muted">сегодня</td></tr>
+              <tr><td class="td-muted">Козлова Е.</td><td class="td-muted">Конгресс РКО</td><td style="color:var(--green);font-weight:500">12 000 ₽</td><td class="td-muted">вчера</td></tr>
+              <tr><td class="td-muted">Новиков Д.</td><td class="td-muted">АГ ESC 2024</td><td style="color:var(--green);font-weight:500">1 800 ₽</td><td class="td-muted">вчера</td></tr>
+              <tr><td class="td-muted">Петрова С.</td><td class="td-muted">Кардиоонкология</td><td style="color:var(--green);font-weight:500">4 200 ₽</td><td class="td-muted">2 дня назад</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ АНАЛИТИКА ═══════════ -->
+    <div class="scr" id="s-analytics">
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Воронка конверсии</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">Просмотрели каталог</span><span style="font-weight:600">1 284</span></div><div class="pb" style="height:8px"><div class="pf" style="width:100%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">Открыли карточку курса</span><span style="font-weight:600">847 <span style="color:var(--text3);font-weight:400">66%</span></span></div><div class="pb" style="height:8px"><div class="pf" style="width:66%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">Начали курс</span><span style="font-weight:600">524 <span style="color:var(--text3);font-weight:400">41%</span></span></div><div class="pb" style="height:8px"><div class="pf" style="width:41%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">Завершили курс</span><span style="font-weight:600">312 <span style="color:var(--green);font-weight:400">24%</span></span></div><div class="pb" style="height:8px"><div class="pf pf-green" style="width:24%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Аудитория по специализациям</div>
+          <div class="stat-row"><div class="stat-label">Кардиология</div><div class="stat-track"><div class="stat-fill" style="width:82%"></div></div><div class="stat-val">38%</div></div>
+          <div class="stat-row"><div class="stat-label">Терапия</div><div class="stat-track"><div class="stat-fill" style="width:54%"></div></div><div class="stat-val">25%</div></div>
+          <div class="stat-row"><div class="stat-label">Хирургия</div><div class="stat-track"><div class="stat-fill" style="width:32%"></div></div><div class="stat-val">15%</div></div>
+          <div class="stat-row"><div class="stat-label">Педиатрия</div><div class="stat-track"><div class="stat-fill" style="width:24%"></div></div><div class="stat-val">11%</div></div>
+          <div class="stat-row"><div class="stat-label">Неврология</div><div class="stat-track"><div class="stat-fill" style="width:14%"></div></div><div class="stat-val">6%</div></div>
+          <div class="stat-row"><div class="stat-label">Прочие</div><div class="stat-track"><div class="stat-fill" style="width:8%"></div></div><div class="stat-val">5%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ключевые метрики</div>
+        <div class="g4">
+          <div style="text-align:center;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--text);font-family:'Manrope',sans-serif">66%</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Monthly retention</div></div>
+          <div style="text-align:center;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--green);font-family:'Manrope',sans-serif">4.8</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Средний рейтинг курсов</div></div>
+          <div style="text-align:center;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--amber);font-family:'Manrope',sans-serif">2.4</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Курсов на врача (avg)</div></div>
+          <div style="text-align:center;padding:12px"><div style="font-size:22px;font-weight:800;color:var(--accent);font-family:'Manrope',sans-serif">59%</div><div style="font-size:12px;color:var(--text3);margin-top:4px">AI-план использован</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const T = {dash:'Дашборд',courses:'Курсы',
+  'add-course':'Добавить курс',orgs:'Организации',
+  users:'Врачи',moderation:'Модерация',
+  finance:'Финансы',analytics:'Аналитика'};
+
+function goTo(s) {
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.scr').forEach(x=>x.classList.remove('on'));
+  const ni = document.querySelector(`[data-s="${s}"]`);
+  if(ni) ni.classList.add('on');
+  const scr = document.getElementById('s-'+s);
+  if(scr) scr.classList.add('on');
+  document.getElementById('ptitle').textContent = T[s]||s;
+  if(s==='add-course') resetSteps();
+}
+
+document.querySelectorAll('.ni').forEach(n=>{
+  n.addEventListener('click',()=>goTo(n.dataset.s));
+});
+
+document.querySelectorAll('.fchip').forEach(f=>f.addEventListener('click',function(){
+  this.classList.toggle('on');
+}));
+
+// Stepper
+let currentStep = 0;
+function resetSteps() {
+  currentStep = 0;
+  updateSteps();
+}
+function nextStep() {
+  if(currentStep < 3) {
+    document.getElementById('step-'+currentStep).style.display='none';
+    document.querySelector(`[data-step="${currentStep}"]`).classList.add('done');
+    document.querySelector(`[data-step="${currentStep}"]`).classList.remove('on');
+    currentStep++;
+    document.getElementById('step-'+currentStep).style.display='block';
+    document.querySelector(`[data-step="${currentStep}"]`).classList.add('on');
+  }
+}
+function prevStep() {
+  if(currentStep > 0) {
+    document.getElementById('step-'+currentStep).style.display='none';
+    document.querySelector(`[data-step="${currentStep}"]`).classList.remove('on');
+    currentStep--;
+    document.getElementById('step-'+currentStep).style.display='block';
+    document.querySelector(`[data-step="${currentStep}"]`).classList.add('on');
+    document.querySelector(`[data-step="${currentStep}"]`).classList.remove('done');
+  }
+}
+function updateSteps() {
+  document.querySelectorAll('.step').forEach((s,i)=>{
+    s.classList.remove('on','done');
+    if(i===currentStep) s.classList.add('on');
+  });
+  for(let i=0;i<4;i++) {
+    const el = document.getElementById('step-'+i);
+    if(el) el.style.display = i===currentStep?'block':'none';
+  }
+}
+
+// Activity bars
+const acts = [12,18,8,24,32,28,44,38,52,48,36,58,42,66];
+const ab = document.getElementById('act-bars');
+if(ab) {
+  const max = Math.max(...acts);
+  acts.forEach((v,i)=>{
+    const h = Math.round((v/max)*70);
+    const d = document.createElement('div');
+    d.style.cssText=`flex:1;height:${h}px;border-radius:3px 3px 0 0;background:${i===acts.length-1?'var(--accent)':'var(--accent-dim)'}`;
+    ab.appendChild(d);
+  });
+}
+</script>
+</body>
+</html>
