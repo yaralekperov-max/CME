@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Portal (light) theme ─────────────────────────── */
+:root {
+  --bg: #F7F6F2;
+  --surface: #FFFFFF;
+  --surface2: #F2F1ED;
+  --border: #E4E2DA;
+  --border2: #D0CEC5;
+  --text: #1C1B18;
+  --text2: #6B6860;
+  --text3: #9E9C95;
+  --accent: #6B5FE4;
+  --accent-light: #EDEAFD;
+  --accent-mid: #C4BEFC;
+  --green: #1A7A52;
+  --green-bg: #E3F4EC;
+  --amber: #8A5A00;
+  --amber-bg: #FEF3DC;
+  --red: #C0392B;
+  --red-bg: #FDECEA;
+  --blue: #1A5F9A;
+  --blue-bg: #E3EFFE;
+}
+
+/* ─── Admin (dark) theme ───────────────────────────── */
+.admin-theme {
+  --bg: #0F0F11;
+  --surface: #1A1A1F;
+  --surface2: #222228;
+  --surface3: #2A2A32;
+  --border: #2E2E38;
+  --border2: #3A3A46;
+  --text: #F0EFE8;
+  --text2: #9B9A94;
+  --text3: #5E5D58;
+  --accent: #7B6EF6;
+  --accent-dim: #3D3680;
+  --accent-light: #2A2550;
+  --green: #34C77B;
+  --green-dim: #1A6340;
+  --green-bg: #122B1E;
+  --amber: #F0A429;
+  --amber-dim: #7A5010;
+  --amber-bg: #2A1E08;
+  --red: #F05252;
+  --red-dim: #7A2020;
+  --red-bg: #2A1010;
+  --blue: #4A9EF5;
+  --blue-bg: #0E1E35;
+}
+
+/* ─── Base ──────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Manrope', sans-serif;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 4px;
+}
+
+/* ─── Utilities ─────────────────────────────────────── */
+@layer utilities {
+  .font-display {
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Progress bar fill colors */
+  .progress-accent { background: var(--accent); }
+  .progress-green  { background: var(--green); }
+  .progress-amber  { background: #D4920A; }
+  .progress-red    { background: var(--red); }
+}
+
+/* ─── Animation ─────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .6; transform: scale(1.2); }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s infinite;
+}

@@ -1,0 +1,340 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth (NextAuth) ─────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Users ───────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  phone         String?
+  name          String?
+  role          UserRole  @default(DOCTOR)
+
+  // Doctor profile
+  specialization String?
+  workplace      String?
+  city           String?
+  snils          String?   @unique // СНИЛС — уникальный идентификатор врача в РФ
+
+  // Accreditation cycle
+  cycleStartDate        DateTime?
+  accreditationDeadline DateTime?
+  pointsRequired        Int       @default(250)
+
+  // Preferences
+  notificationsEnabled Boolean @default(true)
+  avatarUrl            String?
+
+  // Relations
+  accounts           Account[]
+  sessions           Session[]
+  enrollments        Enrollment[]
+  certificates       Certificate[]
+  pointsTransactions PointsTransaction[]
+  aiConversations    AiConversation[]
+  financialTxns      FinancialTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([snils])
+  @@index([specialization])
+}
+
+enum UserRole {
+  DOCTOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ─── Organizations ────────────────────────────────────────────────
+
+model Organization {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique
+  website      String?
+  logoUrl      String?
+  contactName  String?
+  contactEmail String?
+  contactPhone String?
+  description  String?   @db.Text
+
+  // For future НМО portal integration
+  externalId   String?   @unique
+
+  status       OrgStatus @default(ACTIVE)
+
+  courses              Course[]
+  financialTxns        FinancialTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+enum OrgStatus {
+  ACTIVE
+  CONNECTING
+  SUSPENDED
+}
+
+// ─── Courses ─────────────────────────────────────────────────────
+
+model Course {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?      @db.Text
+  organizationId String
+
+  // NMO
+  nmoPoints              Int
+  nmoAccreditationNumber String?
+
+  // Details
+  format          CourseFormat
+  specializations String[]
+  durationHours   Int?
+  maxParticipants Int?
+  tags            String[]
+
+  // Pricing
+  priceKopecks Int         @default(0) // 0 = free
+  fundingType  FundingType @default(FREE)
+
+  // Dates
+  startDate    DateTime?
+  deadlineDate DateTime?
+
+  // Status & moderation
+  status          CourseStatus @default(DRAFT)
+  moderationNote  String?
+  publishedAt     DateTime?
+
+  // External (for НМО portal integration)
+  externalId  String? @unique
+  externalUrl String?
+
+  // Relations
+  organization       Organization           @relation(fields: [organizationId], references: [id])
+  enrollments        Enrollment[]
+  pointsTransactions PointsTransaction[]
+  financialTxns      FinancialTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([organizationId])
+  @@index([specializations])
+  @@index([fundingType])
+  @@index([deadlineDate])
+}
+
+enum CourseFormat {
+  ONLINE
+  IN_PERSON
+  WEBINAR
+  CONFERENCE
+}
+
+enum FundingType {
+  FREE
+  OMS
+  PAID
+}
+
+enum CourseStatus {
+  DRAFT
+  MODERATION
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+// ─── Enrollments ─────────────────────────────────────────────────
+
+model Enrollment {
+  id       String           @id @default(cuid())
+  userId   String
+  courseId String
+
+  status     EnrollmentStatus @default(ENROLLED)
+  progressPct Float           @default(0) // 0–100
+
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([status])
+}
+
+enum EnrollmentStatus {
+  ENROLLED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Points transactions (audit log) ─────────────────────────────
+
+model PointsTransaction {
+  id          String          @id @default(cuid())
+  userId      String
+  courseId    String?
+  points      Int
+  type        TransactionType
+  description String?
+
+  user   User    @relation(fields: [userId], references: [id])
+  course Course? @relation(fields: [courseId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum TransactionType {
+  EARNED
+  ADJUSTED
+  EXPIRED
+}
+
+// ─── Certificates ────────────────────────────────────────────────
+
+model Certificate {
+  id        String     @id @default(cuid())
+  userId    String
+  courseId  String?
+  number    String     @unique
+  title     String
+  nmoPoints Int
+  issuedAt  DateTime
+  expiresAt DateTime?
+  fileUrl   String?
+  status    CertStatus @default(ACTIVE)
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+enum CertStatus {
+  ACTIVE
+  EXPIRING
+  EXPIRED
+}
+
+// ─── AI Conversations ────────────────────────────────────────────
+
+model AiConversation {
+  id       String @id @default(cuid())
+  userId   String
+  messages Json   // {role: 'user'|'assistant', content: string, createdAt: string}[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ─── Financial transactions ───────────────────────────────────────
+
+model FinancialTransaction {
+  id             String               @id @default(cuid())
+  userId         String?
+  courseId       String?
+  organizationId String?
+
+  amountKopecks     Int
+  commissionKopecks Int @default(0)
+
+  type   FinTxnType
+  status FinTxnStatus @default(PENDING)
+
+  externalId String? // payment gateway reference
+
+  user         User?         @relation(fields: [userId], references: [id])
+  course       Course?       @relation(fields: [courseId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum FinTxnType {
+  COURSE_PURCHASE
+  PLATFORM_COMMISSION
+  PAYOUT_TO_ORG
+  REFUND
+}
+
+enum FinTxnStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
