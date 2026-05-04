@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedCME — Портал НМО</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F6F2;
+  --surface: #FFFFFF;
+  --surface2: #F2F1ED;
+  --border: #E4E2DA;
+  --border2: #D0CEC5;
+  --text: #1C1B18;
+  --text2: #6B6860;
+  --text3: #9E9C95;
+  --accent: #6B5FE4;
+  --accent-light: #EDEAFD;
+  --accent-mid: #C4BEFC;
+  --green: #1A7A52;
+  --green-bg: #E3F4EC;
+  --amber: #8A5A00;
+  --amber-bg: #FEF3DC;
+  --red: #C0392B;
+  --red-bg: #FDECEA;
+  --blue: #1A5F9A;
+  --blue-bg: #E3EFFE;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; font-size: 13px; }
+h1,h2,h3,.logo-name { font-family: 'Manrope', sans-serif; }
+
+/* LAYOUT */
+.app { display: flex; height: 100vh; }
+.sidebar { width: 228px; min-width: 228px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* SIDEBAR */
+.logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.logo-name { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -.03em; }
+.logo-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.nav { padding: 12px 10px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.nav-section { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; padding: 10px 10px 4px; }
+.ni { display: flex; align-items: center; gap: 10px; padding: 9px 10px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border-radius: var(--r-md); transition: all .15s; }
+.ni:hover { background: var(--surface2); color: var(--text); }
+.ni.on { background: var(--accent-light); color: var(--accent); }
+.ni-ic { width: 32px; height: 32px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content:center; font-size: 15px; background: var(--surface2); flex-shrink: 0; transition: background .15s; }
+.ni.on .ni-ic { background: var(--accent); }
+.ni-badge { margin-left: auto; font-size: 10px; font-weight: 600; background: var(--red-bg); color: var(--red); border-radius: 20px; padding: 2px 7px; }
+.sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--border); }
+.doc-card { display: flex; align-items: center; gap: 10px; }
+.doc-av { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #B5D4F4, #8AB5E8); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #0C447C; flex-shrink: 0; }
+.doc-name { font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Manrope', sans-serif; }
+.doc-spec { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.doc-pts { margin-left: auto; text-align: right; }
+.doc-pts-val { font-size: 14px; font-weight: 700; color: var(--accent); font-family: 'Manrope', sans-serif; }
+.doc-pts-label { font-size: 10px; color: var(--text3); }
+
+/* TOPBAR */
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.topbar-title { font-size: 16px; font-weight: 700; color: var(--text); font-family: 'Manrope', sans-serif; letter-spacing: -.02em; white-space: nowrap; }
+.search-box { flex: 1; max-width: 360px; position: relative; }
+.search-box input { width: 100%; padding: 8px 12px 8px 36px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface2); color: var(--text); outline: none; font-family: 'Inter', sans-serif; }
+.search-box input:focus { border-color: var(--accent-mid); background: var(--surface); }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
+.topbar-actions { display: flex; gap: 8px; margin-left: auto; }
+.btn { display: flex; align-items: center; gap: 7px; padding: 8px 14px; font-size: 13px; font-weight: 500; border-radius: var(--r-md); cursor: pointer; transition: all .15s; font-family: 'Inter', sans-serif; border: none; }
+.btn-ghost { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); color: var(--text); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #5A50C8; }
+.btn-ai { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-mid); }
+.btn-ai:hover { background: var(--accent-mid); }
+.ai-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.2)} }
+
+/* SCREENS */
+.scr { flex: 1; overflow-y: auto; padding: 24px; display: none; flex-direction: column; gap: 20px; }
+.scr.on { display: flex; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow); }
+.card-accent { border-color: var(--accent-mid); background: var(--surface); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); font-family: 'Manrope', sans-serif; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.card-link { font-size: 12px; font-weight: 500; color: var(--accent); cursor: pointer; }
+
+/* GRIDS */
+.g2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+/* METRIC CARDS */
+.mc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow); }
+.mc-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.mc-value { font-size: 28px; font-weight: 700; color: var(--text); font-family: 'Manrope', sans-serif; letter-spacing: -.02em; line-height: 1; }
+.mc-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.mc-trend { font-size: 11px; font-weight: 600; margin-top: 6px; }
+.mc-trend.up { color: var(--green); }
+.mc-trend.warn { color: var(--amber); }
+.mc-trend.down { color: var(--red); }
+.pb { width: 100%; height: 5px; background: var(--surface2); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+.pf { height: 100%; border-radius: 3px; background: var(--accent); }
+.pf.green { background: var(--green); }
+.pf.amber { background: #D4920A; }
+.pf.red { background: var(--red); }
+
+/* TAGS */
+.tag { display: inline-flex; align-items: center; padding: 3px 8px; font-size: 11px; font-weight: 500; border-radius: 6px; }
+.tag-green { background: var(--green-bg); color: var(--green); }
+.tag-amber { background: var(--amber-bg); color: var(--amber); }
+.tag-red { background: var(--red-bg); color: var(--red); }
+.tag-purple { background: var(--accent-light); color: var(--accent); }
+.tag-blue { background: var(--blue-bg); color: var(--blue); }
+.tag-gray { background: var(--surface2); color: var(--text2); }
+
+/* COURSE CARDS */
+.course-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; cursor: pointer; transition: all .2s; box-shadow: var(--shadow); }
+.course-card:hover { border-color: var(--accent-mid); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.course-card.featured { border-color: var(--accent-mid); background: linear-gradient(135deg, var(--surface) 0%, #F5F3FE 100%); }
+.course-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.course-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; font-family: 'Manrope', sans-serif; }
+.pts-badge { flex-shrink: 0; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; background: var(--accent-light); color: var(--accent); font-family: 'Manrope', sans-serif; }
+.course-org { font-size: 11px; color: var(--text3); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+.course-meta { display: flex; gap: 14px; margin-bottom: 10px; }
+.meta-item { font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 4px; }
+.course-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+.course-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); }
+.course-price { font-size: 14px; font-weight: 700; color: var(--text); font-family: 'Manrope', sans-serif; }
+.course-price.free { color: var(--green); }
+
+/* BUTTONS */
+.btn-sm { padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: var(--r-sm); cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; transition: all .15s; }
+.btn-sm:hover { background: var(--surface2); }
+.btn-sm.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-sm.primary:hover { background: #5A50C8; }
+
+/* HISTORY ROWS */
+.hist-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.hist-row:last-child { border-bottom: none; padding-bottom: 0; }
+.hist-pts { font-size: 20px; font-weight: 700; color: var(--accent); min-width: 42px; font-family: 'Manrope', sans-serif; }
+.hist-info { flex: 1; min-width: 0; }
+.hist-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Manrope', sans-serif; }
+.hist-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.hist-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* FILTER CHIPS */
+.filter-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.fchip { padding: 6px 13px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text2); cursor: pointer; transition: all .15s; }
+.fchip:hover { border-color: var(--accent-mid); color: var(--accent); }
+.fchip.on { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
+
+/* AI PANEL */
+.ai-panel { background: var(--surface); border: 1px solid var(--accent-mid); border-radius: var(--r-lg); padding: 16px; box-shadow: 0 0 0 3px var(--accent-light); }
+.ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.ai-avatar { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.ai-name { font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Manrope', sans-serif; }
+.ai-status { font-size: 11px; color: var(--green); background: var(--green-bg); padding: 2px 8px; border-radius: 20px; margin-left: auto; }
+.ai-bubble { background: var(--accent-light); border-radius: 4px 12px 12px 12px; padding: 12px 14px; font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+.ai-bubble-user { background: var(--surface2); border-radius: 12px 12px 4px 12px; padding: 12px 14px; font-size: 13px; color: var(--text); line-height: 1.6; align-self: flex-end; max-width: 85%; }
+.ai-chips { display: flex; gap: 7px; flex-wrap: wrap; }
+.ai-chip { padding: 6px 13px; font-size: 12px; font-weight: 500; border: 1px solid var(--accent-mid); border-radius: 20px; color: var(--accent); background: var(--surface); cursor: pointer; transition: all .15s; }
+.ai-chip:hover { background: var(--accent-light); }
+
+/* PROGRESS RING */
+.progress-ring-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.progress-ring-center { position: absolute; text-align: center; }
+.ring-val { font-size: 28px; font-weight: 800; color: var(--text); font-family: 'Manrope', sans-serif; line-height: 1; }
+.ring-label { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* CERT CARDS */
+.cert-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.cert-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--green); border-radius: 4px 0 0 4px; }
+.cert-card.expiring::before { background: var(--amber-bg); background: #D4920A; }
+.cert-card.expired::before { background: var(--red); }
+.cert-num { font-size: 10px; color: var(--text3); margin-bottom: 6px; font-family: 'Inter', monospace; }
+.cert-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 4px; font-family: 'Manrope', sans-serif; }
+.cert-org { font-size: 11px; color: var(--text3); margin-bottom: 12px; }
+.cert-footer { display: flex; align-items: center; justify-content: space-between; }
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 20px; }
+.timeline::before { content:''; position:absolute; left:6px; top:6px; bottom:6px; width:1px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot { position: absolute; left: -17px; top: 4px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 2px var(--accent-mid); }
+.tl-dot.done { background: var(--green); box-shadow: 0 0 0 2px #A8DCC2; }
+.tl-dot.future { background: var(--surface2); border-color: var(--border2); box-shadow: 0 0 0 2px var(--border); }
+.tl-date { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+.tl-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.tl-pts { font-size: 11px; color: var(--accent); font-weight: 600; margin-top: 2px; }
+
+/* ALERT */
+.alert { border-radius: var(--r-md); padding: 12px 14px; display: flex; align-items: flex-start; gap: 10px; font-size: 13px; }
+.alert-warn { background: var(--amber-bg); color: var(--amber); border: 1px solid #F0D080; }
+.alert-info { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-mid); }
+.alert-success { background: var(--green-bg); color: var(--green); border: 1px solid #A8DCC2; }
+
+/* STATS BAR */
+.stat-bar-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.stat-bar-row:last-child { border-bottom: none; }
+.stat-bar-label { font-size: 13px; color: var(--text); flex: 1; }
+.stat-bar-track { width: 130px; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.stat-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+.stat-bar-val { font-size: 12px; font-weight: 600; color: var(--accent); min-width: 40px; text-align: right; font-family: 'Manrope', sans-serif; }
+
+/* INPUT */
+.input { width: 100%; padding: 9px 13px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); color: var(--text); outline: none; font-family: 'Inter', sans-serif; }
+.input:focus { border-color: var(--accent-mid); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* DEADLINE BADGE */
+.deadline-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 14px 16px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow); }
+.deadline-date { width: 44px; height: 44px; border-radius: var(--r-md); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+.deadline-date.urgent { background: var(--red-bg); }
+.deadline-date.soon { background: var(--amber-bg); }
+.deadline-date.ok { background: var(--green-bg); }
+.dl-day { font-size: 18px; font-weight: 800; font-family: 'Manrope', sans-serif; line-height: 1; }
+.dl-month { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.deadline-date.urgent .dl-day, .deadline-date.urgent .dl-month { color: var(--red); }
+.deadline-date.soon .dl-day, .deadline-date.soon .dl-month { color: var(--amber); }
+.deadline-date.ok .dl-day, .deadline-date.ok .dl-month { color: var(--green); }
+
+/* YEAR BARS */
+.year-bars { display: flex; align-items: flex-end; gap: 8px; height: 100px; }
+.ybar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ybar-val { font-size: 11px; color: var(--text3); font-weight: 500; }
+.ybar { width: 100%; border-radius: 4px 4px 0 0; transition: background .3s; }
+.ybar.current { background: var(--accent); }
+.ybar.past { background: var(--accent-light); border: 1px solid var(--accent-mid); }
+.ybar-yr { font-size: 10px; color: var(--text3); }
+
+/* NOTIFICATION DOT */
+.notif { width: 7px; height: 7px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 4px 0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🏥</div>
+      <div>
+        <div class="logo-name">MedCME</div>
+        <div class="logo-sub">Портал НМО</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Главное</div>
+      <div class="ni on" data-s="ov"><div class="ni-ic">◈</div>Обзор</div>
+      <div class="ni" data-s="cat"><div class="ni-ic">⊞</div>Каталог курсов</div>
+      <div class="ni" data-s="pts"><div class="ni-ic">✦</div>Мои баллы</div>
+      <div class="nav-section">Учёт</div>
+      <div class="ni" data-s="hist"><div class="ni-ic">◷</div>История обучения</div>
+      <div class="ni" data-s="cert"><div class="ni-ic">⬡</div>Сертификаты<span class="ni-badge">2</span></div>
+      <div class="nav-section">Инструменты</div>
+      <div class="ni" data-s="ai"><div class="ni-ic">🤖</div>AI-ассистент</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="doc-card">
+        <div class="doc-av">АС</div>
+        <div>
+          <div class="doc-name">Алексей Смирнов</div>
+          <div class="doc-spec">Кардиолог · НМИЦ · Москва</div>
+        </div>
+        <div class="doc-pts">
+          <div class="doc-pts-val">86</div>
+          <div class="doc-pts-label">баллов</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="ptitle">Обзор</div>
+      <div class="search-box" id="srch">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Поиск курсов, организаций, специализаций...">
+      </div>
+      <div class="topbar-actions">
+        <div class="btn btn-ghost" style="font-size:12px">🔔</div>
+        <div class="btn btn-ai" id="ai-btn"><span class="ai-pulse"></span>AI-ассистент</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ ОБЗОР ══════════════ -->
+    <div class="scr on" id="s-ov">
+
+      <div class="alert alert-warn">
+        ⚠️ <div><strong>Риск не успеть:</strong> при текущем темпе 43 балла/год вам не хватит ~28 баллов к декабрю 2027. AI-ассистент подобрал план — <span style="text-decoration:underline;cursor:pointer;color:var(--accent)">посмотреть</span></div>
+      </div>
+
+      <div class="g4">
+        <div class="mc">
+          <div class="mc-label">Баллов набрано</div>
+          <div class="mc-value">86</div>
+          <div class="mc-sub">из 250 за 5 лет</div>
+          <div class="pb"><div class="pf" style="width:34%"></div></div>
+          <div class="mc-trend warn">34% выполнено</div>
+        </div>
+        <div class="mc">
+          <div class="mc-label">Осталось набрать</div>
+          <div class="mc-value">164</div>
+          <div class="mc-sub">до декабря 2027</div>
+          <div class="pb"><div class="pf amber" style="width:66%"></div></div>
+          <div class="mc-trend warn">~2.7 года в запасе</div>
+        </div>
+        <div class="mc">
+          <div class="mc-label">Темп набора</div>
+          <div class="mc-value">43</div>
+          <div class="mc-sub">баллов в год сейчас</div>
+          <div class="pb"><div class="pf red" style="width:78%"></div></div>
+          <div class="mc-trend down">Нужно 55/год</div>
+        </div>
+        <div class="mc">
+          <div class="mc-label">Активных курсов</div>
+          <div class="mc-value">1</div>
+          <div class="mc-sub">ЭКГ — модуль 3 из 6</div>
+          <div class="pb"><div class="pf green" style="width:50%"></div></div>
+          <div class="mc-trend up">50% выполнено</div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div>
+          <div class="card-title" style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between">
+            Прогресс аккредитации <span class="card-link">Детали →</span>
+          </div>
+          <div class="card" style="padding:20px">
+            <div style="display:flex;align-items:center;gap:20px">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--surface2)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--accent)" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="207" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                <text x="60" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="var(--text)" font-family="Manrope">86</text>
+                <text x="60" y="72" text-anchor="middle" font-size="11" fill="var(--text3)" font-family="Inter">из 250</text>
+              </svg>
+              <div style="flex:1">
+                <div style="margin-bottom:14px">
+                  <div style="font-size:12px;color:var(--text3);margin-bottom:5px">Дедлайн аккредитации</div>
+                  <div style="font-size:18px;font-weight:700;color:var(--text);font-family:'Manrope',sans-serif">Декабрь 2027</div>
+                  <div style="font-size:12px;color:var(--text3);margin-top:2px">~31 месяц в запасе</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <div style="display:flex;justify-content:space-between;font-size:12px">
+                    <span style="color:var(--text3)">Зачтено баллов</span>
+                    <span style="font-weight:600;color:var(--green)">86 ЗЕТ</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px">
+                    <span style="color:var(--text3)">В процессе</span>
+                    <span style="font-weight:600;color:var(--accent)">+12 ЗЕТ</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px">
+                    <span style="color:var(--text3)">Нужно ещё</span>
+                    <span style="font-weight:600;color:var(--amber)">152 ЗЕТ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card-title" style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px">
+            Дедлайны этого месяца
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="deadline-card">
+              <div class="deadline-date urgent"><div class="dl-day">14</div><div class="dl-month">Май</div></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Manrope',sans-serif">Мастер-класс ЧКВ 2025</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">НМИЦ кардиологии · 18 б. · 18 900 ₽</div>
+              </div>
+              <button class="btn-sm primary">Записаться</button>
+            </div>
+            <div class="deadline-card">
+              <div class="deadline-date soon"><div class="dl-day">30</div><div class="dl-month">Июн</div></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Manrope',sans-serif">Лечение СН — протоколы 2025</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">РНИМУ · 36 б. · Бесплатно (ОМС)</div>
+              </div>
+              <button class="btn-sm primary">Записаться</button>
+            </div>
+            <div class="deadline-card">
+              <div class="deadline-date ok"><div class="dl-day">15</div><div class="dl-month">Июл</div></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Manrope',sans-serif">Эхокардиография расширенный</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">РМАПО · 18 б. · Бесплатно (ОМС)</div>
+              </div>
+              <button class="btn-sm">В план</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-header">
+          <div class="ai-avatar">✦</div>
+          <div class="ai-name">AI-ассистент</div>
+          <div style="font-size:12px;color:var(--text3);margin-left:8px">персональный план аккредитации</div>
+          <div class="ai-status">Онлайн</div>
+        </div>
+        <div class="ai-bubble">Алексей, вижу риск: при текущем темпе 43 балла/год вам не хватит ~28 баллов к дедлайну. Составил план — <strong>4 бесплатных онлайн-курса закрывают 74 балла</strong>. Два можно пройти параллельно уже сейчас. Хотите запишу на все сразу?</div>
+        <div class="ai-chips">
+          <div class="ai-chip">✓ Записать на все сразу</div>
+          <div class="ai-chip">📋 Показать план</div>
+          <div class="ai-chip">💰 Только бесплатные</div>
+          <div class="ai-chip">📍 Очные в Москве</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-size:14px;font-weight:600;color:var(--text);font-family:'Manrope',sans-serif">AI рекомендует для вас</div>
+          <div class="card-link">Весь каталог →</div>
+        </div>
+        <div class="g2">
+          <div class="course-card">
+            <div class="course-head">
+              <div class="course-title">Лечение сердечной недостаточности — протоколы 2025</div>
+              <div class="pts-badge">36 б.</div>
+            </div>
+            <div class="course-org">🏛 РНИМУ им. Пирогова</div>
+            <div class="course-meta">
+              <div class="meta-item">⏱ 72 ч.</div>
+              <div class="meta-item">📅 до 30 июня</div>
+              <div class="meta-item">👥 2 847 записалось</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag tag-green">Онлайн</span>
+              <span class="tag tag-blue">ОМС</span>
+              <span class="tag tag-gray">Кардиология</span>
+            </div>
+            <div class="course-footer">
+              <div class="course-price free">Бесплатно</div>
+              <button class="btn-sm primary">Записаться</button>
+            </div>
+          </div>
+          <div class="course-card featured">
+            <div class="course-head">
+              <div class="course-title">Интервенционная кардиология: мастер-класс ЧКВ 2025</div>
+              <div class="pts-badge">18 б.</div>
+            </div>
+            <div class="course-org">🏛 НМИЦ кардиологии · Москва</div>
+            <div class="course-meta">
+              <div class="meta-item">⏱ 36 ч.</div>
+              <div class="meta-item">📅 14–16 мая</div>
+              <div class="meta-item">💺 12 мест</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag tag-amber">Очный</span>
+              <span class="tag tag-purple">AI-рек. ✦</span>
+              <span class="tag tag-gray">Кардиология</span>
+            </div>
+            <div class="course-footer">
+              <div class="course-price">18 900 ₽</div>
+              <button class="btn-sm primary">Записаться</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ КАТАЛОГ ══════════════ -->
+    <div class="scr" id="s-cat">
+      <div style="display:flex;gap:20px">
+        <!-- Filters sidebar -->
+        <div style="width:200px;min-width:200px;display:flex;flex-direction:column;gap:14px">
+          <div class="card" style="padding:14px">
+            <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Формат</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Онлайн</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Очный</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Конференция</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Вебинар</label>
+            </div>
+          </div>
+          <div class="card" style="padding:14px">
+            <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Баллы</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> 1–5 баллов</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> 6–15 баллов</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> 16–36 баллов</label>
+            </div>
+          </div>
+          <div class="card" style="padding:14px">
+            <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Стоимость</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Бесплатно</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> По ОМС</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Платные</label>
+            </div>
+          </div>
+          <div class="card" style="padding:14px">
+            <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Специализация</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Кардиология</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Терапия</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Хирургия</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Педиатрия</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Онкология</label>
+              <div style="font-size:12px;color:var(--accent);cursor:pointer;margin-top:4px">+ ещё 18 специализаций</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course list -->
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:13px;color:var(--text3)">Найдено: <strong style="color:var(--text)">47 курсов</strong> по кардиологии</div>
+            <select style="font-size:12px;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 10px;background:var(--surface);color:var(--text)">
+              <option>По релевантности</option>
+              <option>Сначала больше баллов</option>
+              <option>Сначала ближайшие</option>
+              <option>Сначала бесплатные</option>
+            </select>
+          </div>
+
+          <div class="course-card featured">
+            <div style="font-size:10px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">✦ AI рекомендует</div>
+            <div class="course-head">
+              <div class="course-title">Лечение сердечной недостаточности — актуальные протоколы 2025</div>
+              <div class="pts-badge">36 б.</div>
+            </div>
+            <div class="course-org">🏛 РНИМУ им. Пирогова · Москва</div>
+            <div class="course-meta">
+              <div class="meta-item">⏱ 72 ч.</div><div class="meta-item">📅 до 30 июня</div><div class="meta-item">👥 2 847 обучается</div><div class="meta-item">⭐ 4.8 (312 отзывов)</div>
+            </div>
+            <div class="course-tags"><span class="tag tag-green">Онлайн</span><span class="tag tag-blue">ОМС</span><span class="tag tag-gray">Кардиология</span><span class="tag tag-gray">Сердечная недостаточность</span></div>
+            <div class="course-footer"><div class="course-price free">Бесплатно</div><div style="display:flex;gap:8px"><button class="btn-sm">В избранное</button><button class="btn-sm primary">Записаться</button></div></div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-head"><div class="course-title">Интервенционная кардиология: мастер-класс ЧКВ 2025</div><div class="pts-badge">18 б.</div></div>
+            <div class="course-org">🏛 НМИЦ кардиологии · Москва</div>
+            <div class="course-meta"><div class="meta-item">⏱ 36 ч.</div><div class="meta-item">📅 14–16 мая</div><div class="meta-item">💺 12 мест</div><div class="meta-item">⭐ 4.9 (89)</div></div>
+            <div class="course-tags"><span class="tag tag-amber">Очный</span><span class="tag tag-gray">Кардиология</span><span class="tag tag-gray">ЧКВ</span></div>
+            <div class="course-footer"><div class="course-price">18 900 ₽</div><div style="display:flex;gap:8px"><button class="btn-sm">В избранное</button><button class="btn-sm primary">Записаться</button></div></div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-head"><div class="course-title">Эхокардиография: расширенный курс для кардиологов</div><div class="pts-badge">18 б.</div></div>
+            <div class="course-org">🏛 РМАПО</div>
+            <div class="course-meta"><div class="meta-item">⏱ 36 ч.</div><div class="meta-item">📅 до 15 июля</div><div class="meta-item">👥 1 203</div><div class="meta-item">⭐ 4.7 (201)</div></div>
+            <div class="course-tags"><span class="tag tag-green">Онлайн</span><span class="tag tag-blue">ОМС</span><span class="tag tag-gray">Эхо-КГ</span></div>
+            <div class="course-footer"><div class="course-price free">Бесплатно</div><div style="display:flex;gap:8px"><button class="btn-sm">В избранное</button><button class="btn-sm primary">Записаться</button></div></div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-head"><div class="course-title">Конгресс кардиологов России 2025 — Санкт-Петербург</div><div class="pts-badge">24 б.</div></div>
+            <div class="course-org">🏛 РКО · Санкт-Петербург</div>
+            <div class="course-meta"><div class="meta-item">⏱ 3 дня</div><div class="meta-item">📅 8–10 октября</div><div class="meta-item">👥 4 100</div><div class="meta-item">⭐ 4.9 (1 204)</div></div>
+            <div class="course-tags"><span class="tag tag-purple">Конференция</span><span class="tag tag-gray">Ежегодный</span></div>
+            <div class="course-footer"><div class="course-price">12 000 ₽</div><div style="display:flex;gap:8px"><button class="btn-sm">В избранное</button><button class="btn-sm primary">Записаться</button></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ МОИ БАЛЛЫ ══════════════ -->
+    <div class="scr" id="s-pts">
+      <div class="g4">
+        <div class="mc"><div class="mc-label">Итого зачтено</div><div class="mc-value">86</div><div class="mc-sub">ЗЕТ из 250</div><div class="pb"><div class="pf" style="width:34%"></div></div></div>
+        <div class="mc"><div class="mc-label">В процессе</div><div class="mc-value" style="color:var(--accent)">+12</div><div class="mc-sub">ЗЕТ ожидается</div><div class="pb"><div class="pf" style="width:100%;background:var(--accent-mid)"></div></div></div>
+        <div class="mc"><div class="mc-label">Темп / год</div><div class="mc-value" style="color:var(--amber)">43</div><div class="mc-sub">нужно 55/год</div><div class="pb"><div class="pf amber" style="width:78%"></div></div></div>
+        <div class="mc"><div class="mc-label">Прогноз итога</div><div class="mc-value" style="color:var(--red)">~222</div><div class="mc-sub">из 250 к дедлайну</div><div class="pb"><div class="pf red" style="width:89%"></div></div></div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Динамика по годам</div>
+          <div class="year-bars" id="ybars"></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center">Нужный темп: 50 баллов/год</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Распределение по типам</div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div class="stat-bar-row"><div class="stat-bar-label">Онлайн-курсы</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:58%"></div></div><div class="stat-bar-val">50 б.</div></div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Очные циклы</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:28%"></div></div><div class="stat-bar-val">24 б.</div></div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Конференции</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:14%"></div></div><div class="stat-bar-val">12 б.</div></div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Образ. модули</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:0%"></div></div><div class="stat-bar-val">0 б.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">По специализациям</div>
+          <div class="stat-bar-row"><div class="stat-bar-label">Кардиология</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:72%"></div></div><div class="stat-bar-val">62 б.</div></div>
+          <div class="stat-bar-row"><div class="stat-bar-label">Терапия</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:19%"></div></div><div class="stat-bar-val">16 б.</div></div>
+          <div class="stat-bar-row"><div class="stat-bar-label">Онкология</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:9%"></div></div><div class="stat-bar-val">8 б.</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Что нужно до аккредитации</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:var(--r-sm)">
+              <span style="font-size:13px;color:var(--text)">Зачтено сейчас</span>
+              <span style="font-size:14px;font-weight:700;color:var(--green);font-family:'Manrope',sans-serif">86 ЗЕТ</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--accent-light);border-radius:var(--r-sm)">
+              <span style="font-size:13px;color:var(--text)">В процессе</span>
+              <span style="font-size:14px;font-weight:700;color:var(--accent);font-family:'Manrope',sans-serif">+12 ЗЕТ</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--amber-bg);border-radius:var(--r-sm)">
+              <span style="font-size:13px;color:var(--text)">Осталось набрать</span>
+              <span style="font-size:14px;font-weight:700;color:var(--amber);font-family:'Manrope',sans-serif">152 ЗЕТ</span>
+            </div>
+            <button class="btn-sm primary" style="width:100%;text-align:center;padding:10px">✦ Построить план набора</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Последние начисления <span class="card-link">Все →</span></div>
+        <div class="hist-row"><div class="hist-pts">18</div><div class="hist-info"><div class="hist-title">Клиническая эхокардиография — базовый цикл</div><div class="hist-meta">РНИМУ им. Пирогова · март 2025 · 36 ч. · Онлайн</div></div><div class="hist-actions"><span class="tag tag-green">Зачтено</span><button class="btn-sm">Сертификат</button></div></div>
+        <div class="hist-row"><div class="hist-pts">8</div><div class="hist-info"><div class="hist-title">Фибрилляция предсердий: тактика ведения 2024</div><div class="hist-meta">СеченовУниверситет · янв. 2025 · 16 ч. · Онлайн</div></div><div class="hist-actions"><span class="tag tag-green">Зачтено</span><button class="btn-sm">Сертификат</button></div></div>
+        <div class="hist-row"><div class="hist-pts" style="color:var(--accent-mid)">12</div><div class="hist-info"><div class="hist-title">ЭКГ в клинической практике — базовый курс</div><div class="hist-meta">СеченовУниверситет · с янв. 2025 · модуль 3 из 6 · 50%</div></div><div class="hist-actions"><span class="tag tag-purple">В процессе</span><button class="btn-sm primary">Продолжить</button></div></div>
+      </div>
+    </div>
+
+    <!-- ══════════════ ИСТОРИЯ ══════════════ -->
+    <div class="scr" id="s-hist">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <div class="filter-row">
+          <div class="fchip on">Все</div><div class="fchip">Завершённые</div><div class="fchip">В процессе</div><div class="fchip">Отменённые</div>
+        </div>
+        <div class="filter-row">
+          <div class="fchip on">2025</div><div class="fchip">2024</div><div class="fchip">2023</div><div class="fchip">2022</div><div class="fchip">Все годы</div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">ℹ️ Всего в истории: <strong>18 записей</strong> · Завершено: <strong>16</strong> · Суммарно зачтено: <strong>86 ЗЕТ</strong></div>
+
+      <div class="card">
+        <div class="hist-row">
+          <div class="hist-pts">18</div>
+          <div style="width:42px;height:42px;border-radius:var(--r-sm);background:var(--green-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:11px;font-weight:700;color:var(--green)">МАР</div><div style="font-size:14px;font-weight:800;color:var(--green);font-family:'Manrope',sans-serif">25</div></div>
+          <div class="hist-info">
+            <div class="hist-title">Клиническая эхокардиография — базовый цикл</div>
+            <div class="hist-meta">РНИМУ им. Пирогова · 36 ч. · Онлайн · март 2025</div>
+          </div>
+          <div class="hist-actions"><span class="tag tag-green">Завершён</span><button class="btn-sm">Сертификат</button><button class="btn-sm">Повтор</button></div>
+        </div>
+        <div class="hist-row">
+          <div class="hist-pts" style="color:var(--accent-mid)">12</div>
+          <div style="width:42px;height:42px;border-radius:var(--r-sm);background:var(--accent-light);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:11px;font-weight:700;color:var(--accent)">ЯНВ</div><div style="font-size:14px;font-weight:800;color:var(--accent);font-family:'Manrope',sans-serif">25</div></div>
+          <div class="hist-info">
+            <div class="hist-title">ЭКГ в клинической практике — базовый курс</div>
+            <div class="hist-meta">СеченовУниверситет · с янв. 2025 · модуль 3 из 6</div>
+            <div style="margin-top:6px"><div class="pb" style="height:4px;width:200px"><div class="pf" style="width:50%"></div></div></div>
+          </div>
+          <div class="hist-actions"><span class="tag tag-purple">В процессе</span><button class="btn-sm primary">Продолжить</button></div>
+        </div>
+        <div class="hist-row">
+          <div class="hist-pts">8</div>
+          <div style="width:42px;height:42px;border-radius:var(--r-sm);background:var(--green-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:11px;font-weight:700;color:var(--green)">НОЯ</div><div style="font-size:14px;font-weight:800;color:var(--green);font-family:'Manrope',sans-serif">24</div></div>
+          <div class="hist-info">
+            <div class="hist-title">Фибрилляция предсердий: тактика ведения 2024</div>
+            <div class="hist-meta">СеченовУниверситет · 16 ч. · Онлайн · нояб. 2024</div>
+          </div>
+          <div class="hist-actions"><span class="tag tag-green">Завершён</span><button class="btn-sm">Сертификат</button><button class="btn-sm">Повтор</button></div>
+        </div>
+        <div class="hist-row">
+          <div class="hist-pts">24</div>
+          <div style="width:42px;height:42px;border-radius:var(--r-sm);background:var(--green-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:11px;font-weight:700;color:var(--green)">ОКТ</div><div style="font-size:14px;font-weight:800;color:var(--green);font-family:'Manrope',sans-serif">24</div></div>
+          <div class="hist-info">
+            <div class="hist-title">Российский конгресс кардиологов 2024</div>
+            <div class="hist-meta">РКО · Москва · 3 дня · Конференция · окт. 2024</div>
+          </div>
+          <div class="hist-actions"><span class="tag tag-green">Завершён</span><button class="btn-sm">Сертификат</button></div>
+        </div>
+        <div class="hist-row">
+          <div class="hist-pts">36</div>
+          <div style="width:42px;height:42px;border-radius:var(--r-sm);background:var(--green-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:11px;font-weight:700;color:var(--green)">ИЮН</div><div style="font-size:14px;font-weight:800;color:var(--green);font-family:'Manrope',sans-serif">24</div></div>
+          <div class="hist-info">
+            <div class="hist-title">Сердечная недостаточность — актуальные протоколы 2024</div>
+            <div class="hist-meta">РНИМУ им. Пирогова · 72 ч. · Онлайн · июнь 2024</div>
+          </div>
+          <div class="hist-actions"><span class="tag tag-green">Завершён</span><button class="btn-sm">Сертификат</button><button class="btn-sm">Повтор</button></div>
+        </div>
+        <div class="hist-row">
+          <div class="hist-pts">12</div>
+          <div style="width:42px;height:42px;border-radius:var(--r-sm);background:var(--green-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font-size:11px;font-weight:700;color:var(--green)">МАР</div><div style="font-size:14px;font-weight:800;color:var(--green);font-family:'Manrope',sans-serif">24</div></div>
+          <div class="hist-info">
+            <div class="hist-title">Кардиоонкология: ведение пациентов на химиотерапии</div>
+            <div class="hist-meta">СеченовУниверситет · 24 ч. · Онлайн · март 2024</div>
+          </div>
+          <div class="hist-actions"><span class="tag tag-green">Завершён</span><button class="btn-sm">Сертификат</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ AI ══════════════ -->
+    <div class="scr" id="s-ai">
+      <div style="display:flex;gap:20px;flex:1;min-height:0">
+        <!-- Chat -->
+        <div class="ai-panel" style="flex:1;display:flex;flex-direction:column;min-height:0">
+          <div class="ai-header">
+            <div class="ai-avatar">✦</div>
+            <div>
+              <div class="ai-name">AI-ассистент NMO</div>
+              <div style="font-size:11px;color:var(--text3)">Знает ваш профиль, баллы и дедлайн</div>
+            </div>
+            <div class="ai-status">Онлайн</div>
+          </div>
+          <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;margin-bottom:14px;min-height:0">
+            <div class="ai-bubble">Привет, Алексей! Вижу вашу ситуацию: <strong>86 из 250 баллов</strong>, дедлайн декабрь 2027. При текущем темпе не хватит ~28 баллов. Я уже составил оптимальный план — хотите покажу?</div>
+            <div class="ai-bubble-user" style="align-self:flex-end;background:var(--surface2);border-radius:12px 12px 4px 12px;padding:12px 14px;font-size:13px;line-height:1.6;max-width:85%">Да, покажи. Только онлайн и желательно бесплатно</div>
+            <div class="ai-bubble">Отлично. Вот план на ближайший год — <strong>74 балла, всё онлайн, всё бесплатно по ОМС:</strong><br><br>
+              <strong>1.</strong> Лечение СН — 36 б. → РНИМУ, до 30 июня ← <em>начать сейчас</em><br>
+              <strong>2.</strong> Эхокардиография расш. — 18 б. → РМАПО, до 15 июля ← <em>параллельно с п.1</em><br>
+              <strong>3.</strong> ЭКГ продвинутый — 12 б. → постоянный доступ<br>
+              <strong>4.</strong> Фибрилляция — 8 б. → постоянный доступ<br><br>
+              Курсы 1 и 2 можно пройти одновременно — экономит 3 месяца. Хотите запишу на оба прямо сейчас?
+            </div>
+            <div class="ai-bubble-user" style="align-self:flex-end;background:var(--surface2);border-radius:12px 12px 4px 12px;padding:12px 14px;font-size:13px;line-height:1.6;max-width:85%">Запишись на курс 1 и 2</div>
+            <div class="ai-bubble">Готово! Записал вас на:<br><br>✅ <strong>Лечение СН</strong> — подтверждение придёт на почту<br>✅ <strong>Эхокардиография расш.</strong> — подтверждение придёт на почту<br><br>Ещё 90 баллов нужно к 2027 — покажу план на 2026 год?</div>
+          </div>
+          <div class="ai-chips" style="margin-bottom:12px">
+            <div class="ai-chip">Да, план на 2026</div>
+            <div class="ai-chip">Сохранить план в PDF</div>
+            <div class="ai-chip">Найти очные в Москве</div>
+            <div class="ai-chip">Сколько осталось?</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input class="input" type="text" placeholder="Спросите что угодно про баллы, курсы, план аккредитации...">
+            <button class="btn btn-primary">↑</button>
+          </div>
+        </div>
+        <!-- Sidebar info -->
+        <div style="width:220px;min-width:220px;display:flex;flex-direction:column;gap:14px">
+          <div class="card" style="padding:14px">
+            <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Ваши данные</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Специализация</span><span style="font-weight:500">Кардиология</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Баллов</span><span style="font-weight:600;color:var(--accent)">86 / 250</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Дедлайн</span><span style="font-weight:500">Дек. 2027</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Темп</span><span style="font-weight:500;color:var(--amber)">43 б/год</span></div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px">
+            <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Быстрые вопросы</div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div class="ai-chip" style="border-radius:var(--r-sm);font-size:12px">Сколько баллов мне нужно?</div>
+              <div class="ai-chip" style="border-radius:var(--r-sm);font-size:12px">Найди бесплатные курсы</div>
+              <div class="ai-chip" style="border-radius:var(--r-sm);font-size:12px">Какой у меня темп?</div>
+              <div class="ai-chip" style="border-radius:var(--r-sm);font-size:12px">Составь план на год</div>
+              <div class="ai-chip" style="border-radius:var(--r-sm);font-size:12px">Очные курсы в Москве</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ СЕРТИФИКАТЫ ══════════════ -->
+    <div class="scr" id="s-cert">
+      <div class="g4">
+        <div class="mc"><div class="mc-label">Всего</div><div class="mc-value">8</div><div class="mc-sub">сертификатов</div></div>
+        <div class="mc"><div class="mc-label">Действующих</div><div class="mc-value" style="color:var(--green)">6</div><div class="mc-sub">актуальных</div></div>
+        <div class="mc"><div class="mc-label">Истекает скоро</div><div class="mc-value" style="color:var(--amber)">2</div><div class="mc-sub">в ближайшие 6 мес.</div></div>
+        <div class="mc"><div class="mc-label">Истекло</div><div class="mc-value" style="color:var(--red)">1</div><div class="mc-sub">требует продления</div></div>
+      </div>
+
+      <div class="alert alert-warn">⚠️ <div><strong>2 сертификата истекают</strong> в ближайшие 6 месяцев: «Фибрилляция предсердий» (нояб. 2025) и «Интервенционная кардиология» (авг. 2025). <span style="text-decoration:underline;cursor:pointer">Найти продолжающие курсы →</span></div></div>
+
+      <div class="g2">
+        <div class="cert-card">
+          <div class="cert-num">№ 77-1-2024-8812 · март 2025</div>
+          <div class="cert-title">Клиническая эхокардиография — базовый цикл</div>
+          <div class="cert-org">РНИМУ им. Пирогова · 18 ЗЕТ</div>
+          <div class="cert-footer"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-green">Действует</span><span style="font-size:11px;color:var(--text3)">до март 2029</span></div><div style="display:flex;gap:6px"><button class="btn-sm">Скачать</button><button class="btn-sm primary">Поделиться</button></div></div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-num">№ 77-2-2024-4421 · окт. 2024</div>
+          <div class="cert-title">Российский конгресс кардиологов 2024</div>
+          <div class="cert-org">РКО · Москва · 24 ЗЕТ</div>
+          <div class="cert-footer"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-green">Действует</span><span style="font-size:11px;color:var(--text3)">до окт. 2029</span></div><div style="display:flex;gap:6px"><button class="btn-sm">Скачать</button></div></div>
+        </div>
+        <div class="cert-card expiring">
+          <div class="cert-num">№ 77-3-2024-1104 · нояб. 2024</div>
+          <div class="cert-title">Фибрилляция предсердий: тактика ведения 2024</div>
+          <div class="cert-org">СеченовУниверситет · 8 ЗЕТ</div>
+          <div class="cert-footer"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-amber">Истекает</span><span style="font-size:11px;color:var(--text3)">нояб. 2025</span></div><div style="display:flex;gap:6px"><button class="btn-sm">Скачать</button><button class="btn-sm primary">Продлить</button></div></div>
+        </div>
+        <div class="cert-card expired">
+          <div class="cert-num">№ 77-1-2023-0088 · июнь 2023</div>
+          <div class="cert-title">Сердечная недостаточность — протоколы 2023</div>
+          <div class="cert-org">РНИМУ им. Пирогова · 36 ЗЕТ</div>
+          <div class="cert-footer"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-red">Истекло</span><span style="font-size:11px;color:var(--text3)">март 2025</span></div><div style="display:flex;gap:6px"><button class="btn-sm">Скачать</button><button class="btn-sm primary">Обновить</button></div></div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-num">№ 77-5-2023-3317 · март 2023</div>
+          <div class="cert-title">Кардиоонкология: ведение пациентов на ХТ</div>
+          <div class="cert-org">СеченовУниверситет · 12 ЗЕТ</div>
+          <div class="cert-footer"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-green">Действует</span><span style="font-size:11px;color:var(--text3)">до март 2028</span></div><div style="display:flex;gap:6px"><button class="btn-sm">Скачать</button></div></div>
+        </div>
+        <div class="cert-card expiring">
+          <div class="cert-num">№ 77-6-2022-9901 · авг. 2022</div>
+          <div class="cert-title">Интервенционная кардиология — базовый модуль</div>
+          <div class="cert-org">НМИЦ кардиологии · 18 ЗЕТ</div>
+          <div class="cert-footer"><div style="display:flex;align-items:center;gap:8px"><span class="tag tag-amber">Истекает</span><span style="font-size:11px;color:var(--text3)">авг. 2025</span></div><div style="display:flex;gap:6px"><button class="btn-sm">Скачать</button><button class="btn-sm primary">Продлить</button></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const T={ov:'Обзор',cat:'Каталог курсов',pts:'Мои баллы',hist:'История обучения',ai:'AI-ассистент',cert:'Сертификаты'};
+const HIDE_SEARCH=['ai'];
+document.querySelectorAll('.ni').forEach(n=>{
+  n.addEventListener('click',()=>{
+    const s=n.dataset.s;
+    document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.scr').forEach(x=>x.classList.remove('on'));
+    n.classList.add('on');
+    document.getElementById('s-'+s).classList.add('on');
+    document.getElementById('ptitle').textContent=T[s];
+    document.getElementById('srch').style.visibility=HIDE_SEARCH.includes(s)?'hidden':'visible';
+  });
+});
+document.querySelectorAll('.fchip').forEach(f=>f.addEventListener('click',function(){this.classList.toggle('on')}));
+document.getElementById('ai-btn').addEventListener('click',()=>{
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.scr').forEach(x=>x.classList.remove('on'));
+  document.querySelector('[data-s="ai"]').classList.add('on');
+  document.getElementById('s-ai').classList.add('on');
+  document.getElementById('ptitle').textContent='AI-ассистент';
+  document.getElementById('srch').style.visibility='hidden';
+});
+// Year bars
+const yd=[{y:'2021',v:12},{y:'2022',v:18},{y:'2023',v:22},{y:'2024',v:34},{y:'2025',v:34,c:true}];
+const yb=document.getElementById('ybars');
+if(yb){yd.forEach(d=>{const h=Math.round((d.v/55)*85);const w=document.createElement('div');w.className='ybar-wrap';w.innerHTML=`<div class="ybar-val">${d.v}</div><div class="ybar ${d.c?'current':'past'}" style="height:${h}px"></div><div class="ybar-yr">${d.y}</div>`;yb.appendChild(w);});}
+</script>
+</body>
+</html>
