@@ -7,13 +7,15 @@ import { Badge } from '@/components/ui/badge'
 import { Alert } from '@/components/ui/alert'
 import { Input, FormGroup } from '@/components/ui/input'
 import { formatPrice } from '@/lib/utils'
+import { FORMAT_LABELS } from '@/lib/constants'
 import type { CourseFormat } from '@/types'
 
-const FORMAT_LABEL: Record<CourseFormat, string> = {
-  ONLINE: 'Онлайн',
-  IN_PERSON: 'Очный',
-  WEBINAR: 'Вебинар',
-  CONFERENCE: 'Конференция',
+type Action = 'approve' | 'reject' | 'request_changes'
+
+const ACTION_LABELS: Record<Action, { idle: string; loading: string; done: string }> = {
+  approve:         { idle: '✓ Одобрить и опубликовать', loading: 'Публикуем...',   done: 'Опубликован' },
+  reject:          { idle: '✕ Отклонить',               loading: 'Отклоняем...',   done: 'Отклонён' },
+  request_changes: { idle: 'Запросить правки',           loading: 'Отправляем...', done: 'Отправлен на правки' },
 }
 
 interface Props {
@@ -34,12 +36,11 @@ export function ModerationCard({ course }: Props) {
   const router = useRouter()
   const [accredNum, setAccredNum] = useState(course.nmoAccreditationNumber ?? '')
   const [note, setNote] = useState('')
-  const [loading, setLoading] = useState<'approve' | 'reject' | 'request_changes' | null>(null)
-  const [done, setDone] = useState(false)
-  const [doneLabel, setDoneLabel] = useState('')
+  const [loading, setLoading] = useState<Action | null>(null)
+  const [doneLabel, setDoneLabel] = useState<string | null>(null)
   const [error, setError] = useState('')
 
-  async function submit(action: 'approve' | 'reject' | 'request_changes') {
+  async function submit(action: Action) {
     setLoading(action)
     setError('')
 
@@ -57,14 +58,12 @@ export function ModerationCard({ course }: Props) {
       return
     }
 
-    const labels = { approve: 'Опубликован', reject: 'Отклонён', request_changes: 'Отправлен на правки' }
-    setDoneLabel(labels[action])
-    setDone(true)
+    setDoneLabel(ACTION_LABELS[action].done)
     setLoading(null)
     router.refresh()
   }
 
-  if (done) {
+  if (doneLabel !== null) {
     return (
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg,16px)] p-4">
         <div className="flex items-center justify-between">
@@ -84,7 +83,7 @@ export function ModerationCard({ course }: Props) {
           <div className="text-[14px] font-semibold text-[var(--text)] mb-1 font-display">{course.title}</div>
           <div className="text-[12px] text-[var(--text3)]">
             {course.organization.name} · {course.durationHours} ч. · {course.nmoPoints} баллов ·{' '}
-            {FORMAT_LABEL[course.format]} · {formatPrice(course.priceKopecks)}
+            {FORMAT_LABELS[course.format]} · {formatPrice(course.priceKopecks)}
           </div>
         </div>
         <Badge color="amber">На модерации</Badge>
@@ -124,27 +123,16 @@ export function ModerationCard({ course }: Props) {
       {error && <Alert variant="error" className="mb-3">{error}</Alert>}
 
       <div className="flex gap-2">
-        <Button
-          variant="success"
-          disabled={!canApprove || loading !== null}
-          onClick={() => submit('approve')}
-        >
-          {loading === 'approve' ? 'Публикуем...' : '✓ Одобрить и опубликовать'}
-        </Button>
-        <Button
-          variant="danger"
-          disabled={loading !== null}
-          onClick={() => submit('reject')}
-        >
-          {loading === 'reject' ? 'Отклоняем...' : '✕ Отклонить'}
-        </Button>
-        <Button
-          variant="ghost"
-          disabled={loading !== null}
-          onClick={() => submit('request_changes')}
-        >
-          {loading === 'request_changes' ? 'Отправляем...' : 'Запросить правки'}
-        </Button>
+        {(['approve', 'reject', 'request_changes'] as Action[]).map((action) => (
+          <Button
+            key={action}
+            variant={action === 'approve' ? 'success' : action === 'reject' ? 'danger' : 'ghost'}
+            disabled={(action === 'approve' && !canApprove) || loading !== null}
+            onClick={() => submit(action)}
+          >
+            {loading === action ? ACTION_LABELS[action].loading : ACTION_LABELS[action].idle}
+          </Button>
+        ))}
       </div>
     </div>
   )

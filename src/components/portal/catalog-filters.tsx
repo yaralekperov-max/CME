@@ -1,8 +1,8 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback } from 'react'
 import { Card } from '@/components/ui/card'
+import { noun } from '@/lib/utils'
 
 const FORMAT_OPTIONS = [
   { value: 'ONLINE', label: 'Онлайн' },
@@ -46,9 +46,8 @@ export function CatalogFilters({ specializations, total }: Props) {
   const fundings = get('funding').split(',').filter(Boolean)
   const points = get('points')
   const specs = get('spec').split(',').filter(Boolean)
-  const sort = get('sort')
 
-  const update = useCallback((key: string, value: string) => {
+  function update(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString())
     if (value) {
       params.set(key, value)
@@ -56,7 +55,7 @@ export function CatalogFilters({ specializations, total }: Props) {
       params.delete(key)
     }
     router.push(`${pathname}?${params.toString()}`)
-  }, [router, pathname, searchParams])
+  }
 
   function toggleList(key: string, current: string[], value: string) {
     const next = current.includes(value)
@@ -188,11 +187,3 @@ function Checkbox({ label, checked, onChange }: { label: string; checked: boolea
   )
 }
 
-function noun(n: number, forms: [string, string, string]): string {
-  const mod10 = n % 10
-  const mod100 = n % 100
-  if (mod100 >= 11 && mod100 <= 19) return forms[2]
-  if (mod10 === 1) return forms[0]
-  if (mod10 >= 2 && mod10 <= 4) return forms[1]
-  return forms[2]
-}

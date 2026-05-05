@@ -5,14 +5,7 @@ import { Input, Select, FormGroup } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardTitle } from '@/components/ui/card'
 import { Alert } from '@/components/ui/alert'
-
-const SPECIALIZATIONS = [
-  'Кардиология', 'Терапия', 'Хирургия', 'Педиатрия', 'Неврология',
-  'Онкология', 'Эндокринология', 'Гастроэнтерология', 'Пульмонология',
-  'Ревматология', 'Нефрология', 'Урология', 'Гинекология', 'Офтальмология',
-  'Оториноларингология', 'Дерматология', 'Психиатрия', 'Анестезиология',
-  'Лучевая диагностика', 'Патологическая анатомия',
-]
+import { SPECIALIZATIONS } from '@/lib/constants'
 
 interface User {
   id: string
@@ -76,7 +69,6 @@ export function ProfileForm({ user }: { user: User }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {/* Personal info */}
       <Card>
         <CardTitle>Личные данные</CardTitle>
         <div className="flex flex-col gap-3.5">
@@ -102,7 +94,6 @@ export function ProfileForm({ user }: { user: User }) {
         </div>
       </Card>
 
-      {/* Professional */}
       <Card>
         <CardTitle>Профессиональные данные</CardTitle>
         <div className="flex flex-col gap-3.5">
@@ -123,7 +114,6 @@ export function ProfileForm({ user }: { user: User }) {
         </div>
       </Card>
 
-      {/* Accreditation */}
       <Card>
         <CardTitle>Параметры аккредитации</CardTitle>
         <div className="flex flex-col gap-3.5">

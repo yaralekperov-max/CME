@@ -8,22 +8,9 @@ import { PortalTopbar } from '@/components/portal/topbar'
 import { EnrollButton } from '@/components/portal/enroll-button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardTitle } from '@/components/ui/card'
-import { formatPrice, formatDate } from '@/lib/utils'
+import { formatPrice, formatDate, isDeadlineSoon } from '@/lib/utils'
+import { FORMAT_LABELS, FORMAT_COLORS } from '@/lib/constants'
 import type { CourseFormat, FundingType } from '@/types'
-
-const FORMAT_LABELS: Record<CourseFormat, string> = {
-  ONLINE: 'Онлайн',
-  IN_PERSON: 'Очный',
-  WEBINAR: 'Вебинар',
-  CONFERENCE: 'Конференция',
-}
-
-const FORMAT_COLORS: Record<CourseFormat, 'green' | 'amber' | 'purple' | 'blue'> = {
-  ONLINE: 'green',
-  IN_PERSON: 'amber',
-  WEBINAR: 'blue',
-  CONFERENCE: 'purple',
-}
 
 const FUNDING_LABELS: Record<FundingType, string> = {
   FREE: 'Бесплатно',
@@ -78,14 +65,12 @@ export default async function CourseDetailPage({ params }: Props) {
       <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-[720px] flex flex-col gap-5">
 
-          {/* Breadcrumb */}
           <div className="text-[12px] text-[var(--text3)]">
             <Link href="/app/catalog" className="hover:text-[var(--accent)]">Каталог</Link>
             <span className="mx-1.5">›</span>
             <span className="text-[var(--text2)]">{course.title}</span>
           </div>
 
-          {/* Header card */}
           <Card>
             <div className="flex justify-between items-start gap-4 mb-4">
               <h1 className="text-[18px] font-bold font-display text-[var(--text)] leading-[1.4]">
@@ -104,7 +89,6 @@ export default async function CourseDetailPage({ params }: Props) {
               ))}
             </div>
 
-            {/* Key metrics row */}
             <div className="grid grid-cols-3 gap-3 mb-5">
               <Metric icon="🎓" label="НМО баллы" value={`${course.nmoPoints} ЗЕТ`} />
               {course.durationHours && (
@@ -123,7 +107,6 @@ export default async function CourseDetailPage({ params }: Props) {
               />
             </div>
 
-            {/* Dates */}
             {(course.startDate || course.deadlineDate) && (
               <div className="flex gap-4 mb-5">
                 {course.startDate && (
@@ -143,7 +126,6 @@ export default async function CourseDetailPage({ params }: Props) {
               </div>
             )}
 
-            {/* Price + enroll */}
             <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
               <div>
                 <div className={`text-[20px] font-bold font-display ${course.priceKopecks === 0 ? 'text-[var(--green)]' : 'text-[var(--text)]'}`}>
@@ -161,7 +143,6 @@ export default async function CourseDetailPage({ params }: Props) {
             </div>
           </Card>
 
-          {/* Description */}
           {course.description && (
             <Card>
               <CardTitle>О курсе</CardTitle>
@@ -171,7 +152,6 @@ export default async function CourseDetailPage({ params }: Props) {
             </Card>
           )}
 
-          {/* NMO info */}
           {course.nmoAccreditationNumber && (
             <Card>
               <CardTitle>НМО аккредитация</CardTitle>
@@ -242,11 +222,6 @@ export default async function CourseDetailPage({ params }: Props) {
       </main>
     </>
   )
-}
-
-function isDeadlineSoon(date: Date): boolean {
-  const daysLeft = (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-  return daysLeft <= 14
 }
 
 function Metric({

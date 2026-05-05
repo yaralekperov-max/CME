@@ -5,14 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Input, Select, FormGroup } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-
-const SPECIALIZATIONS = [
-  'Кардиология', 'Терапия', 'Хирургия', 'Педиатрия', 'Неврология',
-  'Онкология', 'Эндокринология', 'Гастроэнтерология', 'Пульмонология',
-  'Ревматология', 'Нефрология', 'Урология', 'Гинекология', 'Офтальмология',
-  'Оториноларингология', 'Дерматология', 'Психиатрия', 'Анестезиология',
-  'Лучевая диагностика', 'Патологическая анатомия',
-]
+import { SPECIALIZATIONS } from '@/lib/constants'
 
 type FieldErrors = Partial<Record<string, string[]>>
 
@@ -77,7 +70,6 @@ export function RegisterForm() {
       return
     }
 
-    // Auto sign-in after registration
     await signIn('credentials', {
       email: form.email,
       password: form.password,
@@ -93,7 +85,6 @@ export function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {/* Personal */}
       <FormGroup label="ФИО *" hint={fieldError('name')}>
         <Input
           value={form.name}
@@ -126,7 +117,6 @@ export function RegisterForm() {
         </FormGroup>
       </div>
 
-      {/* Specialization */}
       <FormGroup label="Специализация *" hint={fieldError('specialization')}>
         <Select
           value={form.specialization}
@@ -158,10 +148,8 @@ export function RegisterForm() {
         </FormGroup>
       </div>
 
-      {/* Divider */}
       <div className="h-px bg-[var(--border)]" />
 
-      {/* Password */}
       <FormGroup label="Пароль *" hint={fieldError('password')}>
         <Input
           type="password"

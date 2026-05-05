@@ -18,13 +18,23 @@ export function formatPoints(points: number): string {
   return `${points} ЗЕТ`
 }
 
+export function noun(n: number, forms: [string, string, string]): string {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod100 >= 11 && mod100 <= 19) return forms[2]
+  if (mod10 === 1) return forms[0]
+  if (mod10 >= 2 && mod10 <= 4) return forms[1]
+  return forms[2]
+}
+
 export function formatMonthsLeft(deadline: Date): string {
-  const now = new Date()
-  const months = Math.round((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 30))
+  const months = Math.round((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30))
   if (months <= 0) return 'Истёк'
-  if (months === 1) return '1 месяц'
-  if (months < 5) return `${months} месяца`
-  return `${months} месяцев`
+  return `${months} ${noun(months, ['месяц', 'месяца', 'месяцев'])}`
+}
+
+export function isDeadlineSoon(date: Date, days = 14): boolean {
+  return (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24) <= days
 }
 
 export function getAccreditationRisk(

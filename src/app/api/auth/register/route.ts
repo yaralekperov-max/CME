@@ -37,7 +37,6 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await hash(password, 12)
 
-  // Default accreditation cycle: 5 years from now
   const cycleStartDate = new Date()
   const accreditationDeadline = new Date()
   accreditationDeadline.setFullYear(accreditationDeadline.getFullYear() + 5)

@@ -73,8 +73,9 @@ export async function PATCH(req: NextRequest) {
     },
   })
 
-  // Bust points cache since deadline changed
-  await invalidate(`points:${session.user.id}`)
+  if (accreditationDeadline !== undefined) {
+    await invalidate(`points:${session.user.id}`)
+  }
 
   return NextResponse.json({ data: user })
 }

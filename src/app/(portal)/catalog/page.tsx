@@ -12,24 +12,11 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatPrice } from '@/lib/utils'
+import { FORMAT_LABELS, FORMAT_COLORS } from '@/lib/constants'
 import type { CourseFormat, FundingType } from '@/types'
 import type { Prisma } from '@prisma/client'
 
 export const metadata: Metadata = { title: 'Каталог курсов' }
-
-const FORMAT_COLORS: Record<CourseFormat, 'green' | 'amber' | 'purple' | 'blue'> = {
-  ONLINE: 'green',
-  IN_PERSON: 'amber',
-  WEBINAR: 'blue',
-  CONFERENCE: 'purple',
-}
-
-const FORMAT_LABELS: Record<CourseFormat, string> = {
-  ONLINE: 'Онлайн',
-  IN_PERSON: 'Очный',
-  WEBINAR: 'Вебинар',
-  CONFERENCE: 'Конференция',
-}
 
 const POINTS_RANGES: Record<string, { gte: number; lte: number }> = {
   '1-5':   { gte: 1,  lte: 5  },
