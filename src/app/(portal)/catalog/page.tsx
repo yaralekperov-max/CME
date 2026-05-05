@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalTopbar } from '@/components/portal/topbar'
@@ -126,12 +127,14 @@ export default async function CatalogPage() {
             {courses.map((course) => (
               <div
                 key={course.id}
-                className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg,16px)] p-4 shadow-sm hover:border-[var(--accent-mid)] hover:shadow-md hover:-translate-y-px transition-all cursor-pointer"
+                className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg,16px)] p-4 shadow-sm hover:border-[var(--accent-mid)] hover:shadow-md hover:-translate-y-px transition-all"
               >
                 <div className="flex justify-between items-start gap-2.5 mb-2">
-                  <h3 className="text-[13px] font-semibold text-[var(--text)] leading-[1.45] font-display">
-                    {course.title}
-                  </h3>
+                  <Link href={`/app/catalog/${course.id}`}>
+                    <h3 className="text-[13px] font-semibold text-[var(--text)] leading-[1.45] font-display hover:text-[var(--accent)] transition-colors cursor-pointer">
+                      {course.title}
+                    </h3>
+                  </Link>
                   <span className="flex-shrink-0 px-2.5 py-1 rounded-full text-[12px] font-bold bg-[var(--accent-light)] text-[var(--accent)] font-display">
                     {course.nmoPoints} б.
                   </span>
