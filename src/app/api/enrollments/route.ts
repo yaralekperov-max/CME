@@ -23,35 +23,44 @@ export async function POST(req: NextRequest) {
   const { courseId } = parsed.data
   const userId = session.user.id
 
-  const course = await db.course.findUnique({
-    where: { id: courseId, status: 'PUBLISHED' },
-    select: { id: true, maxParticipants: true, priceKopecks: true },
-  })
+  try {
+    const enrollment = await db.$transaction(async (tx) => {
+      const course = await tx.course.findUnique({
+        where: { id: courseId, status: 'PUBLISHED' },
+        select: { id: true, maxParticipants: true },
+      })
 
-  if (!course) {
-    return NextResponse.json({ error: { message: 'Course not found' } }, { status: 404 })
-  }
+      if (!course) throw new EnrollError('Course not found', 'NOT_FOUND', 404)
 
-  // Check if already enrolled
-  const existing = await db.enrollment.findUnique({ where: { userId_courseId: { userId, courseId } } })
-  if (existing) {
-    return NextResponse.json({ error: { message: 'Already enrolled', code: 'ALREADY_ENROLLED' } }, { status: 409 })
-  }
+      const existing = await tx.enrollment.findUnique({
+        where: { userId_courseId: { userId, courseId } },
+      })
+      if (existing) throw new EnrollError('Already enrolled', 'ALREADY_ENROLLED', 409)
 
-  // Check capacity
-  if (course.maxParticipants) {
-    const count = await db.enrollment.count({ where: { courseId } })
-    if (count >= course.maxParticipants) {
-      return NextResponse.json({ error: { message: 'Course is full', code: 'FULL' } }, { status: 409 })
+      if (course.maxParticipants !== null) {
+        const count = await tx.enrollment.count({ where: { courseId } })
+        if (count >= course.maxParticipants) {
+          throw new EnrollError('Course is full', 'FULL', 409)
+        }
+      }
+
+      return tx.enrollment.create({
+        data: { userId, courseId, status: 'ENROLLED' },
+      })
+    })
+
+    await invalidate(`points:${userId}`)
+    return NextResponse.json({ data: enrollment }, { status: 201 })
+  } catch (err) {
+    if (err instanceof EnrollError) {
+      return NextResponse.json({ error: { message: err.message, code: err.code } }, { status: err.status })
     }
+    throw err
   }
+}
 
-  const enrollment = await db.enrollment.create({
-    data: { userId, courseId, status: 'ENROLLED' },
-  })
-
-  // Invalidate user points cache
-  await invalidate(`points:${userId}`)
-
-  return NextResponse.json({ data: enrollment }, { status: 201 })
+class EnrollError extends Error {
+  constructor(message: string, public code: string, public status: number) {
+    super(message)
+  }
 }

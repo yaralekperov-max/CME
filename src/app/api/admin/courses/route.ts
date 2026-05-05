@@ -17,6 +17,7 @@ const createCourseSchema = z.object({
   deadlineDate: z.string().optional(),
   nmoPoints: z.coerce.number().int().positive(),
   nmoAccreditationNumber: z.string().optional(),
+  externalUrl: z.string().url().startsWith('https://').optional(),
   fundingType: z.enum(['FREE', 'OMS', 'PAID']).default('FREE'),
   priceKopecks: z.coerce.number().int().min(0).default(0),
   maxParticipants: z.coerce.number().int().positive().optional(),

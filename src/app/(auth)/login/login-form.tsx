@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button'
 export function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
-  const callbackUrl = params.get('callbackUrl') ?? '/app/dashboard'
+  const raw = params.get('callbackUrl') ?? ''
+  const callbackUrl = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/app/dashboard'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

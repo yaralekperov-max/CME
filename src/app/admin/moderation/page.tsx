@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
+import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { AdminTopbar } from '@/components/admin/topbar'
 import { Alert } from '@/components/ui/alert'
@@ -7,6 +10,11 @@ import { ModerationCard } from '@/components/admin/moderation-card'
 export const metadata: Metadata = { title: 'Модерация' }
 
 export default async function ModerationPage() {
+  const session = await getServerSession(authOptions)
+  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN')) {
+    redirect('/login')
+  }
+
   const courses = await db.course.findMany({
     where: { status: 'MODERATION' },
     include: { organization: { select: { name: true } } },

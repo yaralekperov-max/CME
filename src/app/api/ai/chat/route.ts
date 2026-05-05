@@ -16,7 +16,6 @@ const chatSchema = z.object({
     pointsRequired: z.number(),
     deadline: z.string().nullable(),
     conversationId: z.string().nullable(),
-    existingMessages: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string() })),
   }),
 })
 
@@ -34,6 +33,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  // Load message history server-side — never trust client-supplied history
+  let existingMessages: { role: 'user' | 'assistant'; content: string }[] = []
+  if (context.conversationId) {
+    const conversation = await db.aiConversation.findUnique({
+      where: { id: context.conversationId, userId: session.user.id },
+      select: { messages: true },
+    })
+    if (conversation) {
+      existingMessages = conversation.messages as typeof existingMessages
+    }
+  }
+
   const userContext = `
 Профиль врача:
 - Имя: ${context.name}
@@ -44,7 +55,7 @@ export async function POST(req: NextRequest) {
 `
 
   const messages = [
-    ...context.existingMessages,
+    ...existingMessages,
     { role: 'user' as const, content: message },
   ]
 
@@ -55,18 +66,19 @@ export async function POST(req: NextRequest) {
     messages,
   })
 
-  const assistantMessage = response.content[0]?.type === 'text' ? response.content[0].text : 'Извините, не могу ответить сейчас.'
+  const assistantMessage = response.content[0]?.type === 'text'
+    ? response.content[0].text
+    : 'Извините, не могу ответить сейчас.'
 
-  // Save/update conversation
   const updatedMessages = [
-    ...context.existingMessages,
+    ...existingMessages,
     { role: 'user' as const, content: message },
     { role: 'assistant' as const, content: assistantMessage },
   ]
 
   if (context.conversationId) {
     await db.aiConversation.update({
-      where: { id: context.conversationId },
+      where: { id: context.conversationId, userId: session.user.id },
       data: { messages: updatedMessages },
     })
   } else {

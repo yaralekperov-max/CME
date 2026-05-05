@@ -4,6 +4,10 @@ import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { db } from '@/lib/db'
 
+if (!process.env.NEXTAUTH_SECRET || process.env.NEXTAUTH_SECRET.length < 32) {
+  throw new Error('NEXTAUTH_SECRET is missing or too short (minimum 32 characters)')
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as NextAuthOptions['adapter'],
   session: { strategy: 'jwt' },

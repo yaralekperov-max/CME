@@ -13,7 +13,13 @@ const updateProfileSchema = z.object({
   workplace: z.string().optional(),
   city: z.string().optional(),
   snils: z.string().regex(/^\d{3}-\d{3}-\d{3} \d{2}$/, 'Формат: XXX-XXX-XXX XX').optional().or(z.literal('')),
-  accreditationDeadline: z.string().optional(),
+  accreditationDeadline: z.string().refine((d) => {
+    const dt = new Date(d)
+    const now = new Date()
+    const max = new Date()
+    max.setFullYear(max.getFullYear() + 10)
+    return dt > now && dt < max
+  }, 'Дата должна быть в будущем и не более 10 лет').optional(),
   notificationsEnabled: z.boolean().optional(),
 })
 
