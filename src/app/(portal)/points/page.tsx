@@ -18,7 +18,7 @@ export default async function PointsPage() {
 
   const userId = session.user.id
 
-  const [user, transactions, earnedByType, earnedBySpec] = await Promise.all([
+  const [user, transactions, earnedByType, completedEnrollments, inProgressEnrollments] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
       select: { accreditationDeadline: true, pointsRequired: true },
@@ -38,6 +38,10 @@ export default async function PointsPage() {
       where: { userId, status: 'COMPLETED' },
       include: { course: { select: { specializations: true, nmoPoints: true } } },
     }),
+    db.enrollment.findMany({
+      where: { userId, status: 'IN_PROGRESS' },
+      include: { course: { select: { nmoPoints: true } } },
+    }),
   ])
 
   const pointsEarned = earnedByType.find((r) => r.type === 'EARNED')?._sum.points ?? 0
@@ -45,19 +49,40 @@ export default async function PointsPage() {
   const pointsRemaining = Math.max(0, pointsRequired - pointsEarned)
   const progressPct = Math.round((pointsEarned / pointsRequired) * 100)
 
+  const pointsInProgress = inProgressEnrollments.reduce((s, e) => s + e.course.nmoPoints, 0)
+
+  // Year bars (last 5 years)
+  const yearBars = await getYearlyPoints(userId)
+
+  // Pace: average points per year over completed years
+  const completedYearBars = yearBars.filter((y) => !y.isCurrent && y.points > 0)
+  const pacePerYear = completedYearBars.length > 0
+    ? Math.round(completedYearBars.reduce((s, y) => s + y.points, 0) / completedYearBars.length)
+    : yearBars.find((y) => y.isCurrent)?.points ?? 0
+  const neededPerYear = user?.accreditationDeadline
+    ? Math.ceil(pointsRemaining / Math.max(1, (user.accreditationDeadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 365)))
+    : 50
+  const paceProgress = Math.min(100, Math.round((pacePerYear / Math.max(1, neededPerYear)) * 100))
+  const paceTrend = pacePerYear >= neededPerYear ? 'В норме' : 'Ниже нормы'
+  const paceTrendColor = pacePerYear >= neededPerYear ? 'up' : 'warn'
+
+  // Forecast
+  const monthsLeft = user?.accreditationDeadline
+    ? Math.max(0, (user.accreditationDeadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30))
+    : 0
+  const forecast = Math.round(pointsEarned + (pacePerYear / 12) * monthsLeft)
+  const forecastProgress = Math.min(100, Math.round((forecast / pointsRequired) * 100))
+  const forecastOk = forecast >= pointsRequired
+
   // Points by specialization
   const specMap: Record<string, number> = {}
-  earnedBySpec.forEach(({ course }) => {
+  completedEnrollments.forEach(({ course }) => {
     course.specializations.forEach((s) => {
       specMap[s] = (specMap[s] ?? 0) + course.nmoPoints
     })
   })
   const specEntries = Object.entries(specMap).sort((a, b) => b[1] - a[1])
-
   const maxSpec = specEntries[0]?.[1] ?? 1
-
-  // Year bars (last 5 years)
-  const yearBars = await getYearlyPoints(userId)
 
   return (
     <>
@@ -66,9 +91,9 @@ export default async function PointsPage() {
 
         <div className="grid grid-cols-4 gap-3.5">
           <MetricCard label="Итого зачтено" value={pointsEarned} sub={`ЗЕТ из ${pointsRequired}`} progress={progressPct} progressColor="accent" />
-          <MetricCard label="В процессе" value={0} sub="ЗЕТ ожидается" progress={100} progressColor="accent" />
-          <MetricCard label="Темп / год" value={43} sub="нужно 55/год" progress={78} progressColor="amber" trendColor="warn" trend="Ниже нормы" />
-          <MetricCard label="Прогноз итога" value={`~${Math.round(pointsEarned + 43 / 12 * 31)}`} sub={`из ${pointsRequired} к дедлайну`} progress={89} progressColor="red" trendColor="down" trend="Риск не успеть" />
+          <MetricCard label="В процессе" value={pointsInProgress} sub="ЗЕТ ожидается" progress={pointsInProgress > 0 ? 100 : 0} progressColor="accent" />
+          <MetricCard label="Темп / год" value={pacePerYear} sub={`нужно ${neededPerYear}/год`} progress={paceProgress} progressColor="amber" trendColor={paceTrendColor} trend={paceTrend} />
+          <MetricCard label="Прогноз итога" value={`~${forecast}`} sub={`из ${pointsRequired} к дедлайну`} progress={forecastProgress} progressColor={forecastOk ? 'green' : 'red'} trendColor={forecastOk ? 'up' : 'down'} trend={forecastOk ? 'Успеваете' : 'Риск не успеть'} />
         </div>
 
         <div className="grid grid-cols-2 gap-3.5">

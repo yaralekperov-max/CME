@@ -102,7 +102,9 @@ export default async function CertificatesPage() {
                   </div>
                   <div className="flex gap-1.5">
                     {cert.fileUrl && (
-                      <Button variant="ghost" size="sm" onClick={() => {}}>Скачать</Button>
+                      <a href={cert.fileUrl} download target="_blank" rel="noopener noreferrer">
+                        <Button variant="ghost" size="sm">Скачать</Button>
+                      </a>
                     )}
                     {cert.status === 'EXPIRING' || cert.status === 'EXPIRED' ? (
                       <Button variant="primary" size="sm">Продлить</Button>

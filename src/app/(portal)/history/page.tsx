@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { ProgressBar } from '@/components/ui/progress'
-import type { EnrollmentStatus, CourseFormat } from '@/types'
+import { FORMAT_LABELS } from '@/lib/constants'
+import type { EnrollmentStatus } from '@/types'
 
 export const metadata: Metadata = { title: 'История обучения' }
 
@@ -25,13 +26,6 @@ const STATUS_COLOR: Record<EnrollmentStatus, 'blue' | 'purple' | 'green' | 'gray
   IN_PROGRESS: 'purple',
   COMPLETED: 'green',
   CANCELLED: 'gray',
-}
-
-const FORMAT_LABEL: Record<CourseFormat, string> = {
-  ONLINE: 'Онлайн',
-  IN_PERSON: 'Очный',
-  WEBINAR: 'Вебинар',
-  CONFERENCE: 'Конференция',
 }
 
 const MONTHS_RU = ['ЯНВ', 'ФЕВ', 'МАР', 'АПР', 'МАЙ', 'ИЮН', 'ИЮЛ', 'АВГ', 'СЕН', 'ОКТ', 'НОЯ', 'ДЕК']
@@ -125,7 +119,7 @@ export default async function HistoryPage() {
                   </div>
                   <div className="text-[11px] text-[var(--text3)] mt-0.5">
                     {enrollment.course.organization.name} · {enrollment.course.durationHours} ч. ·{' '}
-                    {FORMAT_LABEL[enrollment.course.format]}
+                    {FORMAT_LABELS[enrollment.course.format]}
                   </div>
                   {isActive && (
                     <ProgressBar value={enrollment.progressPct} color="accent" className="mt-1.5 max-w-[200px]" />
