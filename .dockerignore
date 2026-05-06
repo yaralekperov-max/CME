@@ -3,6 +3,7 @@ node_modules
 .git
 .env
 .env.local
-Dockerfile
-.dockerignore
+.env.*.local
+docker-compose*.yml
+.github
 README.md

@@ -205,6 +205,38 @@ Source maps are uploaded during `next build` via `SENTRY_AUTH_TOKEN`.
 
 ---
 
+## CI/CD
+
+**GitHub Actions:**
+- `ci.yml` — runs on every push/PR: `prisma generate` → `typecheck` → `lint`
+- `deploy.yml` — runs on push to `main`: builds Docker image, pushes to Docker Hub, SSHs into server and restarts
+
+**Required GitHub Secrets:**
+| Secret | Description |
+|---|---|
+| `DOCKER_USERNAME` | Docker Hub username |
+| `DOCKER_PASSWORD` | Docker Hub access token |
+| `SSH_HOST` | Server IP / hostname |
+| `SSH_USER` | SSH username (e.g. `ubuntu`) |
+| `SSH_KEY` | Private SSH key (ed25519) |
+| `SSH_PORT` | SSH port (default 22, optional) |
+
+**Server setup** (one-time):
+```bash
+mkdir -p /opt/medcme
+# Copy docker-compose.prod.yml and .env to /opt/medcme/
+# docker login as DOCKER_USERNAME on server (or use --password-stdin in deploy script)
+```
+
+**Local dev with Docker:**
+```bash
+docker compose up          # starts app + postgres + redis
+docker compose down -v     # tear down including volumes
+```
+App runs on :3000, PostgreSQL on :5432, Redis on :6379. Set `DATABASE_URL` and `REDIS_URL` to local services in `.env.local`.
+
+---
+
 ## Pending work (as of last session)
 
 - **Organization portal** — ORG_MANAGER role needs its own dashboard to manage courses and view enrollments
