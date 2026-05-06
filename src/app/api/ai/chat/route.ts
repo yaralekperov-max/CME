@@ -71,7 +71,17 @@ export async function POST(req: NextRequest) {
   const response = await anthropic.messages.create({
     model: AI_MODEL,
     max_tokens: 1024,
-    system: SYSTEM_PROMPT + '\n\n' + userContext,
+    system: [
+      {
+        type: 'text',
+        text: SYSTEM_PROMPT,
+        cache_control: { type: 'ephemeral' },
+      },
+      {
+        type: 'text',
+        text: userContext,
+      },
+    ],
     messages,
   })
 
