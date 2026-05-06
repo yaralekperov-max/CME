@@ -77,15 +77,16 @@ export function RegisterForm() {
   }
 
   return (
-    {registeredEmail && (
+    <>
+    {registeredEmail ? (
       <Alert variant="success">
         <div>
           <strong>Осталось подтвердить email!</strong><br />
           Письмо отправлено на <strong>{registeredEmail}</strong>. Перейдите по ссылке в письме для активации аккаунта.
         </div>
       </Alert>
-    )}
-    <form onSubmit={handleSubmit} className={`flex flex-col gap-4 ${registeredEmail ? 'hidden' : ''}`}>
+    ) : (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <FormGroup label="ФИО *" hint={fieldError('name')}>
         <Input
           value={form.name}
@@ -197,5 +198,7 @@ export function RegisterForm() {
         </a>
       </p>
     </form>
+    )}
+    </>
   )
 }
