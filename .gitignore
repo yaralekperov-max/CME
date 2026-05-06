@@ -31,8 +31,8 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 
-# Prisma
-prisma/migrations/
+# Prisma — migrations must be committed
+# prisma/migrations/
 
 # Uploads (local dev only)
 uploads/
