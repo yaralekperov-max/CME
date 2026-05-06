@@ -208,8 +208,9 @@ model Enrollment {
   status     EnrollmentStatus @default(ENROLLED)
   progressPct Float           @default(0) // 0–100
 
-  enrolledAt  DateTime  @default(now())
-  completedAt DateTime?
+  enrolledAt          DateTime  @default(now())
+  completedAt         DateTime?
+  certificateFileUrl  String?
 
   user   User   @relation(fields: [userId], references: [id])
   course Course @relation(fields: [courseId], references: [id])

@@ -6,6 +6,7 @@ import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalTopbar } from '@/components/portal/topbar'
 import { EnrollButton } from '@/components/portal/enroll-button'
+import { CompleteButton } from '@/components/portal/complete-button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardTitle } from '@/components/ui/card'
 import { formatPrice, formatDate, isDeadlineSoon } from '@/lib/utils'
@@ -44,13 +45,15 @@ export default async function CourseDetailPage({ params }: Props) {
     }),
     db.enrollment.findUnique({
       where: { userId_courseId: { userId: session.user.id, courseId: params.id } },
-      select: { id: true },
+      select: { id: true, status: true },
     }),
   ])
 
   if (!course) notFound()
 
   const isEnrolled = !!enrollment
+  const isCompleted = enrollment?.status === 'COMPLETED'
+  const canComplete = !!enrollment && !isCompleted
   const isFull = course.maxParticipants
     ? course._count.enrollments >= course.maxParticipants
     : false
@@ -135,12 +138,28 @@ export default async function CourseDetailPage({ params }: Props) {
                   <div className="text-[11px] text-[var(--text3)] mt-0.5">{FUNDING_LABELS[course.fundingType]}</div>
                 )}
               </div>
-              <EnrollButton
-                courseId={course.id}
-                initialEnrolled={isEnrolled}
-                disabled={isFull && !isEnrolled}
-              />
+              {isCompleted ? (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--green-bg)] rounded-[var(--r-md,12px)]">
+                  <span className="text-[var(--green)] text-[13px] font-semibold">✓ Завершён · +{course.nmoPoints} ЗЕТ</span>
+                </div>
+              ) : (
+                <EnrollButton
+                  courseId={course.id}
+                  externalUrl={course.externalUrl}
+                  initialEnrolled={isEnrolled}
+                  disabled={isFull && !isEnrolled}
+                />
+              )}
             </div>
+
+            {canComplete && (
+              <div className="pt-3 border-t border-[var(--border)]">
+                <CompleteButton
+                  enrollmentId={enrollment!.id}
+                  points={course.nmoPoints}
+                />
+              </div>
+            )}
           </Card>
 
           {course.description && (

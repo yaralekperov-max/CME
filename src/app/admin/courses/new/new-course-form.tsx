@@ -32,6 +32,7 @@ export function NewCourseForm({ organizations }: NewCourseFormProps) {
     deadlineDate: '',
     nmoPoints: '',
     nmoAccreditationNumber: '',
+    externalUrl: '',
     fundingType: 'FREE',
     priceKopecks: '0',
     maxParticipants: '',
@@ -176,6 +177,9 @@ export function NewCourseForm({ organizations }: NewCourseFormProps) {
                   <Input value={form.nmoAccreditationNumber} onChange={(e) => set('nmoAccreditationNumber', e.target.value)} placeholder="НМО-2025-КР-00412" />
                 </FormGroup>
               </div>
+              <FormGroup label="Ссылка на курс (внешняя)" hint="Если курс проходит на НМФО или другой платформе — вставьте URL. Кнопка «Записаться» откроет внешний сайт.">
+                <Input type="url" value={form.externalUrl ?? ''} onChange={(e) => set('externalUrl', e.target.value)} placeholder="https://edu.rosminzdrav.ru/course/..." />
+              </FormGroup>
               <Alert variant="info">ℹ️ Курс должен быть аккредитован Координационным советом по НМО. Баллы зачтутся только при наличии номера аккредитации.</Alert>
               <div className="grid grid-cols-2 gap-3.5">
                 <FormGroup label="Финансирование">

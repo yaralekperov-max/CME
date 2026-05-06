@@ -5,22 +5,15 @@ import { Button } from '@/components/ui/button'
 
 interface Props {
   courseId: string
+  externalUrl: string | null
   initialEnrolled: boolean
   disabled?: boolean
 }
 
-export function EnrollButton({ courseId, initialEnrolled, disabled }: Props) {
+export function EnrollButton({ courseId, externalUrl, initialEnrolled, disabled }: Props) {
   const [enrolled, setEnrolled] = useState(initialEnrolled)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  if (enrolled) {
-    return (
-      <Button variant="success" size="sm" disabled>
-        Вы записаны
-      </Button>
-    )
-  }
 
   async function handleEnroll(e: React.MouseEvent) {
     e.stopPropagation()
@@ -35,10 +28,9 @@ export function EnrollButton({ courseId, initialEnrolled, disabled }: Props) {
 
     const data = await res.json()
 
-    if (res.ok) {
+    if (res.ok || data.error?.code === 'ALREADY_ENROLLED') {
       setEnrolled(true)
-    } else if (data.error?.code === 'ALREADY_ENROLLED') {
-      setEnrolled(true)
+      if (externalUrl) window.open(externalUrl, '_blank', 'noopener,noreferrer')
     } else if (data.error?.code === 'FULL') {
       setError('Мест нет')
     } else {
@@ -46,6 +38,27 @@ export function EnrollButton({ courseId, initialEnrolled, disabled }: Props) {
     }
 
     setLoading(false)
+  }
+
+  if (enrolled) {
+    return (
+      <div className="flex flex-col items-end gap-1">
+        {externalUrl ? (
+          <a
+            href={externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-[13px] font-semibold rounded-[var(--r-md,12px)] bg-[var(--accent)] text-white hover:opacity-90 transition-opacity"
+          >
+            Перейти к курсу ↗
+          </a>
+        ) : (
+          <Button variant="success" size="sm" disabled>
+            Вы записаны
+          </Button>
+        )}
+      </div>
+    )
   }
 
   return (
@@ -56,7 +69,7 @@ export function EnrollButton({ courseId, initialEnrolled, disabled }: Props) {
         onClick={handleEnroll}
         disabled={loading || disabled}
       >
-        {loading ? 'Записываем...' : 'Записаться'}
+        {loading ? 'Записываем...' : externalUrl ? 'Записаться и перейти ↗' : 'Записаться'}
       </Button>
       {error && <span className="text-[11px] text-[var(--red)]">{error}</span>}
     </div>
