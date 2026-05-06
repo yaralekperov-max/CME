@@ -1,19 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { Input, Select, FormGroup } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Alert } from '@/components/ui/alert'
 import { SPECIALIZATIONS } from '@/lib/constants'
 
 type FieldErrors = Partial<Record<string, string[]>>
 
 export function RegisterForm() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const [registeredEmail, setRegisteredEmail] = useState('')
 
   const [form, setForm] = useState({
     name: '',
@@ -70,13 +69,7 @@ export function RegisterForm() {
       return
     }
 
-    await signIn('credentials', {
-      email: form.email,
-      password: form.password,
-      redirect: false,
-    })
-
-    router.push('/app/dashboard')
+    setRegisteredEmail(form.email)
   }
 
   function fieldError(key: string) {
@@ -84,7 +77,15 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    {registeredEmail && (
+      <Alert variant="success">
+        <div>
+          <strong>Осталось подтвердить email!</strong><br />
+          Письмо отправлено на <strong>{registeredEmail}</strong>. Перейдите по ссылке в письме для активации аккаунта.
+        </div>
+      </Alert>
+    )}
+    <form onSubmit={handleSubmit} className={`flex flex-col gap-4 ${registeredEmail ? 'hidden' : ''}`}>
       <FormGroup label="ФИО *" hint={fieldError('name')}>
         <Input
           value={form.name}

@@ -39,6 +39,7 @@ export const authOptions: NextAuthOptions = {
             email: true,
             name: true,
             passwordHash: true,
+            emailVerified: true,
             role: true,
             specialization: true,
             avatarUrl: true,
@@ -49,6 +50,8 @@ export const authOptions: NextAuthOptions = {
 
         const valid = await compare(credentials.password, user.passwordHash)
         if (!valid) return null
+
+        if (!user.emailVerified) throw new Error('EMAIL_NOT_VERIFIED')
 
         return {
           id: user.id,

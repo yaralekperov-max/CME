@@ -41,6 +41,23 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
   })
 }
 
+export function verificationEmailHtml(doctorName: string, verifyUrl: string) {
+  return `
+    <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:24px">
+      <h2 style="font-family:Manrope,sans-serif;color:#1C1B18">Подтвердите email</h2>
+      <p>Привет, ${doctorName}!</p>
+      <p>Нажмите кнопку ниже, чтобы подтвердить адрес электронной почты и активировать аккаунт на MedCME.</p>
+      <a href="${verifyUrl}"
+         style="display:inline-block;background:#6B5FE4;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">
+        Подтвердить email
+      </a>
+      <p style="margin-top:16px;color:#888;font-size:13px">
+        Ссылка действует 24 часа. Если вы не регистрировались на MedCME — просто проигнорируйте это письмо.
+      </p>
+    </div>
+  `
+}
+
 export function deadlineReminderHtml(doctorName: string, daysLeft: number, pointsLeft: number) {
   return `
     <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:24px">

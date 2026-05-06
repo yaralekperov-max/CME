@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { randomBytes } from 'crypto'
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
+import { redis } from '@/lib/redis/client'
 import { rateLimit } from '@/lib/rate-limit'
+import { sendEmail, verificationEmailHtml } from '@/lib/email/client'
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Введите ФИО').max(200),
@@ -67,6 +70,15 @@ export async function POST(req: NextRequest) {
     },
     select: { id: true, email: true, name: true },
   })
+
+  const token = randomBytes(32).toString('hex')
+  await redis.setex(`verify:${token}`, 86400, user.id)
+  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`
+  await sendEmail({
+    to: user.email,
+    subject: 'Подтвердите email — MedCME',
+    html: verificationEmailHtml(user.name ?? 'Доктор', verifyUrl),
+  }).catch(() => {})
 
   return NextResponse.json({ data: user }, { status: 201 })
 }
