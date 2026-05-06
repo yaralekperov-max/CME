@@ -3,8 +3,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'MedCME — Портал НМО',
-    template: '%s | MedCME',
+    default: 'NMOBALL — Портал НМО',
+    template: '%s | NMOBALL',
   },
   description: 'Управление баллами непрерывного медицинского образования для врачей',
 }

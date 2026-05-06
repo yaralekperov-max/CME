@@ -34,7 +34,7 @@ export function AdminSidebar({ pendingModeration }: AdminSidebarProps) {
           🏥
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[15px] font-bold font-display text-[var(--text)]">MedCME</span>
+          <span className="text-[15px] font-bold font-display text-[var(--text)]">NMOBALL</span>
           <span className="text-[9px] font-semibold bg-[var(--accent-dim,#3D3680)] text-[var(--accent)] px-1.5 py-0.5 rounded-[4px] tracking-[0.04em]">
             ADMIN
           </span>

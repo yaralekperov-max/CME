@@ -42,12 +42,12 @@ export async function POST(req: NextRequest) {
 
   await sendEmail({
     to: email,
-    subject: 'Сброс пароля — MedCME',
+    subject: 'Сброс пароля — NMOBALL',
     html: `
       <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:24px">
         <h2 style="font-family:Manrope,sans-serif;color:#1C1B18">Сброс пароля</h2>
         <p>Уважаемый(ая) ${user.name ?? 'доктор'},</p>
-        <p>Мы получили запрос на сброс пароля для вашего аккаунта MedCME.</p>
+        <p>Мы получили запрос на сброс пароля для вашего аккаунта NMOBALL.</p>
         <p>Ссылка действует <strong>1 час</strong>.</p>
         <a href="${resetUrl}"
            style="display:inline-block;background:#6B5FE4;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px;margin-bottom:16px">

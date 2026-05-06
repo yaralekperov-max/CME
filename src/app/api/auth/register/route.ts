@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
   const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`
   await sendEmail({
     to: user.email,
-    subject: 'Подтвердите email — MedCME',
+    subject: 'Подтвердите email — NMOBALL',
     html: verificationEmailHtml(user.name ?? 'Доктор', verifyUrl),
   }).catch(() => {})
 

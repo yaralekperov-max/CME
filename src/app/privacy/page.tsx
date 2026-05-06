@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = { title: 'Политика конфиденциальности — MedCME' }
+export const metadata: Metadata = { title: 'Политика конфиденциальности — NMOBALL' }
 
 export default function PrivacyPage() {
   return (
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           Политика конфиденциальности
         </h1>
         <p className="text-[13px] text-[var(--text3)] mb-8">
-          Редакция от 1 января 2025 г. · MedCME
+          Редакция от 1 января 2025 г. · NMOBALL
         </p>
 
         <div className="prose flex flex-col gap-6 text-[14px] text-[var(--text2)] leading-[1.7]">
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
           <Section title="1. Общие положения">
             <p>
               Настоящая Политика конфиденциальности (далее — «Политика») регулирует порядок обработки
-              персональных данных пользователей платформы MedCME (далее — «Платформа»), осуществляемой
+              персональных данных пользователей платформы NMOBALL (далее — «Платформа»), осуществляемой
               в соответствии с Федеральным законом № 152-ФЗ «О персональных данных» и Федеральным
               законом № 242-ФЗ о локализации персональных данных граждан Российской Федерации.
             </p>
@@ -106,8 +106,8 @@ export default function PrivacyPage() {
             </ul>
             <p>
               Для реализации прав обращайтесь по адресу:{' '}
-              <a href="mailto:privacy@medcme.ru" className="text-[var(--accent)] hover:underline">
-                privacy@medcme.ru
+              <a href="mailto:privacy@nmoball.ru" className="text-[var(--accent)] hover:underline">
+                privacy@nmoball.ru
               </a>
             </p>
           </Section>
@@ -131,8 +131,8 @@ export default function PrivacyPage() {
           <Section title="11. Контакты">
             <p>
               По вопросам обработки персональных данных:{' '}
-              <a href="mailto:privacy@medcme.ru" className="text-[var(--accent)] hover:underline">
-                privacy@medcme.ru
+              <a href="mailto:privacy@nmoball.ru" className="text-[var(--accent)] hover:underline">
+                privacy@nmoball.ru
               </a>
             </p>
           </Section>

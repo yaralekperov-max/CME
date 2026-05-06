@@ -44,7 +44,7 @@ export async function GET() {
   return new NextResponse(payload, {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Content-Disposition': `attachment; filename="medcme-data-${session.user.id}.json"`,
+      'Content-Disposition': `attachment; filename="nmoball-data-${session.user.id}.json"`,
     },
   })
 }

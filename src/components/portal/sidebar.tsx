@@ -38,7 +38,7 @@ export function PortalSidebar({ pointsEarned }: SidebarProps) {
         </div>
         <div>
           <div className="text-[16px] font-bold font-display text-[var(--text)] tracking-[-0.03em]">
-            MedCME
+            NMOBALL
           </div>
           <div className="text-[10px] text-[var(--text3)] mt-0.5">Портал НМО</div>
         </div>

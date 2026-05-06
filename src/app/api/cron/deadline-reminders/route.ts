@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
         try {
           await sendEmail({
             to: doc.email,
-            subject: `Напоминание: до аккредитации ${daysAhead} дней — MedCME`,
+            subject: `Напоминание: до аккредитации ${daysAhead} дней — NMOBALL`,
             html: deadlineReminderHtml(doc.name ?? 'Доктор', daysAhead, pointsLeft),
           })
           sent++

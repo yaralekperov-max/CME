@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
             🏥
           </div>
           <div>
-            <div className="text-[16px] font-bold font-display text-[var(--text)]">MedCME</div>
+            <div className="text-[16px] font-bold font-display text-[var(--text)]">NMOBALL</div>
             <div className="text-[11px] text-[var(--text3)]">Портал НМО</div>
           </div>
         </div>
