@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
@@ -13,11 +14,11 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",  // unsafe-eval required by Next.js dev
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https://storage.yandexcloud.net",
       "font-src 'self'",
-      "connect-src 'self'",
+      "connect-src 'self' https://o*.ingest.sentry.io",
       "frame-ancestors 'none'",
     ].join('; '),
   },
@@ -43,4 +44,21 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+
+  // Upload source maps only in CI/production builds
+  silent: true,
+  disableLogger: true,
+
+  // Automatically instrument Next.js server routes
+  autoInstrumentServerFunctions: true,
+  autoInstrumentMiddleware: true,
+  autoInstrumentAppDirectory: true,
+
+  // Don't block builds if Sentry upload fails
+  errorHandler(err, invokeErr, compilation) {
+    compilation.warnings.push('Sentry upload failed: ' + err.message)
+  },
+})
