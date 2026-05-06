@@ -49,9 +49,17 @@ export default async function CatalogPage({ searchParams }: Props) {
   const pointsKey = (Array.isArray(searchParams.points) ? searchParams.points[0] : searchParams.points) ?? ''
   const specs = parseList(searchParams.spec)
   const sortKey = (Array.isArray(searchParams.sort) ? searchParams.sort[0] : searchParams.sort) ?? ''
+  const q = (Array.isArray(searchParams.q) ? searchParams.q[0] : searchParams.q)?.trim() ?? ''
 
   const where: Prisma.CourseWhereInput = {
     status: 'PUBLISHED',
+    ...(q && {
+      OR: [
+        { title: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
+        { specializations: { hasSome: [q] } },
+      ],
+    }),
     ...(formats.length && { format: { in: formats } }),
     ...(fundings.length && { fundingType: { in: fundings } }),
     ...(POINTS_RANGES[pointsKey] && { nmoPoints: POINTS_RANGES[pointsKey] }),

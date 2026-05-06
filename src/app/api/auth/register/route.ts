@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
+import { rateLimit } from '@/lib/rate-limit'
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Введите ФИО').max(200),
@@ -15,6 +16,15 @@ const registerSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
+  const rl = await rateLimit({ key: `rate:register:${ip}`, limit: 5, windowSec: 3600 })
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: { message: 'Слишком много попыток. Попробуйте через час.' } },
+      { status: 429, headers: { 'Retry-After': String(rl.resetIn) } },
+    )
+  }
+
   const body = await req.json()
   const parsed = registerSchema.safeParse(body)
 

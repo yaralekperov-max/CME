@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs'
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { db } from '@/lib/db'
+import { rateLimit } from '@/lib/rate-limit'
 
 if (!process.env.NEXTAUTH_SECRET || process.env.NEXTAUTH_SECRET.length < 32) {
   throw new Error('NEXTAUTH_SECRET is missing or too short (minimum 32 characters)')
@@ -22,8 +23,14 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Пароль', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) return null
+
+        const ip = (req.headers?.['x-forwarded-for'] as string)?.split(',')[0].trim()
+          ?? (req.headers?.['x-real-ip'] as string)
+          ?? 'unknown'
+        const rl = await rateLimit({ key: `rate:login:${ip}`, limit: 10, windowSec: 900 })
+        if (!rl.allowed) return null
 
         const user = await db.user.findUnique({
           where: { email: credentials.email },

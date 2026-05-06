@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { anthropic, AI_MODEL, SYSTEM_PROMPT } from '@/lib/ai/client'
+import { rateLimit } from '@/lib/rate-limit'
 
 const chatSchema = z.object({
   message: z.string().min(1).max(2000),
@@ -31,6 +32,14 @@ export async function POST(req: NextRequest) {
 
   if (context.userId !== session.user.id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  const rl = await rateLimit({ key: `rate:ai:${session.user.id}`, limit: 30, windowSec: 3600 })
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'Превышен лимит запросов к AI. Попробуйте через час.' },
+      { status: 429, headers: { 'Retry-After': String(rl.resetIn) } },
+    )
   }
 
   // Load message history server-side — never trust client-supplied history
