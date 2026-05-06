@@ -76,6 +76,17 @@ export function RegisterForm() {
     return fieldErrors[key]?.[0]
   }
 
+  function passwordStrength(pwd: string): { level: 0 | 1 | 2 | 3; label: string; color: string } {
+    if (!pwd) return { level: 0, label: '', color: '' }
+    const checks = [pwd.length >= 8, /[A-Z]/.test(pwd), /[0-9]/.test(pwd), /[^A-Za-z0-9]/.test(pwd)]
+    const score = checks.filter(Boolean).length
+    if (score <= 1) return { level: 1, label: 'Слабый', color: 'bg-[var(--red,#DC2626)]' }
+    if (score <= 2) return { level: 2, label: 'Средний', color: 'bg-[var(--amber,#D97706)]' }
+    return { level: 3, label: 'Надёжный', color: 'bg-[var(--green,#16A34A)]' }
+  }
+
+  const strength = passwordStrength(form.password)
+
   return (
     <>
     {registeredEmail ? (
@@ -162,6 +173,19 @@ export function RegisterForm() {
           autoComplete="new-password"
           className={fieldError('password') ? 'border-[var(--red)]' : ''}
         />
+        {form.password && (
+          <div className="mt-1.5 flex items-center gap-2">
+            <div className="flex gap-0.5 flex-1">
+              {[1, 2, 3].map((seg) => (
+                <div
+                  key={seg}
+                  className={`h-1 flex-1 rounded-full transition-colors ${seg <= strength.level ? strength.color : 'bg-[var(--border)]'}`}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] text-[var(--text3)]">{strength.label}</span>
+          </div>
+        )}
       </FormGroup>
 
       <FormGroup label="Повторите пароль *" hint={fieldError('passwordConfirm')}>

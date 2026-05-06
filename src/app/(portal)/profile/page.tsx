@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalTopbar } from '@/components/portal/topbar'
 import { ProfileForm } from './profile-form'
+import { MyDataCard } from './my-data-card'
 import { Card, CardTitle } from '@/components/ui/card'
 import { formatDate, getInitials } from '@/lib/utils'
 
@@ -51,6 +52,7 @@ export default async function ProfilePage() {
         </div>
 
         <ProfileForm user={user} />
+        <MyDataCard />
 
       </main>
     </>
