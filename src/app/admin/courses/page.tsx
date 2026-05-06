@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '@/components/ui/table'
 import { formatPrice } from '@/lib/utils'
-import type { CourseFormat, CourseStatus, FundingType } from '@/types'
+import type { CourseFormat, CourseStatus } from '@/types'
 
 export const metadata: Metadata = { title: 'Курсы' }
 
@@ -16,8 +16,25 @@ const FORMAT_COLOR: Record<CourseFormat, 'green' | 'amber' | 'blue' | 'purple'> 
 const STATUS_LABEL: Record<CourseStatus, string> = { DRAFT: 'Черновик', MODERATION: 'На модерации', PUBLISHED: 'Опубликован', REJECTED: 'Отклонён', ARCHIVED: 'Архив' }
 const STATUS_COLOR: Record<CourseStatus, 'gray' | 'amber' | 'green' | 'red' | 'blue'> = { DRAFT: 'gray', MODERATION: 'amber', PUBLISHED: 'green', REJECTED: 'red', ARCHIVED: 'blue' }
 
-export default async function AdminCoursesPage() {
+const FILTERS: { label: string; value: CourseStatus | 'ALL' }[] = [
+  { label: 'Все', value: 'ALL' },
+  { label: 'Опубликованные', value: 'PUBLISHED' },
+  { label: 'Черновики', value: 'DRAFT' },
+  { label: 'На модерации', value: 'MODERATION' },
+]
+
+export default async function AdminCoursesPage({
+  searchParams,
+}: {
+  searchParams: { status?: string }
+}) {
+  const statusParam = searchParams.status as CourseStatus | undefined
+  const activeStatus = FILTERS.map((f) => f.value).includes(statusParam as CourseStatus)
+    ? statusParam
+    : undefined
+
   const courses = await db.course.findMany({
+    where: activeStatus && activeStatus !== 'ALL' ? { status: activeStatus } : {},
     include: {
       organization: { select: { name: true } },
       _count: { select: { enrollments: true } },
@@ -25,8 +42,11 @@ export default async function AdminCoursesPage() {
     orderBy: { createdAt: 'desc' },
   })
 
-  const published = courses.filter((c) => c.status === 'PUBLISHED').length
-  const moderation = courses.filter((c) => c.status === 'MODERATION').length
+  const activeTab = statusParam ?? 'ALL'
+
+  function filterHref(val: string) {
+    return val === 'ALL' ? '/admin/courses' : `/admin/courses?status=${val}`
+  }
 
   return (
     <>
@@ -34,11 +54,18 @@ export default async function AdminCoursesPage() {
       <main className="flex-1 overflow-y-auto p-[20px_22px] flex flex-col gap-4">
 
         <div className="flex gap-1.5 flex-wrap">
-          {['Все', 'Опубликованные', 'Черновики', 'На модерации'].map((f) => (
-            <span key={f} className={`px-3 py-1.5 text-[12px] font-medium border rounded-full cursor-pointer transition-colors ${f === 'Все' ? 'bg-[var(--accent-light)] border-[var(--accent-dim,var(--accent))] text-[var(--accent)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent-dim,var(--accent))] hover:text-[var(--accent)]'}`}>
-              {f}
-            </span>
-          ))}
+          {FILTERS.map(({ label, value }) => {
+            const active = activeTab === value
+            return (
+              <a
+                key={value}
+                href={filterHref(value)}
+                className={`px-3 py-1.5 text-[12px] font-medium border rounded-full transition-colors ${active ? 'bg-[var(--accent-light)] border-[var(--accent-dim,var(--accent))] text-[var(--accent)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent-dim,var(--accent))] hover:text-[var(--accent)]'}`}
+              >
+                {label}
+              </a>
+            )
+          })}
         </div>
 
         <Card>
@@ -47,7 +74,7 @@ export default async function AdminCoursesPage() {
               <Button variant="primary" size="sm">＋ Добавить курс</Button>
             </Link>
           }>
-            Все курсы — {courses.length}
+            {activeTab === 'ALL' ? `Все курсы` : STATUS_LABEL[activeTab as CourseStatus]} — {courses.length}
           </CardTitle>
           <Table>
             <Thead>

@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalTopbar } from '@/components/portal/topbar'
-import { Card, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
@@ -28,14 +28,45 @@ const STATUS_COLOR: Record<EnrollmentStatus, 'blue' | 'purple' | 'green' | 'gray
   CANCELLED: 'gray',
 }
 
+const STATUS_FILTERS: { label: string; value: EnrollmentStatus | 'ALL' }[] = [
+  { label: 'Все', value: 'ALL' },
+  { label: 'Завершённые', value: 'COMPLETED' },
+  { label: 'В процессе', value: 'IN_PROGRESS' },
+  { label: 'Отменённые', value: 'CANCELLED' },
+]
+
 const MONTHS_RU = ['ЯНВ', 'ФЕВ', 'МАР', 'АПР', 'МАЙ', 'ИЮН', 'ИЮЛ', 'АВГ', 'СЕН', 'ОКТ', 'НОЯ', 'ДЕК']
 
-export default async function HistoryPage() {
+const NOW_YEAR = new Date().getFullYear()
+const YEAR_FILTERS = [NOW_YEAR, NOW_YEAR - 1, NOW_YEAR - 2, NOW_YEAR - 3].map(String)
+
+export default async function HistoryPage({
+  searchParams,
+}: {
+  searchParams: { status?: string; year?: string }
+}) {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
+  const statusParam = searchParams.status as EnrollmentStatus | undefined
+  const yearParam = searchParams.year
+
+  const validStatus = STATUS_FILTERS.map((f) => f.value).includes(statusParam as EnrollmentStatus)
+    ? statusParam
+    : undefined
+  const activeStatus = validStatus && validStatus !== 'ALL' ? validStatus : undefined
+
+  const yearStart = yearParam && YEAR_FILTERS.includes(yearParam)
+    ? new Date(`${yearParam}-01-01`)
+    : undefined
+  const yearEnd = yearStart ? new Date(`${Number(yearParam) + 1}-01-01`) : undefined
+
   const enrollments = await db.enrollment.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      ...(activeStatus ? { status: activeStatus } : {}),
+      ...(yearStart ? { enrolledAt: { gte: yearStart, lt: yearEnd } } : {}),
+    },
     include: {
       course: {
         include: { organization: { select: { name: true } } },
@@ -47,6 +78,21 @@ export default async function HistoryPage() {
   const completed = enrollments.filter((e) => e.status === 'COMPLETED')
   const totalPoints = completed.reduce((sum, e) => sum + e.course.nmoPoints, 0)
 
+  function filterHref(key: string, val: string) {
+    const p = new URLSearchParams({
+      ...(searchParams.status ? { status: searchParams.status } : {}),
+      ...(searchParams.year ? { year: searchParams.year } : {}),
+      [key]: val,
+    })
+    if (key === 'status' && val === 'ALL') p.delete('status')
+    if (key === 'year' && val === 'all') p.delete('year')
+    const qs = p.toString()
+    return `/app/history${qs ? `?${qs}` : ''}`
+  }
+
+  const activeStatusTab = searchParams.status ?? 'ALL'
+  const activeYearTab = searchParams.year ?? 'all'
+
   return (
     <>
       <PortalTopbar title="История обучения" />
@@ -54,35 +100,43 @@ export default async function HistoryPage() {
 
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex gap-1.5 flex-wrap">
-            {['Все', 'Завершённые', 'В процессе', 'Отменённые'].map((f) => (
-              <span
-                key={f}
-                className={`px-3 py-1.5 text-[12px] font-medium border rounded-full cursor-pointer transition-colors ${f === 'Все' ? 'bg-[var(--accent-light)] border-[var(--accent-mid)] text-[var(--accent)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent-mid)] hover:text-[var(--accent)]'}`}
-              >
-                {f}
-              </span>
-            ))}
+            {STATUS_FILTERS.map(({ label, value }) => {
+              const active = activeStatusTab === value
+              return (
+                <a
+                  key={value}
+                  href={filterHref('status', value)}
+                  className={`px-3 py-1.5 text-[12px] font-medium border rounded-full transition-colors ${active ? 'bg-[var(--accent-light)] border-[var(--accent-mid)] text-[var(--accent)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent-mid)] hover:text-[var(--accent)]'}`}
+                >
+                  {label}
+                </a>
+              )
+            })}
           </div>
           <div className="flex gap-1.5 flex-wrap">
-            {['2025', '2024', '2023', '2022', 'Все годы'].map((y) => (
-              <span
-                key={y}
-                className={`px-3 py-1.5 text-[12px] font-medium border rounded-full cursor-pointer transition-colors ${y === '2025' ? 'bg-[var(--accent-light)] border-[var(--accent-mid)] text-[var(--accent)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent-mid)] hover:text-[var(--accent)]'}`}
-              >
-                {y}
-              </span>
-            ))}
+            {[...YEAR_FILTERS, 'all'].map((y) => {
+              const active = activeYearTab === y
+              return (
+                <a
+                  key={y}
+                  href={filterHref('year', y)}
+                  className={`px-3 py-1.5 text-[12px] font-medium border rounded-full transition-colors ${active ? 'bg-[var(--accent-light)] border-[var(--accent-mid)] text-[var(--accent)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text2)] hover:border-[var(--accent-mid)] hover:text-[var(--accent)]'}`}
+                >
+                  {y === 'all' ? 'Все годы' : y}
+                </a>
+              )
+            })}
           </div>
         </div>
 
         <Alert variant="info">
-          ℹ️ Всего в истории: <strong>{enrollments.length} записей</strong> · Завершено:{' '}
+          ℹ️ Всего в выборке: <strong>{enrollments.length} записей</strong> · Завершено:{' '}
           <strong>{completed.length}</strong> · Суммарно зачтено: <strong>{totalPoints} ЗЕТ</strong>
         </Alert>
 
         <Card>
           {enrollments.length === 0 && (
-            <p className="text-[13px] text-[var(--text3)]">Нет записей об обучении</p>
+            <p className="text-[13px] text-[var(--text3)]">Нет записей по выбранным фильтрам</p>
           )}
           {enrollments.map((enrollment) => {
             const date = enrollment.completedAt ?? enrollment.enrolledAt
@@ -130,7 +184,6 @@ export default async function HistoryPage() {
                   <Badge color={STATUS_COLOR[enrollment.status]}>{STATUS_LABEL[enrollment.status]}</Badge>
                   {isDone && <Button variant="ghost" size="sm">Сертификат</Button>}
                   {isActive && <Button variant="primary" size="sm">Продолжить</Button>}
-                  {isDone && <Button variant="ghost" size="sm">Повтор</Button>}
                 </div>
               </div>
             )

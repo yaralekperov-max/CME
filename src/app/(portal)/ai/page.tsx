@@ -95,12 +95,13 @@ export default async function AiPage() {
                 'Составь план на год',
                 'Очные курсы в Москве',
               ].map((q) => (
-                <button
+                <a
                   key={q}
+                  href={`/app/ai?q=${encodeURIComponent(q)}`}
                   className="text-left px-3 py-1.5 text-[12px] font-medium border border-[var(--accent-mid)] rounded-[var(--r-sm,8px)] text-[var(--accent)] bg-[var(--surface)] hover:bg-[var(--accent-light)] transition-colors"
                 >
                   {q}
-                </button>
+                </a>
               ))}
             </div>
           </Card>

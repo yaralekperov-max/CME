@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
 interface Message {
@@ -24,6 +25,10 @@ interface AiChatProps {
 }
 
 export function AiChat({ userContext, initialMessages }: AiChatProps) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
   const [messages, setMessages] = useState<Message[]>(
     initialMessages.length > 0
       ? initialMessages
@@ -41,6 +46,14 @@ export function AiChat({ userContext, initialMessages }: AiChatProps) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  useEffect(() => {
+    const q = searchParams.get('q')
+    if (!q) return
+    router.replace(pathname)
+    sendMessage(q)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function sendMessage(text?: string) {
     const content = text ?? input.trim()

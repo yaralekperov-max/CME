@@ -77,10 +77,12 @@ export default async function OrganizationsPage() {
                     </Td>
                     <Td>
                       <div className="flex gap-1.5">
-                        <button className="px-2.5 py-1 text-[11px] rounded-[5px] cursor-pointer border border-[var(--border)] bg-[var(--surface2)] text-[var(--text2)] hover:text-[var(--text)] transition-colors">Профиль</button>
-                        <button className="px-2.5 py-1 text-[11px] rounded-[5px] cursor-pointer border border-[var(--border)] bg-[var(--surface2)] text-[var(--text2)] hover:text-[var(--text)] transition-colors">Курсы</button>
+                        <a href={`/admin/organizations/${org.id}`} className="px-2.5 py-1 text-[11px] rounded-[5px] cursor-pointer border border-[var(--border)] bg-[var(--surface2)] text-[var(--text2)] hover:text-[var(--text)] transition-colors">Профиль</a>
+                        <a href={`/admin/courses?org=${org.id}`} className="px-2.5 py-1 text-[11px] rounded-[5px] cursor-pointer border border-[var(--border)] bg-[var(--surface2)] text-[var(--text2)] hover:text-[var(--text)] transition-colors">Курсы</a>
                         {org.status === 'CONNECTING' && (
-                          <button className="px-2.5 py-1 text-[11px] rounded-[5px] cursor-pointer border border-[var(--border)] bg-[var(--surface2)] text-[var(--text2)] hover:text-[var(--text)] transition-colors">Активировать</button>
+                          <form action={`/api/admin/organizations/${org.id}/activate`} method="post">
+                            <button type="submit" className="px-2.5 py-1 text-[11px] rounded-[5px] cursor-pointer border border-[var(--accent-mid)] bg-[var(--accent-light)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors">Активировать</button>
+                          </form>
                         )}
                       </div>
                     </Td>
