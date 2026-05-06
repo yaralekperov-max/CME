@@ -48,13 +48,12 @@ export default async function HistoryPage({
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
-  const statusParam = searchParams.status as EnrollmentStatus | undefined
+  const statusParam = searchParams.status
   const yearParam = searchParams.year
 
-  const validStatus = STATUS_FILTERS.map((f) => f.value).includes(statusParam as EnrollmentStatus)
-    ? statusParam
-    : undefined
-  const activeStatus = validStatus && validStatus !== 'ALL' ? validStatus : undefined
+  const validValues = STATUS_FILTERS.map((f) => f.value) as string[]
+  const validStatus = validValues.includes(statusParam ?? '') ? statusParam : undefined
+  const activeStatus = validStatus && validStatus !== 'ALL' ? (validStatus as EnrollmentStatus) : undefined
 
   const yearStart = yearParam && YEAR_FILTERS.includes(yearParam)
     ? new Date(`${yearParam}-01-01`)
@@ -182,8 +181,16 @@ export default async function HistoryPage({
 
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Badge color={STATUS_COLOR[enrollment.status]}>{STATUS_LABEL[enrollment.status]}</Badge>
-                  {isDone && <Button variant="ghost" size="sm">Сертификат</Button>}
-                  {isActive && <Button variant="primary" size="sm">Продолжить</Button>}
+                  {isDone && enrollment.certificateFileUrl && (
+                    <a href={enrollment.certificateFileUrl} target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="sm">Сертификат</Button>
+                    </a>
+                  )}
+                  {isActive && (
+                    <a href={`/app/catalog/${enrollment.course.id}`}>
+                      <Button variant="primary" size="sm">Продолжить</Button>
+                    </a>
+                  )}
                 </div>
               </div>
             )

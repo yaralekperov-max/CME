@@ -89,7 +89,7 @@ export default async function CatalogPage({ searchParams }: Props) {
   ])
 
   const enrolledIds = new Set(myEnrollments.map((e) => e.courseId))
-  const specializations = [...new Set(allSpecs.flatMap((c) => c.specializations))].sort()
+  const specializations = Array.from(new Set(allSpecs.flatMap((c) => c.specializations))).sort()
 
   return (
     <>
@@ -165,7 +165,7 @@ export default async function CatalogPage({ searchParams }: Props) {
                   </span>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="sm">В избранное</Button>
-                    <EnrollButton courseId={course.id} initialEnrolled={enrolledIds.has(course.id)} />
+                    <EnrollButton courseId={course.id} externalUrl={course.externalUrl} initialEnrolled={enrolledIds.has(course.id)} />
                   </div>
                 </div>
               </div>

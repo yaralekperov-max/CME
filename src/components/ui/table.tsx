@@ -29,7 +29,7 @@ export function Tr({ children, className }: { children: React.ReactNode; classNa
   )
 }
 
-export function Th({ children, className }: { children: React.ReactNode; className?: string }) {
+export function Th({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
     <th
       className={cn(
@@ -42,9 +42,9 @@ export function Th({ children, className }: { children: React.ReactNode; classNa
   )
 }
 
-export function Td({ children, className }: { children: React.ReactNode; className?: string }) {
+export function Td({ children, className, colSpan }: { children?: React.ReactNode; className?: string; colSpan?: number }) {
   return (
-    <td className={cn('px-3 py-[11px] text-[13px] text-[var(--text)] align-middle', className)}>
+    <td colSpan={colSpan} className={cn('px-3 py-[11px] text-[13px] text-[var(--text)] align-middle', className)}>
       {children}
     </td>
   )

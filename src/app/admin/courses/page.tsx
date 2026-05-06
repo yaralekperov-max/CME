@@ -28,13 +28,12 @@ export default async function AdminCoursesPage({
 }: {
   searchParams: { status?: string }
 }) {
-  const statusParam = searchParams.status as CourseStatus | undefined
-  const activeStatus = FILTERS.map((f) => f.value).includes(statusParam as CourseStatus)
-    ? statusParam
-    : undefined
+  const statusParam = searchParams.status
+  const validValues = FILTERS.map((f) => f.value) as string[]
+  const activeStatus = validValues.includes(statusParam ?? '') ? statusParam : undefined
 
   const courses = await db.course.findMany({
-    where: activeStatus && activeStatus !== 'ALL' ? { status: activeStatus } : {},
+    where: activeStatus && activeStatus !== 'ALL' ? { status: activeStatus as CourseStatus } : {},
     include: {
       organization: { select: { name: true } },
       _count: { select: { enrollments: true } },

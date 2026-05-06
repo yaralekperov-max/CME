@@ -58,7 +58,7 @@ export default withSentryConfig(nextConfig, {
   autoInstrumentAppDirectory: true,
 
   // Don't block builds if Sentry upload fails
-  errorHandler(err, invokeErr, compilation) {
-    compilation.warnings.push('Sentry upload failed: ' + err.message)
+  errorHandler(err: Error) {
+    console.warn('Sentry upload failed:', err.message)
   },
 })
