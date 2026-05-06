@@ -24,7 +24,6 @@ export default async function ProfilePage() {
       specialization: true,
       workplace: true,
       city: true,
-      snils: true,
       accreditationDeadline: true,
       cycleStartDate: true,
       pointsRequired: true,

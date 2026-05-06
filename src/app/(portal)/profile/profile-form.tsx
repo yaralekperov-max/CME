@@ -15,7 +15,6 @@ interface User {
   specialization: string | null
   workplace: string | null
   city: string | null
-  snils: string | null
   accreditationDeadline: Date | null
   cycleStartDate: Date | null
   pointsRequired: number
@@ -33,7 +32,6 @@ export function ProfileForm({ user }: { user: User }) {
     specialization: user.specialization ?? '',
     workplace: user.workplace ?? '',
     city: user.city ?? '',
-    snils: user.snils ?? '',
     accreditationDeadline: user.accreditationDeadline
       ? new Date(user.accreditationDeadline).toISOString().split('T')[0]
       : '',
@@ -102,14 +100,6 @@ export function ProfileForm({ user }: { user: User }) {
               <option value="">Выберите специализацию</option>
               {SPECIALIZATIONS.map((s) => <option key={s} value={s}>{s}</option>)}
             </Select>
-          </FormGroup>
-          <FormGroup label="СНИЛС" hint="Формат: XXX-XXX-XXX XX">
-            <Input
-              value={form.snils}
-              onChange={(e) => set('snils', e.target.value)}
-              placeholder="000-000-000 00"
-              className="font-mono"
-            />
           </FormGroup>
         </div>
       </Card>

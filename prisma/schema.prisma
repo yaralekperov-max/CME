@@ -59,7 +59,6 @@ model User {
   specialization String?
   workplace      String?
   city           String?
-  snils          String?   @unique // СНИЛС — уникальный идентификатор врача в РФ
 
   // Accreditation cycle
   cycleStartDate        DateTime?

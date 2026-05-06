@@ -12,7 +12,6 @@ const updateProfileSchema = z.object({
   specialization: z.string().optional(),
   workplace: z.string().optional(),
   city: z.string().optional(),
-  snils: z.string().regex(/^\d{3}-\d{3}-\d{3} \d{2}$/, 'Формат: XXX-XXX-XXX XX').optional().or(z.literal('')),
   accreditationDeadline: z.string().refine((d) => {
     const dt = new Date(d)
     const now = new Date()
@@ -37,7 +36,6 @@ export async function GET() {
       specialization: true,
       workplace: true,
       city: true,
-      snils: true,
       accreditationDeadline: true,
       cycleStartDate: true,
       pointsRequired: true,
@@ -63,19 +61,18 @@ export async function PATCH(req: NextRequest) {
     )
   }
 
-  const { accreditationDeadline, snils, ...rest } = parsed.data
+  const { accreditationDeadline, ...rest } = parsed.data
 
   const user = await db.user.update({
     where: { id: session.user.id },
     data: {
       ...rest,
-      snils: snils || null,
       accreditationDeadline: accreditationDeadline ? new Date(accreditationDeadline) : undefined,
     },
     select: {
       id: true, name: true, email: true, phone: true,
       specialization: true, workplace: true, city: true,
-      snils: true, accreditationDeadline: true, notificationsEnabled: true,
+      accreditationDeadline: true, notificationsEnabled: true,
     },
   })
 
