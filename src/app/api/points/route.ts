@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { getOrSet, CACHE_TTL } from '@/lib/redis/client'
 import { getAccreditationRisk } from '@/lib/utils'
+import { calcPacePerYear } from '@/lib/db/points'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -13,7 +14,7 @@ export async function GET() {
   const cacheKey = `points:${userId}`
 
   const summary = await getOrSet(cacheKey, CACHE_TTL.userPoints, async () => {
-    const [user, earnedAgg, inProgressEnrollments] = await Promise.all([
+    const [user, earnedAgg, inProgressEnrollments, pacePerYear] = await Promise.all([
       db.user.findUnique({
         where: { id: userId },
         select: { accreditationDeadline: true, pointsRequired: true },
@@ -26,6 +27,7 @@ export async function GET() {
         where: { userId, status: 'IN_PROGRESS' },
         include: { course: { select: { nmoPoints: true } } },
       }),
+      calcPacePerYear(userId),
     ])
 
     const earned = earnedAgg._sum.points ?? 0
@@ -36,8 +38,6 @@ export async function GET() {
     const monthsLeft = deadline
       ? (deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30)
       : null
-
-    const pacePerYear = 43 // TODO: calculate from real data
 
     return {
       earned,

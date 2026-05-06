@@ -9,6 +9,7 @@ import { Card, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils'
+import { calcPacePerYear } from '@/lib/db/points'
 
 export const metadata: Metadata = { title: 'Мои баллы' }
 
@@ -18,7 +19,7 @@ export default async function PointsPage() {
 
   const userId = session.user.id
 
-  const [user, transactions, earnedByType, completedEnrollments, inProgressEnrollments] = await Promise.all([
+  const [user, transactions, earnedByType, completedEnrollments, inProgressEnrollments, pacePerYear] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
       select: { accreditationDeadline: true, pointsRequired: true },
@@ -42,6 +43,7 @@ export default async function PointsPage() {
       where: { userId, status: 'IN_PROGRESS' },
       include: { course: { select: { nmoPoints: true } } },
     }),
+    calcPacePerYear(userId),
   ])
 
   const pointsEarned = earnedByType.find((r) => r.type === 'EARNED')?._sum.points ?? 0
@@ -54,11 +56,6 @@ export default async function PointsPage() {
   // Year bars (last 5 years)
   const yearBars = await getYearlyPoints(userId)
 
-  // Pace: average points per year over completed years
-  const completedYearBars = yearBars.filter((y) => !y.isCurrent && y.points > 0)
-  const pacePerYear = completedYearBars.length > 0
-    ? Math.round(completedYearBars.reduce((s, y) => s + y.points, 0) / completedYearBars.length)
-    : yearBars.find((y) => y.isCurrent)?.points ?? 0
   const neededPerYear = user?.accreditationDeadline
     ? Math.ceil(pointsRemaining / Math.max(1, (user.accreditationDeadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 365)))
     : 50

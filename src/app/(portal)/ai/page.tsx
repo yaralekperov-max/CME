@@ -47,8 +47,9 @@ export default async function AiPage() {
     pointsRequired,
     deadline: user?.accreditationDeadline?.toISOString() ?? null,
     conversationId: conversation?.id ?? null,
-    existingMessages: (conversation?.messages as { role: string; content: string }[]) ?? [],
   }
+
+  const initialMessages = (conversation?.messages as { role: 'user' | 'assistant'; content: string }[]) ?? []
 
   const monthsLeft = user?.accreditationDeadline
     ? formatMonthsLeft(user.accreditationDeadline)
@@ -60,7 +61,7 @@ export default async function AiPage() {
       <main className="flex-1 overflow-hidden p-6 flex gap-5">
 
         {/* Chat */}
-        <AiChat userContext={userContext} />
+        <AiChat userContext={userContext} initialMessages={initialMessages} />
 
         {/* Sidebar */}
         <aside className="w-[220px] min-w-[220px] flex flex-col gap-3.5">

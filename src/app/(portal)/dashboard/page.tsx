@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { formatPrice, formatShortDate, getAccreditationRisk } from '@/lib/utils'
+import { calcPacePerYear } from '@/lib/db/points'
 
 export const metadata: Metadata = { title: 'Обзор' }
 
@@ -20,7 +21,7 @@ export default async function DashboardPage() {
 
   const userId = session.user.id
 
-  const [user, pointsResult, activeEnrollment, upcomingCourses] = await Promise.all([
+  const [user, pointsResult, activeEnrollment, upcomingCourses, pacePerYear] = await Promise.all([
     db.user.findUnique({
       where: { id: userId },
       select: { name: true, specialization: true, accreditationDeadline: true, pointsRequired: true },
@@ -40,6 +41,7 @@ export default async function DashboardPage() {
       take: 3,
       include: { organization: { select: { name: true } } },
     }),
+    calcPacePerYear(userId),
   ])
 
   const pointsEarned = pointsResult._sum.points ?? 0
@@ -52,7 +54,6 @@ export default async function DashboardPage() {
     ? Math.round((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30))
     : null
 
-  const pacePerYear = 43 // TODO: calculate from actual history
   const risk = deadline ? getAccreditationRisk(pointsEarned, pointsRequired, deadline) : 'ok'
 
   return (

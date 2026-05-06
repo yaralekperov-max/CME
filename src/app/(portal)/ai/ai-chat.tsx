@@ -16,17 +16,17 @@ interface UserContext {
   pointsRequired: number
   deadline: string | null
   conversationId: string | null
-  existingMessages: Message[]
 }
 
 interface AiChatProps {
   userContext: UserContext
+  initialMessages: Message[]
 }
 
-export function AiChat({ userContext }: AiChatProps) {
+export function AiChat({ userContext, initialMessages }: AiChatProps) {
   const [messages, setMessages] = useState<Message[]>(
-    userContext.existingMessages.length > 0
-      ? userContext.existingMessages
+    initialMessages.length > 0
+      ? initialMessages
       : [
           {
             role: 'assistant',
