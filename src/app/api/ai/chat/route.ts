@@ -34,10 +34,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const rl = await rateLimit({ key: `rate:ai:${session.user.id}`, limit: 30, windowSec: 3600 })
+  const rl = await rateLimit({ key: `rate:ai:${session.user.id}`, limit: 10, windowSec: 86400 })
   if (!rl.allowed) {
     return NextResponse.json(
-      { error: 'Превышен лимит запросов к AI. Попробуйте через час.' },
+      { error: 'Превышен дневной лимит запросов к AI. Попробуйте завтра.' },
       { status: 429, headers: { 'Retry-After': String(rl.resetIn) } },
     )
   }
