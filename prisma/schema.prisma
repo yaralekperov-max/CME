@@ -82,7 +82,6 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@index([email])
-  @@index([snils])
   @@index([specialization])
 }
 
