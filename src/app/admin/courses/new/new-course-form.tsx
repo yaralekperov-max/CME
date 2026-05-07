@@ -16,15 +16,16 @@ interface Organization {
 
 interface NewCourseFormProps {
   organizations: Organization[]
+  defaultOrganizationId?: string
 }
 
-export function NewCourseForm({ organizations }: NewCourseFormProps) {
+export function NewCourseForm({ organizations, defaultOrganizationId }: NewCourseFormProps) {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({
     title: '',
-    organizationId: '',
+    organizationId: defaultOrganizationId ?? '',
     specialization: '',
     description: '',
     format: 'ONLINE',

@@ -43,6 +43,7 @@ export const authOptions: NextAuthOptions = {
             role: true,
             specialization: true,
             avatarUrl: true,
+            organizationId: true,
           },
         })
 
@@ -60,6 +61,7 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           specialization: user.specialization,
           avatarUrl: user.avatarUrl,
+          organizationId: user.organizationId,
         }
       },
     }),
@@ -71,6 +73,7 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as { role?: string }).role
         token.specialization = (user as { specialization?: string }).specialization
         token.avatarUrl = (user as { avatarUrl?: string }).avatarUrl
+        token.organizationId = (user as { organizationId?: string }).organizationId
       }
       return token
     },
@@ -80,6 +83,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
         session.user.specialization = token.specialization as string | undefined
         session.user.avatarUrl = token.avatarUrl as string | undefined
+        session.user.organizationId = token.organizationId as string | undefined
       }
       return session
     },

@@ -16,6 +16,11 @@ export default async function OrganizationsPage() {
   const orgs = await db.organization.findMany({
     include: {
       _count: { select: { courses: true } },
+      courses: {
+        select: {
+          enrollments: { where: { status: 'COMPLETED' }, select: { userId: true } },
+        },
+      },
       financialTxns: {
         where: { type: 'COURSE_PURCHASE', status: 'COMPLETED' },
         select: { amountKopecks: true },
@@ -41,6 +46,7 @@ export default async function OrganizationsPage() {
                 <Th>Организация</Th>
                 <Th>Контакт</Th>
                 <Th>Курсов</Th>
+                <Th>Врачей обучено</Th>
                 <Th>Выручка</Th>
                 <Th>Статус</Th>
                 <Th>Действия</Th>
@@ -49,6 +55,9 @@ export default async function OrganizationsPage() {
             <Tbody>
               {orgs.map((org) => {
                 const revenue = org.financialTxns.reduce((s, t) => s + t.amountKopecks, 0)
+                const trainedCount = new Set(
+                  org.courses.flatMap((c) => c.enrollments.map((e) => e.userId))
+                ).size
                 return (
                   <Tr key={org.id}>
                     <Td>
@@ -67,6 +76,7 @@ export default async function OrganizationsPage() {
                     </Td>
                     <Td className="text-[var(--text2)]">{org.contactName ?? '—'}</Td>
                     <Td className="font-semibold">{org._count.courses}</Td>
+                    <Td className="font-medium">{trainedCount}</Td>
                     <Td className="font-medium">
                       {revenue > 0
                         ? new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(revenue / 100)
@@ -90,7 +100,7 @@ export default async function OrganizationsPage() {
                 )
               })}
               {orgs.length === 0 && (
-                <Tr><Td className="text-[var(--text3)]" colSpan={6}>Нет организаций</Td></Tr>
+                <Tr><Td className="text-[var(--text3)]" colSpan={7}>Нет организаций</Td></Tr>
               )}
             </Tbody>
           </Table>

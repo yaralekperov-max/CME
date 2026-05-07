@@ -9,6 +9,7 @@ export default async function RootPage() {
   if (session) {
     const role = session.user.role
     if (role === 'ADMIN' || role === 'SUPER_ADMIN') redirect('/admin')
+    if (role === 'ORG_MANAGER') redirect('/org/dashboard')
     redirect('/app/dashboard')
   }
 

@@ -69,6 +69,10 @@ model User {
   notificationsEnabled Boolean @default(true)
   avatarUrl            String?
 
+  // Org manager link
+  organizationId String?
+  organization   Organization? @relation("OrgManagers", fields: [organizationId], references: [id])
+
   // Relations
   accounts           Account[]
   sessions           Session[]
@@ -83,12 +87,14 @@ model User {
 
   @@index([email])
   @@index([specialization])
+  @@index([organizationId])
 }
 
 enum UserRole {
   DOCTOR
   ADMIN
   SUPER_ADMIN
+  ORG_MANAGER
 }
 
 // ─── Organizations ────────────────────────────────────────────────
@@ -110,6 +116,7 @@ model Organization {
   status       OrgStatus @default(ACTIVE)
 
   courses              Course[]
+  managers             User[]               @relation("OrgManagers")
   financialTxns        FinancialTransaction[]
 
   createdAt DateTime @default(now())

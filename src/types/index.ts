@@ -117,6 +117,7 @@ declare module 'next-auth' {
       role: string
       specialization?: string
       avatarUrl?: string
+      organizationId?: string
     }
   }
 }

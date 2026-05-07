@@ -55,6 +55,7 @@ export default async function AdminDoctorsPage({
           where: { type: 'EARNED' },
           select: { points: true },
         },
+        sessions: { orderBy: { expires: 'desc' }, take: 1, select: { expires: true } },
       },
     }),
   ])
@@ -120,6 +121,7 @@ export default async function AdminDoctorsPage({
                 <Th>Место работы</Th>
                 <Th>Баллов</Th>
                 <Th>Статус</Th>
+                <Th>Последний вход</Th>
                 <Th>Регистрация</Th>
               </Tr>
             </Thead>
@@ -149,12 +151,15 @@ export default async function AdminDoctorsPage({
                         {doc.risk === 'ok' ? 'На плане' : doc.risk === 'warn' ? 'Риск' : 'Критично'}
                       </Badge>
                     </Td>
+                    <Td className="text-[var(--text2)]">
+                      {doc.sessions[0] ? formatDate(doc.sessions[0].expires) : '—'}
+                    </Td>
                     <Td className="text-[var(--text2)]">{formatDate(doc.createdAt)}</Td>
                   </Tr>
                 )
               })}
               {filtered.length === 0 && (
-                <Tr><Td className="text-[var(--text3)]" colSpan={6}>Нет врачей</Td></Tr>
+                <Tr><Td className="text-[var(--text3)]" colSpan={7}>Нет врачей</Td></Tr>
               )}
             </Tbody>
           </Table>
