@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalTopbar } from '@/components/portal/topbar'
@@ -199,10 +200,12 @@ export default async function CourseDetailPage({ params }: Props) {
             <CardTitle>Организатор</CardTitle>
             <div className="flex items-start gap-3">
               {course.organization.logoUrl ? (
-                <img
+                <Image
                   src={course.organization.logoUrl}
                   alt={course.organization.name}
-                  className="w-12 h-12 rounded-[8px] object-cover flex-shrink-0"
+                  width={48}
+                  height={48}
+                  className="rounded-[8px] object-cover flex-shrink-0"
                 />
               ) : (
                 <div className="w-12 h-12 rounded-[8px] bg-[var(--accent-light)] flex items-center justify-center text-[var(--accent)] font-bold text-[16px] flex-shrink-0">
