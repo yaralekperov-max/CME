@@ -8,23 +8,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #F7F6F2;
-      --surface: #FFFFFF;
-      --surface2: #F2F1ED;
-      --border: #E4E2DA;
-      --text: #1C1B18;
-      --text2: #6B6860;
-      --text3: #9E9C95;
-      --accent: #6B5FE4;
-      --accent-light: #EDEAFD;
-      --green: #1A7A52;
-      --green-bg: #E3F4EC;
-      --blue: #1A5F9A;
-      --blue-bg: #E3EFFE;
+      --bg: #0C0D14;
+      --surface: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --accent: #7B6EF6;
+      --accent-dim: rgba(123,110,246,0.15);
+      --accent-border: rgba(123,110,246,0.25);
+      --text: #F0EFE8;
+      --text2: rgba(255,255,255,0.5);
+      --text3: rgba(255,255,255,0.25);
     }
-
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
@@ -35,381 +29,325 @@
       display: flex;
       flex-direction: column;
     }
-
-    h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    h1,h2,h3,.logo-name { font-family: 'Manrope', sans-serif; }
+    a { text-decoration: none; }
 
     /* NAV */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(247,246,242,0.85);
-      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 10;
       border-bottom: 1px solid var(--border);
+      background: rgba(12,13,20,0.85);
+      backdrop-filter: blur(12px);
     }
-    .nav-inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .logo-icon {
-      width: 28px; height: 28px;
-      background: var(--accent);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      color: white;
-    }
-    .logo-name {
-      font-family: 'Manrope', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.03em;
-    }
-    .nav-actions { display: flex; align-items: center; gap: 8px; }
-    .btn-ghost {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text2);
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      transition: color 0.15s;
-    }
-    .btn-ghost:hover { color: var(--text); }
-    .btn-primary {
-      font-size: 13px;
-      font-weight: 600;
-      color: white;
-      background: var(--accent);
-      text-decoration: none;
-      padding: 6px 16px;
-      border-radius: 8px;
-      transition: background 0.15s;
-    }
-    .btn-primary:hover { background: #5a4fd0; }
-
-    /* MAIN */
-    main { flex: 1; }
-    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .nav { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 28px; height: 28px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .logo-name { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+    .nav-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-ghost-nav { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); padding: 6px 14px; border-radius: 8px; transition: color 0.15s; }
+    .btn-ghost-nav:hover { color: #fff; }
+    .btn-primary-nav { font-size: 13px; font-weight: 600; color: #fff; background: var(--accent); padding: 7px 18px; border-radius: 8px; transition: opacity 0.15s; }
+    .btn-primary-nav:hover { opacity: 0.88; }
 
     /* HERO */
     .hero {
-      padding: 80px 0 64px;
+      position: relative; overflow: hidden;
+      padding: 90px 24px 80px;
       text-align: center;
     }
+    .hero-glow {
+      position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse, rgba(123,110,246,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--accent-light);
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-bottom: 24px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(123,110,246,0.15); border: 1px solid rgba(123,110,246,0.3);
+      color: #A89EFA; font-size: 12px; font-weight: 600;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 28px;
+      letter-spacing: 0.04em;
     }
     .hero h1 {
-      font-size: 52px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 20px;
+      font-size: 58px; font-weight: 800; line-height: 1.08;
+      letter-spacing: -0.03em; color: #fff; margin-bottom: 22px;
     }
     .hero h1 span { color: var(--accent); }
-    .hero p {
-      font-size: 16px;
-      color: var(--text2);
-      max-width: 480px;
-      margin: 0 auto 32px;
-      line-height: 1.6;
-    }
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
+    .hero p { font-size: 17px; color: var(--text2); max-width: 500px; margin: 0 auto 36px; line-height: 1.65; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
     .btn-hero-primary {
-      font-size: 14px;
-      font-weight: 600;
-      color: white;
-      background: var(--accent);
-      text-decoration: none;
-      padding: 10px 24px;
-      border-radius: 12px;
-      transition: background 0.15s;
-      box-shadow: 0 1px 3px rgba(107,95,228,0.3);
+      font-size: 15px; font-weight: 700; color: #fff; background: var(--accent);
+      padding: 13px 32px; border-radius: 12px;
+      box-shadow: 0 0 32px rgba(123,110,246,0.35); transition: opacity 0.15s;
     }
-    .btn-hero-primary:hover { background: #5a4fd0; }
+    .btn-hero-primary:hover { opacity: 0.88; }
     .btn-hero-outline {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text2);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      text-decoration: none;
-      padding: 10px 24px;
-      border-radius: 12px;
-      transition: color 0.15s;
+      font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      padding: 13px 32px; border-radius: 12px; transition: background 0.15s;
     }
-    .btn-hero-outline:hover { color: var(--text); }
+    .btn-hero-outline:hover { background: rgba(255,255,255,0.1); }
+    .trust-row { display: flex; gap: 28px; justify-content: center; margin-top: 36px; flex-wrap: wrap; }
+    .trust-item { font-size: 13px; color: rgba(255,255,255,0.35); font-weight: 500; }
 
-    /* STEPS */
-    .steps-section { padding-bottom: 48px; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px;
+    /* STATS */
+    .stats {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
     }
-    .card h2 {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      margin-bottom: 32px;
-      text-align: center;
+    .stats-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(4,1fr); }
+    .stat { padding: 32px 24px; border-right: 1px solid var(--border); text-align: center; }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-family: 'Manrope', sans-serif; font-size: 40px; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; line-height: 1; }
+    .stat-unit { font-size: 22px; color: rgba(255,255,255,0.35); }
+    .stat-label { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 8px; line-height: 1.4; }
+
+    /* HOW IT WORKS */
+    .section { padding: 80px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
+    .section-title { font-family: 'Manrope',sans-serif; font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -0.02em; text-align: center; margin-bottom: 52px; }
+
+    .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px; position: relative; overflow: hidden;
     }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+    .step-bg-num {
+      position: absolute; top: 16px; right: 20px;
+      font-family: 'Manrope',sans-serif; font-size: 52px; font-weight: 800;
+      color: rgba(255,255,255,0.04); letter-spacing: -0.03em; line-height: 1;
     }
-    .step { display: flex; flex-direction: column; gap: 12px; }
-    .step-num {
-      width: 36px; height: 36px;
-      background: var(--accent-light);
-      color: var(--accent);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-    }
-    .step-title {
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-    .step-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .step-icon { font-size: 28px; margin-bottom: 18px; }
+    .step-title { font-family: 'Manrope',sans-serif; font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .step-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.65; }
 
     /* FEATURES */
-    .features-section { padding-bottom: 48px; }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .feature-big {
+      background: linear-gradient(135deg, rgba(123,110,246,0.15) 0%, rgba(123,110,246,0.04) 100%);
+      border: 1px solid rgba(123,110,246,0.25);
+      border-radius: 20px; padding: 36px 32px;
+      grid-row: span 2; display: flex; flex-direction: column; gap: 16px;
     }
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .feature-icon-wrap { width: 44px; height: 44px; background: rgba(123,110,246,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .feature-big-title { font-family: 'Manrope',sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .feature-big-desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.65; }
+    .feature-list { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+    .feature-list-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.55); }
+    .feature-list-check { color: var(--accent); font-weight: 700; }
+    .feature-small {
+      border-radius: 16px; padding: 24px;
+      display: flex; gap: 16px; align-items: flex-start;
+      border: 1px solid;
     }
-    .feature-icon {
-      width: 40px; height: 40px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-    .feature-title {
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .feature-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .feature-small-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .feature-small-title { font-family: 'Manrope',sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .feature-small-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.55; }
 
-    /* CTA BANNER */
-    .cta-section { padding-bottom: 80px; }
+    /* CTA */
+    .cta-section { padding: 0 24px 80px; }
     .cta-banner {
-      background: var(--accent);
-      border-radius: 20px;
-      padding: 40px;
-      text-align: center;
+      max-width: 1100px; margin: 0 auto;
+      background: linear-gradient(135deg, #7B6EF6 0%, #5A4FD0 100%);
+      border-radius: 24px; padding: 60px 48px; text-align: center;
+      position: relative; overflow: hidden;
     }
-    .cta-banner h2 {
-      font-size: 24px;
-      font-weight: 700;
-      color: white;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-    .cta-banner p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.75);
-      margin-bottom: 24px;
-    }
+    .cta-circle-1 { position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; background: rgba(255,255,255,0.07); border-radius: 50%; }
+    .cta-circle-2 { position: absolute; bottom: -80px; left: -40px; width: 250px; height: 250px; background: rgba(0,0,0,0.1); border-radius: 50%; }
+    .cta-inner { position: relative; }
+    .cta-title { font-family: 'Manrope',sans-serif; font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .cta-sub { font-size: 16px; color: rgba(255,255,255,0.7); margin-bottom: 32px; }
     .btn-cta {
-      display: inline-block;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--accent);
-      background: white;
-      text-decoration: none;
-      padding: 10px 28px;
-      border-radius: 12px;
-      transition: opacity 0.15s;
+      display: inline-block; font-size: 15px; font-weight: 700;
+      color: var(--accent); background: #fff;
+      padding: 14px 36px; border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2); transition: opacity 0.15s;
     }
-    .btn-cta:hover { opacity: 0.92; }
+    .btn-cta:hover { opacity: 0.93; }
 
     /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 20px 0;
-    }
-    .footer-inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text3);
-    }
-    .footer-inner a {
-      color: var(--text3);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .footer-inner a:hover { color: var(--text2); }
+    footer { border-top: 1px solid var(--border); padding: 20px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text3); }
+    .footer-inner a { color: var(--text3); transition: color 0.15s; }
+    .footer-inner a:hover { color: rgba(255,255,255,0.4); }
 
-    @media (max-width: 640px) {
-      .hero h1 { font-size: 32px; }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
       .steps-grid, .features-grid { grid-template-columns: 1fr; }
-      .card { padding: 24px; }
+      .feature-big { grid-row: span 1; }
+      .cta-banner { padding: 40px 24px; }
+      .cta-title { font-size: 28px; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="nav-inner">
-      <a href="#" class="logo">
-        <div class="logo-icon">🏥</div>
-        <span class="logo-name">NMOBALL</span>
-      </a>
-      <div class="nav-actions">
-        <a href="#" class="btn-ghost">Войти</a>
-        <a href="#" class="btn-primary">Регистрация</a>
+<header>
+  <div class="nav">
+    <div class="logo">
+      <div class="logo-icon">🏥</div>
+      <span class="logo-name">NMOBALL</span>
+    </div>
+    <div class="nav-actions">
+      <a href="#" class="btn-ghost-nav">Войти</a>
+      <a href="#" class="btn-primary-nav">Начать бесплатно</a>
+    </div>
+  </div>
+</header>
+
+<main style="flex:1">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">✦ &nbsp;Для врачей России</div>
+      <h1>Управляйте НМО-баллами<br><span>без таблиц и стресса</span></h1>
+      <p>Один кабинет для всего цикла аккредитации: прогресс баллов, каталог курсов, напоминания о дедлайне и AI-ассистент.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-hero-primary">Начать бесплатно</a>
+        <a href="#" class="btn-hero-outline">Войти</a>
+      </div>
+      <div class="trust-row">
+        <span class="trust-item">✓ Бесплатная регистрация</span>
+        <span class="trust-item">✓ Без ввода карты</span>
+        <span class="trust-item">✓ Соответствует ФЗ-152</span>
       </div>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-badge"><span>✦</span> Для врачей России</div>
-        <h1>Следите за НМО-баллами<br><span>без таблиц и головной боли</span></h1>
-        <p>Отслеживайте аккредитационные баллы, находите курсы в каталоге и получайте напоминания о дедлайне — всё в одном месте.</p>
-        <div class="hero-actions">
-          <a href="#" class="btn-hero-primary">Начать бесплатно</a>
-          <a href="#" class="btn-hero-outline">Войти</a>
-        </div>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-num">250<span class="stat-unit"> ЗЕТ</span></div>
+        <div class="stat-label">за 5-летний цикл аккредитации</div>
       </div>
-    </section>
-
-    <!-- STEPS -->
-    <section class="steps-section">
-      <div class="container">
-        <div class="card">
-          <h2>Как это работает</h2>
-          <div class="steps-grid">
-            <div class="step">
-              <div class="step-num">1</div>
-              <div>
-                <div class="step-title">Зарегистрируйтесь</div>
-                <div class="step-desc">Укажите специальность и дату аккредитации — система рассчитает нужный темп набора баллов.</div>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <div>
-                <div class="step-title">Выбирайте курсы</div>
-                <div class="step-desc">Каталог аккредитованных курсов от проверенных организаций. Фильтр по формату и бюджету.</div>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <div>
-                <div class="step-title">Следите за прогрессом</div>
-                <div class="step-desc">Дашборд с балансом ЗЕТ, темпом и прогнозом. Напоминания за 30 и 7 дней до дедлайна.</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="stat">
+        <div class="stat-num">500<span class="stat-unit">+</span></div>
+        <div class="stat-label">курсов в каталоге платформы</div>
       </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features-section">
-      <div class="container">
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon" style="background: var(--accent-light); color: var(--accent);">✦</div>
-            <div>
-              <div class="feature-title">Прогресс баллов</div>
-              <div class="feature-desc">Наглядный дашборд: сколько ЗЕТ набрано, сколько осталось, какой темп нужен.</div>
-            </div>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon" style="background: var(--green-bg); color: var(--green);">⊞</div>
-            <div>
-              <div class="feature-title">Каталог курсов</div>
-              <div class="feature-desc">Сотни курсов от аккредитованных организаций. Онлайн, очно, бесплатно и платно.</div>
-            </div>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon" style="background: var(--blue-bg); color: var(--blue);">🤖</div>
-            <div>
-              <div class="feature-title">AI-ассистент</div>
-              <div class="feature-desc">Задайте вопрос про НМО или аккредитацию — получите ответ с учётом вашего прогресса.</div>
-            </div>
-          </div>
-        </div>
+      <div class="stat">
+        <div class="stat-num">36<span class="stat-unit"> спец.</span></div>
+        <div class="stat-label">врачебных специализаций</div>
       </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section">
-      <div class="container">
-        <div class="cta-banner">
-          <h2>Готовы начать?</h2>
-          <p>Регистрация бесплатна. Никаких скрытых платежей.</p>
-          <a href="#" class="btn-cta">Зарегистрироваться</a>
-        </div>
+      <div class="stat">
+        <div class="stat-num">10<span class="stat-unit">/день</span></div>
+        <div class="stat-label">запросов к AI-ассистенту</div>
       </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-      <span>© 2026 NMOBALL</span>
-      <a href="#">Политика конфиденциальности</a>
     </div>
-  </footer>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-eyebrow">Как это работает</div>
+      <div class="section-title">Три шага до спокойной аккредитации</div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-bg-num">01</div>
+          <div class="step-icon">👤</div>
+          <div class="step-title">Зарегистрируйтесь</div>
+          <div class="step-desc">Укажите специализацию и дату аккредитации. Система рассчитает нужный темп и покажет, сколько баллов осталось набрать.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-bg-num">02</div>
+          <div class="step-icon">📚</div>
+          <div class="step-title">Выбирайте курсы</div>
+          <div class="step-desc">Каталог аккредитованных курсов от проверенных организаций. Онлайн, очно, вебинары — с фильтром по формату и бюджету.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-bg-num">03</div>
+          <div class="step-icon">✦</div>
+          <div class="step-title">Следите за прогрессом</div>
+          <div class="step-desc">Дашборд с балансом ЗЕТ и прогнозом. Напоминания за 30 и 7 дней до дедлайна, чтобы не пропустить срок.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" style="padding-top:0">
+    <div class="section-inner">
+      <div class="section-eyebrow">Возможности</div>
+      <div class="section-title">Всё для НМО в одном месте</div>
+      <div class="features-grid">
+
+        <div class="feature-big">
+          <div class="feature-icon-wrap">🤖</div>
+          <div>
+            <div class="feature-big-title">AI-ассистент</div>
+            <div class="feature-big-desc">Задайте вопрос про НМО или аккредитацию — Claude ответит с учётом вашей специализации, дедлайна и текущего прогресса. Никаких общих ответов — только конкретика по вашей ситуации.</div>
+          </div>
+          <div class="feature-list">
+            <div class="feature-list-item"><span class="feature-list-check">✓</span> Оценка прогресса и рисков</div>
+            <div class="feature-list-item"><span class="feature-list-check">✓</span> Подбор курсов под специализацию</div>
+            <div class="feature-list-item"><span class="feature-list-check">✓</span> Составление плана обучения</div>
+          </div>
+        </div>
+
+        <div class="feature-small" style="background:rgba(123,110,246,0.08);border-color:rgba(123,110,246,0.2)">
+          <div class="feature-small-icon">✦</div>
+          <div>
+            <div class="feature-small-title">Прогресс баллов</div>
+            <div class="feature-small-desc">Наглядный дашборд с балансом ЗЕТ, темпом и прогнозом на конец цикла.</div>
+          </div>
+        </div>
+
+        <div class="feature-small" style="background:rgba(52,199,123,0.06);border-color:rgba(52,199,123,0.18)">
+          <div class="feature-small-icon">⊞</div>
+          <div>
+            <div class="feature-small-title">Каталог курсов</div>
+            <div class="feature-small-desc">Сотни курсов с фильтром по специализации, формату и бюджету.</div>
+          </div>
+        </div>
+
+        <div class="feature-small" style="background:rgba(74,158,245,0.06);border-color:rgba(74,158,245,0.18)">
+          <div class="feature-small-icon">🔔</div>
+          <div>
+            <div class="feature-small-title">Напоминания</div>
+            <div class="feature-small-desc">Письма за 30 и 7 дней до дедлайна — не пропустите срок аккредитации.</div>
+          </div>
+        </div>
+
+        <div class="feature-small" style="background:rgba(240,164,41,0.06);border-color:rgba(240,164,41,0.18)">
+          <div class="feature-small-icon">📄</div>
+          <div>
+            <div class="feature-small-title">Сертификаты</div>
+            <div class="feature-small-desc">Храните подтверждения пройденных курсов в одном месте.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-banner">
+      <div class="cta-circle-1"></div>
+      <div class="cta-circle-2"></div>
+      <div class="cta-inner">
+        <div class="cta-title">Готовы начать?</div>
+        <div class="cta-sub">Регистрация бесплатна. Никаких скрытых платежей.</div>
+        <a href="#" class="btn-cta">Зарегистрироваться бесплатно</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 NMOBALL</span>
+    <a href="#">Политика конфиденциальности</a>
+  </div>
+</footer>
 
 </body>
 </html>
