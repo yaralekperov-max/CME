@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NMOBALL — Кабинет врача</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F6F2; --surface: #FFFFFF; --surface2: #F2F1ED; --border: #E4E2DA; --border2: #D0CEC5;
+  --text: #1C1B18; --text2: #6B6860; --text3: #9E9C95;
+  --accent: #6B5FE4; --accent-light: #EDEAFD; --accent-mid: #C4BEFC;
+  --green: #1A7A52; --green-bg: #E3F4EC; --amber: #8A5A00; --amber-bg: #FEF3DC;
+  --red: #C0392B; --red-bg: #FDECEA; --blue: #1A5F9A; --blue-bg: #E3EFFE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;-webkit-font-smoothing:antialiased;height:100vh;overflow:hidden}
+h1,h2,h3,.font-display{font-family:'Manrope',sans-serif}
+.app{display:flex;height:100vh}
+
+/* SIDEBAR */
+.sb{width:228px;min-width:228px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%}
+.sb-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sb-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.sb-logo-name{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.03em}
+.sb-logo-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.sb-nav{flex:1;padding:10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.sb-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;padding:10px 10px 4px}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s;text-decoration:none}
+.ni:hover{background:var(--surface2);color:var(--text)}
+.ni.active{background:var(--accent-light);color:var(--accent)}
+.ni-ic{width:32px;height:32px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:background .15s}
+.ni.active .ni-ic{background:var(--accent)}
+.sb-foot{padding:14px 16px;border-top:1px solid var(--border)}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#B5D4F4,#8AB5E8);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0C447C;flex-shrink:0}
+.sb-name{font-size:13px;font-weight:600;color:var(--text);font-family:'Manrope',sans-serif}
+.sb-spec{font-size:11px;color:var(--text3);margin-top:2px}
+.sb-pts{text-align:right;flex-shrink:0}
+.sb-pts-val{font-size:14px;font-weight:700;color:var(--accent);font-family:'Manrope',sans-serif}
+.sb-pts-label{font-size:10px;color:var(--text3)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:52px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;padding:0 22px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:700;color:var(--text);font-family:'Manrope',sans-serif}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-search{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text3)}
+.topbar-search input{border:none;background:transparent;outline:none;font-size:12px;color:var(--text);width:160px}
+.screen{flex:1;overflow-y:auto;padding:20px 22px;display:none;flex-direction:column;gap:16px}
+.screen.active{display:flex}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px}
+.card-title{font-size:13px;font-weight:700;color:var(--text);font-family:'Manrope',sans-serif;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.card-link{font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;text-decoration:none}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.mc-label{font-size:11px;color:var(--text3);margin-bottom:6px}
+.mc-val{font-size:24px;font-weight:700;color:var(--text);font-family:'Manrope',sans-serif;letter-spacing:-0.02em}
+.mc-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.mc-trend{font-size:11px;font-weight:500;margin-top:6px}
+.mc-trend.up{color:var(--green)}
+.mc-trend.warn{color:var(--amber)}
+.mc-trend.bad{color:var(--red)}
+
+/* PROGRESS */
+.prog-wrap{background:var(--surface2);border-radius:99px;height:8px;overflow:hidden;margin:8px 0}
+.prog-fill{height:100%;border-radius:99px;background:var(--accent);transition:width .4s}
+.prog-fill.green{background:var(--green)}
+.prog-fill.amber{background:#D4920A}
+.prog-fill.red{background:var(--red)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-gray{background:var(--surface2);color:var(--text2)}
+.badge-purple{background:var(--accent-light);color:var(--accent)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+thead th{font-size:11px;font-weight:600;color:var(--text3);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--surface2);font-size:12px;color:var(--text)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5a4fd0}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-sm{padding:4px 10px;font-size:11px}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filter-chip{padding:6px 12px;border-radius:99px;font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .15s}
+.filter-chip:hover,.filter-chip.active{background:var(--accent-light);border-color:var(--accent-mid);color:var(--accent)}
+.filter-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.filter-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+
+/* CATALOG */
+.sidebar-filters{width:200px;min-width:200px;display:flex;flex-direction:column;gap:4px}
+.catalog-layout{display:flex;gap:16px}
+.course-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;transition:all .15s;cursor:default}
+.course-card:hover{border-color:var(--accent-mid);box-shadow:0 2px 8px rgba(0,0,0,.06);transform:translateY(-1px)}
+.course-title{font-size:13px;font-weight:600;color:var(--text);font-family:'Manrope',sans-serif;margin-bottom:6px;line-height:1.4}
+.course-org{font-size:11px;color:var(--text3);margin-bottom:8px}
+.course-meta{display:flex;gap:12px;margin-bottom:10px}
+.course-meta span{font-size:11px;color:var(--text2)}
+.course-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.course-price{font-size:14px;font-weight:700;font-family:'Manrope',sans-serif}
+.price-free{color:var(--green)}
+
+/* AI CHAT */
+.chat-wrap{display:flex;flex-direction:column;height:100%;gap:0}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:0}
+.chat-msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55}
+.chat-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-msg.ai{background:var(--surface);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.chat-msg.ai .ai-label{font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600}
+.chat-input-wrap{border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;background:var(--surface);flex-shrink:0}
+.chat-input{flex:1;border:1px solid var(--border);background:var(--surface2);border-radius:10px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;color:var(--text)}
+.chat-input:focus{border-color:var(--accent-mid)}
+.quick-qs{padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--surface2)}
+.quick-q{font-size:11px;padding:5px 10px;border-radius:99px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .15s}
+.quick-q:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-light)}
+
+/* PROFILE */
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.form-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.form-input{border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;background:var(--surface2);color:var(--text);outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--accent-mid);background:var(--surface)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ALERT */
+.alert{padding:10px 14px;border-radius:10px;font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.alert-warn{background:var(--amber-bg);color:var(--amber);border:1px solid #F0C86A}
+.alert-info{background:var(--blue-bg);color:var(--blue);border:1px solid #A3C4EC}
+.alert-success{background:var(--green-bg);color:var(--green);border:1px solid #86D5B2}
+
+/* POINTS PAGE */
+.pts-year{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:12px}
+.pts-year-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.pts-year-title{font-size:14px;font-weight:700;font-family:'Manrope',sans-serif;color:var(--text)}
+.pts-year-val{font-size:18px;font-weight:700;color:var(--accent);font-family:'Manrope',sans-serif}
+.pts-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--surface2);font-size:12px}
+.pts-row:last-child{border-bottom:none}
+
+/* NOTIFY toggle */
+.toggle{width:40px;height:22px;background:var(--border2,#D0CEC5);border-radius:99px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(18px)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sb">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">🏥</div>
+    <div>
+      <div class="sb-logo-name">NMOBALL</div>
+      <div class="sb-logo-sub">Портал НМО</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Главное</div>
+    <div class="ni active" onclick="go('dash')"><span class="ni-ic">◈</span>Обзор</div>
+    <div class="ni" onclick="go('catalog')"><span class="ni-ic">⊞</span>Каталог курсов</div>
+    <div class="ni" onclick="go('points')"><span class="ni-ic">✦</span>Мои баллы</div>
+    <div class="sb-section">Учёт</div>
+    <div class="ni" onclick="go('history')"><span class="ni-ic">◷</span>История обучения</div>
+    <div class="ni" onclick="go('certs')"><span class="ni-ic">⬡</span>Сертификаты</div>
+    <div class="sb-section">Инструменты</div>
+    <div class="ni" onclick="go('ai')"><span class="ni-ic">🤖</span>AI-ассистент</div>
+    <div class="ni" onclick="go('profile')"><span class="ni-ic">👤</span>Профиль</div>
+  </nav>
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-av">ИМ</div>
+      <div style="flex:1;min-width:0">
+        <div class="sb-name">Иванова М.С.</div>
+        <div class="sb-spec">Кардиология</div>
+      </div>
+      <div class="sb-pts">
+        <div class="sb-pts-val">142</div>
+        <div class="sb-pts-label">баллов</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Обзор</div>
+    <div class="topbar-right">
+      <div class="topbar-search">
+        <span>🔍</span>
+        <input type="text" placeholder="Поиск по курсам...">
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="screen active" id="s-dash">
+    <div class="alert alert-warn">
+      ⚠️ До дедлайна аккредитации осталось <strong>14 месяцев</strong>. Нужно набрать ещё <strong>108 баллов</strong> — ускорьте темп.
+    </div>
+
+    <div class="g4">
+      <div class="mc">
+        <div class="mc-label">Набрано баллов</div>
+        <div class="mc-val">142 <span style="font-size:14px;color:var(--text3)">/250</span></div>
+        <div class="prog-wrap"><div class="prog-fill amber" style="width:56.8%"></div></div>
+        <div class="mc-sub">56.8% от нормы</div>
+      </div>
+      <div class="mc">
+        <div class="mc-label">До дедлайна</div>
+        <div class="mc-val">14 <span style="font-size:14px;color:var(--text3)">мес.</span></div>
+        <div class="mc-trend warn">⚠ Июнь 2026</div>
+      </div>
+      <div class="mc">
+        <div class="mc-label">Темп (факт)</div>
+        <div class="mc-val">35 <span style="font-size:14px;color:var(--text3)">/год</span></div>
+        <div class="mc-trend bad">↓ Нужно 46/год</div>
+      </div>
+      <div class="mc">
+        <div class="mc-label">В процессе</div>
+        <div class="mc-val">18 <span style="font-size:14px;color:var(--text3)">б.</span></div>
+        <div class="mc-trend up">2 активных курса</div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">
+          Прогресс аккредитации
+          <span class="badge badge-amber">Риск</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px">
+          <span>142 из 250 ЗЕТ</span>
+          <span>56.8%</span>
+        </div>
+        <div class="prog-wrap" style="height:12px"><div class="prog-fill amber" style="width:56.8%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:8px">
+          <span>Начало цикла: Июнь 2021</span>
+          <span>Дедлайн: Июнь 2026</span>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">Структура баллов</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--text2)">🎓 Образовательные программы</span><span style="font-weight:600">96</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--text2)">🎤 Конференции и вебинары</span><span style="font-weight:600">32</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:var(--text2)">📝 Экзамены и тесты</span><span style="font-weight:600">14</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Рекомендуемые курсы <span class="card-link" onclick="go('catalog')">Каталог →</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Фибрилляция предсердий: современные подходы 2025</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-purple">36 б.</span>
+              <span class="badge badge-green">Бесплатно</span>
+              <span style="font-size:11px;color:var(--text3)">Онлайн · 72ч</span>
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">ЭКГ в клинической практике кардиолога</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-purple">18 б.</span>
+              <span class="badge badge-blue">ОМС</span>
+              <span style="font-size:11px;color:var(--text3)">Онлайн · 36ч</span>
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Эхокардиография: расширенный курс</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-purple">24 б.</span>
+              <span style="font-size:11px;color:var(--text2);font-weight:600">4 800 ₽</span>
+              <span style="font-size:11px;color:var(--text3)">Очный · 48ч</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Активные курсы <span class="card-link" onclick="go('history')">История →</span></div>
+      <table>
+        <thead><tr><th>Курс</th><th>Организация</th><th>Баллы</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div style="font-weight:600">Лечение СН — протоколы 2025</div></td>
+            <td style="color:var(--text2)">РНИМУ им. Пирогова</td>
+            <td><span style="font-weight:700;color:var(--accent)">36</span></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div class="prog-wrap" style="width:80px;margin:0"><div class="prog-fill" style="width:65%"></div></div>
+                <span style="font-size:11px;color:var(--text2)">65%</span>
+              </div>
+            </td>
+            <td><span class="badge badge-blue">В процессе</span></td>
+            <td><button class="btn btn-ghost btn-sm">Продолжить →</button></td>
+          </tr>
+          <tr>
+            <td><div style="font-weight:600">Кардиоонкология: базовый курс</div></td>
+            <td style="color:var(--text2)">Первый МГМУ им. Сеченова</td>
+            <td><span style="font-weight:700;color:var(--accent)">18</span></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:6px">
+                <div class="prog-wrap" style="width:80px;margin:0"><div class="prog-fill" style="width:20%"></div></div>
+                <span style="font-size:11px;color:var(--text2)">20%</span>
+              </div>
+            </td>
+            <td><span class="badge badge-blue">В процессе</span></td>
+            <td><button class="btn btn-ghost btn-sm">Продолжить →</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CATALOG -->
+  <div class="screen" id="s-catalog">
+    <div class="catalog-layout">
+      <div class="sidebar-filters card" style="align-self:start;position:sticky;top:0;padding:14px">
+        <div style="font-size:13px;font-weight:700;font-family:'Manrope',sans-serif;margin-bottom:12px">Фильтры</div>
+
+        <div class="filter-group">
+          <div class="filter-label">Формат</div>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Онлайн</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Очный</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Вебинар</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Конференция</label>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Финансирование</div>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Бесплатно</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> ОМС</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Платно</label>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Баллы НМО</div>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" onchange="filterCatalog()"> 1–5 баллов</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" onchange="filterCatalog()"> 6–15 баллов</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" onchange="filterCatalog()"> 16–36 баллов</label>
+        </div>
+
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="resetFilters()">Сбросить</button>
+      </div>
+
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:13px;color:var(--text3)">Найдено: <strong style="color:var(--text)" id="catalog-count">8</strong></span>
+          <select style="font-size:12px;border:1px solid var(--border);border-radius:8px;padding:5px 10px;background:var(--surface);color:var(--text);outline:none" onchange="filterCatalog()">
+            <option>По новизне</option>
+            <option>По баллам ↓</option>
+            <option>По цене ↑</option>
+            <option>По дедлайну</option>
+          </select>
+        </div>
+        <div id="catalog-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="screen" id="s-history">
+    <div class="filters">
+      <div class="filter-chip active" onclick="setHistFilter(this,'ALL')">Все</div>
+      <div class="filter-chip" onclick="setHistFilter(this,'ACTIVE')">Активные</div>
+      <div class="filter-chip" onclick="setHistFilter(this,'DONE')">Завершённые</div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table>
+        <thead><tr><th>Курс</th><th>Организация</th><th>Баллы</th><th>Статус</th><th>Дата</th><th></th></tr></thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- POINTS -->
+  <div class="screen" id="s-points">
+    <div class="g4">
+      <div class="mc"><div class="mc-label">Всего набрано</div><div class="mc-val">142</div><div class="mc-sub">из 250 требуемых</div></div>
+      <div class="mc"><div class="mc-label">В этом году</div><div class="mc-val">38</div><div class="mc-sub">2025 год</div></div>
+      <div class="mc"><div class="mc-label">Средний темп</div><div class="mc-val">35</div><div class="mc-sub">баллов в год</div></div>
+      <div class="mc"><div class="mc-label">Прогноз к дедлайну</div><div class="mc-val" style="color:var(--amber)">183</div><div class="mc-sub" style="color:var(--red)">Не хватит 67 б.</div></div>
+    </div>
+
+    <div class="g2">
+      <div>
+        <div class="pts-year">
+          <div class="pts-year-header"><div class="pts-year-title">2025 год</div><div class="pts-year-val">38 б.</div></div>
+          <div class="prog-wrap"><div class="prog-fill amber" style="width:76%"></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">цель 50 б/год</div>
+          <div style="margin-top:10px">
+            <div class="pts-row"><span style="color:var(--text2)">Лечение ХСН — базовый</span><span style="font-weight:600;color:var(--accent)">+18</span></div>
+            <div class="pts-row"><span style="color:var(--text2)">Конференция РКО 2025</span><span style="font-weight:600;color:var(--accent)">+12</span></div>
+            <div class="pts-row"><span style="color:var(--text2)">Тест НМО: гипертония</span><span style="font-weight:600;color:var(--accent)">+8</span></div>
+          </div>
+        </div>
+        <div class="pts-year">
+          <div class="pts-year-header"><div class="pts-year-title">2024 год</div><div class="pts-year-val">45 б.</div></div>
+          <div class="prog-wrap"><div class="prog-fill green" style="width:90%"></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">цель 50 б/год</div>
+          <div style="margin-top:10px">
+            <div class="pts-row"><span style="color:var(--text2)">Фибрилляция предсердий</span><span style="font-weight:600;color:var(--accent)">+36</span></div>
+            <div class="pts-row"><span style="color:var(--text2)">Вебинар: АГ и беременность</span><span style="font-weight:600;color:var(--accent)">+9</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="pts-year">
+          <div class="pts-year-header"><div class="pts-year-title">2023 год</div><div class="pts-year-val">28 б.</div></div>
+          <div class="prog-wrap"><div class="prog-fill red" style="width:56%"></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">цель 50 б/год</div>
+          <div style="margin-top:10px">
+            <div class="pts-row"><span style="color:var(--text2)">ЭКГ базовый курс</span><span style="font-weight:600;color:var(--accent)">+18</span></div>
+            <div class="pts-row"><span style="color:var(--text2)">Конференция: кардиология</span><span style="font-weight:600;color:var(--accent)">+10</span></div>
+          </div>
+        </div>
+        <div class="pts-year">
+          <div class="pts-year-header"><div class="pts-year-title">2022 год</div><div class="pts-year-val">31 б.</div></div>
+          <div class="prog-wrap"><div class="prog-fill red" style="width:62%"></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">цель 50 б/год</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTS -->
+  <div class="screen" id="s-certs">
+    <div class="card">
+      <div class="card-title">Сертификаты и удостоверения</div>
+      <table>
+        <thead><tr><th>Документ</th><th>Курс</th><th>Баллы</th><th>Выдан</th><th>Действует до</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><div style="font-weight:600">Удостоверение о повышении квалификации</div><div style="font-size:11px;color:var(--text3)">№ НМО-2024-КР-00412</div></td><td style="color:var(--text2)">Фибрилляция предсердий</td><td><span style="font-weight:700;color:var(--accent)">36</span></td><td style="color:var(--text2)">15 март 2024</td><td style="color:var(--text2)">15 март 2029</td><td><button class="btn btn-ghost btn-sm">Открыть</button></td></tr>
+          <tr><td><div style="font-weight:600">Удостоверение о повышении квалификации</div><div style="font-size:11px;color:var(--text3)">№ НМО-2023-КР-00287</div></td><td style="color:var(--text2)">ЭКГ в клинической практике</td><td><span style="font-weight:700;color:var(--accent)">18</span></td><td style="color:var(--text2)">8 сент 2023</td><td style="color:var(--text2)">8 сент 2028</td><td><button class="btn btn-ghost btn-sm">Открыть</button></td></tr>
+          <tr><td><div style="font-weight:600">Сертификат участника</div><div style="font-size:11px;color:var(--text3)">№ РКО-2025-001</div></td><td style="color:var(--text2)">Конгресс РКО 2025</td><td><span style="font-weight:700;color:var(--accent)">12</span></td><td style="color:var(--text2)">22 апр 2025</td><td style="color:var(--text2)">—</td><td><button class="btn btn-ghost btn-sm">Открыть</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AI -->
+  <div class="screen" id="s-ai" style="padding:0;gap:0;height:100%">
+    <div class="chat-wrap" style="height:100%">
+      <div class="quick-qs">
+        <span style="font-size:11px;color:var(--text3);margin-right:4px">Быстрые вопросы:</span>
+        <div class="quick-q" onclick="sendQ(this)">Успею ли я к дедлайну?</div>
+        <div class="quick-q" onclick="sendQ(this)">Какие курсы выбрать кардиологу?</div>
+        <div class="quick-q" onclick="sendQ(this)">Что такое ЗЕТ и как считается?</div>
+        <div class="quick-q" onclick="sendQ(this)">Составь план на год</div>
+      </div>
+      <div class="chat-messages" id="chat-msgs">
+        <div class="chat-msg ai">
+          <div class="ai-label">NMOBALL AI</div>
+          Здравствуйте, Мария Сергеевна! Я вижу, что вы набрали <strong>142 балла из 250</strong>, до дедлайна осталось 14 месяцев. Нужно ускорить темп — сейчас вы идёте на 35 б/год, а нужно минимум 46 б/год.<br><br>
+          Чем могу помочь?
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="chat-in" rows="1" placeholder="Задайте вопрос про НМО..." onkeydown="chatKey(event)"></textarea>
+        <button class="btn btn-primary" onclick="sendChat()" id="chat-send-btn">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="s-profile">
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">Личные данные</div>
+        <div class="form-grid">
+          <div class="form-group"><div class="form-label">Имя</div><input class="form-input" value="Мария Сергеевна"></div>
+          <div class="form-group"><div class="form-label">Фамилия</div><input class="form-input" value="Иванова"></div>
+        </div>
+        <div class="form-group"><div class="form-label">Email</div><input class="form-input" value="ivanova@clinic.ru" type="email"></div>
+        <div class="form-group"><div class="form-label">Телефон</div><input class="form-input" value="+7 (495) 000-00-00"></div>
+        <div class="form-group"><div class="form-label">Специализация</div>
+          <select class="form-input">
+            <option selected>Кардиология</option>
+            <option>Терапия</option><option>Хирургия</option><option>Неврология</option><option>Педиатрия</option>
+          </select>
+        </div>
+        <div class="form-group"><div class="form-label">Место работы</div><input class="form-input" value="ГБУЗ «ГКБ №1 им. Пирогова»"></div>
+        <button class="btn btn-primary" onclick="alert('Изменения сохранены!')">Сохранить</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card">
+          <div class="card-title">Аккредитация</div>
+          <div class="form-group"><div class="form-label">Начало цикла</div><input class="form-input" type="date" value="2021-06-01"></div>
+          <div class="form-group"><div class="form-label">Дедлайн аккредитации</div><input class="form-input" type="date" value="2026-06-01"></div>
+          <div class="form-group"><div class="form-label">Требуемые баллы</div><input class="form-input" type="number" value="250"></div>
+          <button class="btn btn-primary" onclick="alert('Сохранено!')">Сохранить</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Уведомления</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div><div style="font-size:13px;font-weight:500">Email-напоминания</div><div style="font-size:11px;color:var(--text3)">За 30 и 7 дней до дедлайна</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div><div style="font-size:13px;font-weight:500">Новые курсы</div><div style="font-size:11px;color:var(--text3)">По вашей специализации</div></div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color:var(--red)">Мои данные (ФЗ-152)</div>
+          <div style="display:flex;gap:8px;flex-direction:column">
+            <button class="btn btn-ghost" style="justify-content:center">⬇ Скачать мои данные</button>
+            <button class="btn btn-ghost" style="justify-content:center;color:var(--red);border-color:var(--red)" onclick="if(confirm('Удалить аккаунт?')) alert('Аккаунт удалён')">🗑 Удалить аккаунт</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ── Navigation ──────────────────────────────────────────────
+const TITLES = {dash:'Обзор',catalog:'Каталог курсов',points:'Мои баллы',history:'История обучения',certs:'Сертификаты',ai:'AI-ассистент',profile:'Профиль'}
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'))
+  document.getElementById('s-'+id).classList.add('active')
+  document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')===`go('${id}')`) n.classList.add('active') })
+  document.getElementById('page-title').textContent = TITLES[id]
+  if(id==='catalog') renderCatalog()
+  if(id==='history') renderHistory('ALL')
+}
+
+// ── Catalog data ─────────────────────────────────────────────
+const COURSES = [
+  {title:'Фибрилляция предсердий: современные подходы 2025',org:'РНИМУ им. Пирогова',pts:36,format:'Онлайн',funding:'free',price:0,duration:'72ч',deadline:'01.08.2025',spec:'Кардиология',enrolled:false},
+  {title:'ЭКГ в клинической практике кардиолога',org:'Первый МГМУ им. Сеченова',pts:18,format:'Онлайн',funding:'oms',price:0,duration:'36ч',deadline:'15.09.2025',spec:'Кардиология',enrolled:true},
+  {title:'Эхокардиография: расширенный курс',org:'РНИМУ им. Пирогова',pts:24,format:'Очный',funding:'paid',price:480000,duration:'48ч',deadline:'20.07.2025',spec:'Кардиология',enrolled:false},
+  {title:'Кардиоонкология: ведение пациентов на ХТ',org:'НМИЦо им. Блохина',pts:12,format:'Вебинар',funding:'free',price:0,duration:'24ч',deadline:'',spec:'Кардиология',enrolled:true},
+  {title:'Артериальная гипертензия: новые клинические рекомендации',org:'НМИЦ кардиологии',pts:36,format:'Онлайн',funding:'oms',price:0,duration:'72ч',deadline:'30.09.2025',spec:'Кардиология',enrolled:false},
+  {title:'Хроническая сердечная недостаточность 2025',org:'Первый МГМУ им. Сеченова',pts:18,format:'Онлайн',funding:'free',price:0,duration:'36ч',deadline:'',spec:'Кардиология',enrolled:false},
+  {title:'Конгресс кардиологов России 2025',org:'РКО',pts:8,format:'Конференция',funding:'paid',price:1500000,duration:'3 дня',deadline:'15.10.2025',spec:'Кардиология',enrolled:false},
+  {title:'Нарушения ритма сердца: диагностика и лечение',org:'НМИЦ кардиологии',pts:24,format:'Вебинар',funding:'oms',price:0,duration:'48ч',deadline:'',spec:'Кардиология',enrolled:false},
+]
+
+function fmtPrice(k){if(k===0)return'<span class="price-free">Бесплатно</span>';return'<span>'+new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(k/100)+'</span>'}
+function fundingBadge(f){return f==='free'?'<span class="badge badge-green">Бесплатно</span>':f==='oms'?'<span class="badge badge-blue">ОМС</span>':''}
+function fmtBadge(f){const c={Онлайн:'green',Очный:'amber',Вебинар:'blue',Конференция:'purple'};return`<span class="badge badge-${c[f]||'gray'}">${f}</span>`}
+
+function renderCatalog(){
+  const list=document.getElementById('catalog-list')
+  const cnt=document.getElementById('catalog-count')
+  const html=COURSES.map(c=>`
+    <div class="course-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
+        <div class="course-title">${c.title}</div>
+        <span style="flex-shrink:0;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--accent-light);color:var(--accent);font-family:'Manrope',sans-serif">${c.pts} б.</span>
+      </div>
+      <div class="course-org">🏛 ${c.org}</div>
+      <div class="course-meta">
+        ${c.duration?`<span>⏱ ${c.duration}</span>`:''}
+        ${c.deadline?`<span>📅 до ${c.deadline}</span>`:''}
+        <span>👥 ${Math.floor(Math.random()*300+50)}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${fmtBadge(c.format)} ${fundingBadge(c.funding)}
+        <span class="badge badge-gray">${c.spec}</span>
+      </div>
+      <div class="course-footer">
+        <div class="course-price">${fmtPrice(c.price)}</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm">В избранное</button>
+          <button class="btn ${c.enrolled?'btn-ghost':'btn-primary'} btn-sm" onclick="toggleEnroll(this,${COURSES.indexOf(c)})">${c.enrolled?'Отменить запись':'Записаться'}</button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+  list.innerHTML=html
+  cnt.textContent=COURSES.length
+}
+
+function toggleEnroll(btn, idx){
+  COURSES[idx].enrolled=!COURSES[idx].enrolled
+  btn.textContent=COURSES[idx].enrolled?'Отменить запись':'Записаться'
+  btn.className='btn '+(COURSES[idx].enrolled?'btn-ghost':'btn-primary')+' btn-sm'
+}
+
+function filterCatalog(){renderCatalog()} // simplified — in real app would filter
+function resetFilters(){document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);renderCatalog()}
+
+// ── History ───────────────────────────────────────────────────
+const HISTORY = [
+  {title:'Лечение СН — протоколы 2025',org:'РНИМУ им. Пирогова',pts:36,status:'IN_PROGRESS',date:'12 мар 2025'},
+  {title:'Кардиоонкология: базовый курс',org:'НМИЦо им. Блохина',pts:18,status:'IN_PROGRESS',date:'28 фев 2025'},
+  {title:'Фибрилляция предсердий: нов. подходы',org:'НМИЦ кардиологии',pts:36,status:'COMPLETED',date:'15 мар 2024',cert:true},
+  {title:'ЭКГ в клинической практике',org:'Первый МГМУ',pts:18,status:'COMPLETED',date:'8 сент 2023',cert:true},
+  {title:'Конгресс кардиологов РФ 2023',org:'РКО',pts:12,status:'COMPLETED',date:'22 апр 2023',cert:true},
+  {title:'Хроническая сердечная недостаточность',org:'РНИМУ им. Пирогова',pts:24,status:'COMPLETED',date:'14 янв 2023',cert:false},
+]
+const SL={'IN_PROGRESS':'<span class="badge badge-blue">В процессе</span>','COMPLETED':'<span class="badge badge-green">Завершён</span>','ENROLLED':'<span class="badge badge-gray">Записан</span>'}
+let histFilter='ALL'
+function setHistFilter(el,f){document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');histFilter=f;renderHistory(f)}
+function renderHistory(f){
+  const rows=HISTORY.filter(h=>f==='ALL'||(f==='ACTIVE'&&h.status==='IN_PROGRESS')||(f==='DONE'&&h.status==='COMPLETED'))
+  document.getElementById('history-body').innerHTML=rows.map(h=>`
+    <tr>
+      <td><div style="font-weight:600">${h.title}</div></td>
+      <td style="color:var(--text2)">${h.org}</td>
+      <td><span style="font-weight:700;color:var(--accent)">${h.pts}</span></td>
+      <td>${SL[h.status]||''}</td>
+      <td style="color:var(--text2)">${h.date}</td>
+      <td>
+        ${h.status==='COMPLETED'&&h.cert?'<button class="btn btn-ghost btn-sm">Сертификат</button>':''}
+        ${h.status==='IN_PROGRESS'?'<button class="btn btn-primary btn-sm">Продолжить →</button>':''}
+      </td>
+    </tr>
+  `).join('')
+}
+
+// ── AI Chat ────────────────────────────────────────────────────
+const AI_CONTEXT = `Профиль: Иванова Мария Сергеевна, кардиолог. Баллов набрано: 142 из 250. Дедлайн: июнь 2026 (14 месяцев). Осталось: 108 баллов. Темп: 35 б/год, нужно 46 б/год.`
+const AI_RESPONSES = {
+  'успею': 'При текущем темпе (35 б/год) к июню 2026 вы наберёте около 183 баллов — это не хватает 67 до нормы. Нужно набирать минимум **46 баллов в следующие 14 месяцев**.\n\nРекомендую записаться на курс по фибрилляции предсердий (36 б.) — это закроет треть потребности за один курс.',
+  'курс': 'Для кардиолога с вашим профилем рекомендую:\n\n1. **Фибрилляция предсердий 2025** — 36 б., бесплатно, онлайн\n2. **Артериальная гипертензия** — 36 б., ОМС\n3. **ЭКГ расширенный** — 18 б., онлайн\n\nЭтих трёх курсов хватит чтобы закрыть всю оставшуюся норму.',
+  'зет': 'ЗЕТ (зачётная единица трудоёмкости) — это единица измерения учебной нагрузки в НМО.\n\n**1 ЗЕТ = 1 академический час** обучения.\n\nЗа 5-летний цикл аккредитации врач должен набрать **250 ЗЕТ** из аккредитованных источников: курсы ДПО, конференции, вебинары, тесты.',
+  'план': 'Ваш план на ближайшие 14 месяцев:\n\n**Июнь–август 2025:** Фибрилляция предсердий онлайн — 36 б.\n**Сентябрь 2025:** Артериальная гипертензия (ОМС) — 36 б.\n**Октябрь 2025:** Конгресс РКО — 8 б.\n**Ноябрь–декабрь 2025:** Нарушения ритма (вебинар) — 24 б.\n**Январь–март 2026:** Эхокардиография очный — 24 б.\n\nИтого: **128 баллов** — закроете аккредитацию с запасом.',
+}
+
+function getBotReply(msg){
+  const m=msg.toLowerCase()
+  if(m.includes('успе')||m.includes('дедлайн')||m.includes('хватит')) return AI_RESPONSES['успею']
+  if(m.includes('курс')||m.includes('выбр')||m.includes('рекоменд')) return AI_RESPONSES['курс']
+  if(m.includes('зет')||m.includes('что такое')||m.includes('считается')) return AI_RESPONSES['зет']
+  if(m.includes('план')||m.includes('год')) return AI_RESPONSES['план']
+  return 'Это хороший вопрос. Исходя из вашего профиля (142/250 баллов, 14 месяцев до дедлайна), рекомендую сосредоточиться на крупных онлайн-курсах по кардиологии — они дают до 36 баллов за один курс и проходятся в удобном темпе.\n\nЕсли хотите, могу составить конкретный план или подобрать курсы.'
+}
+
+function addMsg(role,text){
+  const div=document.createElement('div')
+  div.className='chat-msg '+role
+  if(role==='ai') div.innerHTML='<div class="ai-label">NMOBALL AI</div>'+text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+  else div.textContent=text
+  document.getElementById('chat-msgs').appendChild(div)
+  div.scrollIntoView({behavior:'smooth'})
+}
+
+function addTyping(){
+  const div=document.createElement('div')
+  div.className='chat-msg ai';div.id='typing'
+  div.innerHTML='<div class="ai-label">NMOBALL AI</div><span style="color:var(--text3)">Печатает...</span>'
+  document.getElementById('chat-msgs').appendChild(div)
+  div.scrollIntoView({behavior:'smooth'})
+}
+
+function sendChat(){
+  const inp=document.getElementById('chat-in')
+  const msg=inp.value.trim();if(!msg)return
+  addMsg('user',msg);inp.value=''
+  const btn=document.getElementById('chat-send-btn');btn.disabled=true
+  addTyping()
+  setTimeout(()=>{
+    document.getElementById('typing')?.remove()
+    addMsg('ai',getBotReply(msg))
+    btn.disabled=false
+  },900+Math.random()*600)
+}
+
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}}
+
+function sendQ(el){
+  document.getElementById('chat-in').value=el.textContent
+  sendChat()
+}
+
+renderHistory('ALL')
+</script>
+</body>
+</html>
