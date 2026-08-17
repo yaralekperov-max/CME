@@ -28,6 +28,7 @@ export function NewCourseForm({ organizations, defaultOrganizationId }: NewCours
     organizationId: defaultOrganizationId ?? '',
     specialization: '',
     description: '',
+    courseType: 'QUALIFICATION',
     format: 'ONLINE',
     durationHours: '',
     deadlineDate: '',
@@ -104,6 +105,16 @@ export function NewCourseForm({ organizations, defaultOrganizationId }: NewCours
                   </Select>
                 </FormGroup>
               </div>
+              <FormGroup
+                label="Тип программы *"
+                hint="Повышение квалификации — программа ДПО с выдачей удостоверения. Остальные типы дают только баллы НМО."
+              >
+                <Select value={form.courseType} onChange={(e) => set('courseType', e.target.value)}>
+                  <option value="QUALIFICATION">Повышение квалификации (удостоверение)</option>
+                  <option value="MODULE">Образовательный модуль НМО (ИОМ)</option>
+                  <option value="EVENT">Мероприятие (конференция, вебинар)</option>
+                </Select>
+              </FormGroup>
               <FormGroup label="Описание курса">
                 <Textarea value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="Краткое описание для врачей..." />
               </FormGroup>

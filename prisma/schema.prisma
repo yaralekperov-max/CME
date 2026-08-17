@@ -145,6 +145,7 @@ model Course {
 
   // Details
   format          CourseFormat
+  courseType      CourseType   @default(MODULE)
   specializations String[]
   durationHours   Int?
   maxParticipants Int?
@@ -179,6 +180,7 @@ model Course {
   @@index([status])
   @@index([organizationId])
   @@index([specializations])
+  @@index([courseType])
   @@index([fundingType])
   @@index([deadlineDate])
 }
@@ -188,6 +190,17 @@ enum CourseFormat {
   IN_PERSON
   WEBINAR
   CONFERENCE
+}
+
+/// Тип образовательной программы.
+/// QUALIFICATION — программа ПК (ДПО), по итогам выдаётся удостоверение о повышении
+///   квалификации. Основной способ закрыть аккредитацию за цикл.
+/// MODULE — интерактивный образовательный модуль НМО, даёт баллы (ЗЕТ).
+/// EVENT — очное/онлайн мероприятие: конференция, семинар, вебинар. Даёт баллы.
+enum CourseType {
+  QUALIFICATION
+  MODULE
+  EVENT
 }
 
 enum FundingType {

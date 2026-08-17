@@ -6,6 +6,7 @@ import type {
   Certificate,
   PointsTransaction,
   CourseFormat,
+  CourseType,
   FundingType,
   CourseStatus,
   EnrollmentStatus,
@@ -17,6 +18,7 @@ import type {
 // Re-export Prisma enums for convenience
 export type {
   CourseFormat,
+  CourseType,
   FundingType,
   CourseStatus,
   EnrollmentStatus,
@@ -83,6 +85,7 @@ export interface PointsSummary {
 
 export interface CourseFilters {
   format?: CourseFormat[]
+  courseType?: CourseType[]
   fundingType?: FundingType[]
   specializations?: string[]
   minPoints?: number

@@ -12,8 +12,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatPrice } from '@/lib/utils'
-import { FORMAT_LABELS, FORMAT_COLORS } from '@/lib/constants'
-import type { CourseFormat, FundingType } from '@/types'
+import { FORMAT_LABELS, FORMAT_COLORS, COURSE_TYPE_SHORT, COURSE_TYPE_COLORS } from '@/lib/constants'
+import type { CourseFormat, CourseType, FundingType } from '@/types'
 import type { Prisma } from '@prisma/client'
 
 export const metadata: Metadata = { title: 'Каталог курсов' }
@@ -28,6 +28,7 @@ const SORT_MAP: Record<string, Prisma.CourseOrderByWithRelationInput> = {
   points:   { nmoPoints: 'desc' },
   deadline: { deadlineDate: 'asc' },
   price:    { priceKopecks: 'asc' },
+  duration: { durationHours: 'desc' },
 }
 
 interface Props {
@@ -44,6 +45,7 @@ export default async function CatalogPage({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
+  const types = parseList(searchParams.type) as CourseType[]
   const formats = parseList(searchParams.format) as CourseFormat[]
   const fundings = parseList(searchParams.funding) as FundingType[]
   const pointsKey = (Array.isArray(searchParams.points) ? searchParams.points[0] : searchParams.points) ?? ''
@@ -60,6 +62,7 @@ export default async function CatalogPage({ searchParams }: Props) {
         { specializations: { hasSome: [q] } },
       ],
     }),
+    ...(types.length && { courseType: { in: types } }),
     ...(formats.length && { format: { in: formats } }),
     ...(fundings.length && { fundingType: { in: fundings } }),
     ...(POINTS_RANGES[pointsKey] && { nmoPoints: POINTS_RANGES[pointsKey] }),
@@ -129,7 +132,9 @@ export default async function CatalogPage({ searchParams }: Props) {
                     </h3>
                   </Link>
                   <span className="flex-shrink-0 px-2.5 py-1 rounded-full text-[12px] font-bold bg-[var(--accent-light)] text-[var(--accent)] font-display">
-                    {course.nmoPoints} б.
+                    {course.courseType === 'QUALIFICATION' && course.durationHours
+                      ? `${course.durationHours} ч.`
+                      : `${course.nmoPoints} б.`}
                   </span>
                 </div>
 
@@ -138,9 +143,11 @@ export default async function CatalogPage({ searchParams }: Props) {
                 </div>
 
                 <div className="flex gap-3.5 mb-2.5">
-                  {course.durationHours && (
+                  {course.courseType === 'QUALIFICATION' ? (
+                    <span className="text-[11px] text-[var(--text2)] flex items-center gap-1">✦ {course.nmoPoints} баллов НМО</span>
+                  ) : course.durationHours ? (
                     <span className="text-[11px] text-[var(--text2)] flex items-center gap-1">⏱ {course.durationHours} ч.</span>
-                  )}
+                  ) : null}
                   {course.deadlineDate && (
                     <span className="text-[11px] text-[var(--text2)] flex items-center gap-1">
                       📅 до {new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short' }).format(course.deadlineDate)}
@@ -152,6 +159,9 @@ export default async function CatalogPage({ searchParams }: Props) {
                 </div>
 
                 <div className="flex gap-1.5 flex-wrap mb-3">
+                  <Badge color={COURSE_TYPE_COLORS[course.courseType]}>
+                    {COURSE_TYPE_SHORT[course.courseType]}
+                  </Badge>
                   <Badge color={FORMAT_COLORS[course.format]}>{FORMAT_LABELS[course.format]}</Badge>
                   {course.fundingType === 'OMS' && <Badge color="blue">ОМС</Badge>}
                   {course.specializations.slice(0, 2).map((s) => (

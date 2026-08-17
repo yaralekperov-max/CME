@@ -11,7 +11,13 @@ import { CompleteButton } from '@/components/portal/complete-button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardTitle } from '@/components/ui/card'
 import { formatPrice, formatDate, isDeadlineSoon } from '@/lib/utils'
-import { FORMAT_LABELS, FORMAT_COLORS } from '@/lib/constants'
+import {
+  FORMAT_LABELS,
+  FORMAT_COLORS,
+  COURSE_TYPE_LABELS,
+  COURSE_TYPE_COLORS,
+  COURSE_TYPE_HINTS,
+} from '@/lib/constants'
 import type { CourseFormat, FundingType } from '@/types'
 
 const FUNDING_LABELS: Record<FundingType, string> = {
@@ -85,7 +91,10 @@ export default async function CourseDetailPage({ params }: Props) {
               </span>
             </div>
 
-            <div className="flex gap-1.5 flex-wrap mb-4">
+            <div className="flex gap-1.5 flex-wrap mb-3">
+              <Badge color={COURSE_TYPE_COLORS[course.courseType]}>
+                {COURSE_TYPE_LABELS[course.courseType]}
+              </Badge>
               <Badge color={FORMAT_COLORS[course.format]}>{FORMAT_LABELS[course.format]}</Badge>
               {course.fundingType === 'OMS' && <Badge color="blue">ОМС</Badge>}
               {course.specializations.map((s) => (
@@ -93,11 +102,15 @@ export default async function CourseDetailPage({ params }: Props) {
               ))}
             </div>
 
+            <div className="text-[12px] text-[var(--text3)] leading-[1.55] bg-[var(--surface2)] rounded-[var(--r,10px)] px-3 py-2.5 mb-4">
+              {COURSE_TYPE_HINTS[course.courseType]}
+            </div>
+
             <div className="grid grid-cols-3 gap-3 mb-5">
-              <Metric icon="🎓" label="НМО баллы" value={`${course.nmoPoints} ЗЕТ`} />
               {course.durationHours && (
-                <Metric icon="⏱" label="Длительность" value={`${course.durationHours} часов`} />
+                <Metric icon="⏱" label="Объём программы" value={`${course.durationHours} часов`} />
               )}
+              <Metric icon="🎓" label="Баллы НМО" value={`${course.nmoPoints} ЗЕТ`} />
               <Metric
                 icon="👥"
                 label="Записалось"

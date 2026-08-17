@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { invalidate } from '@/lib/redis/client'
-import type { CourseFormat, FundingType, CourseStatus } from '@prisma/client'
+import type { CourseFormat, CourseType, FundingType, CourseStatus } from '@prisma/client'
 
 const createCourseSchema = z.object({
   title: z.string().min(3).max(300),
@@ -13,6 +13,7 @@ const createCourseSchema = z.object({
   description: z.string().optional(),
   specialization: z.string().optional(),
   format: z.enum(['ONLINE', 'IN_PERSON', 'WEBINAR', 'CONFERENCE']),
+  courseType: z.enum(['QUALIFICATION', 'MODULE', 'EVENT']).default('MODULE'),
   durationHours: z.coerce.number().positive().optional(),
   deadlineDate: z.string().optional(),
   nmoPoints: z.coerce.number().int().positive(),
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
     data: {
       ...rest,
       format: rest.format as CourseFormat,
+      courseType: rest.courseType as CourseType,
       fundingType: rest.fundingType as FundingType,
       status: rest.status as CourseStatus,
       specializations: specialization ? [specialization] : [],

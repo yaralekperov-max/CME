@@ -47,17 +47,17 @@ export default async function RootPage() {
             </div>
 
             <h1 className="font-display" style={{ fontSize: 58, fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', color: '#fff', marginBottom: 22, textWrap: 'balance' } as React.CSSProperties}>
-              Управляйте НМО-баллами<br />
-              <span style={{ color: '#7B6EF6' }}>без таблиц и стресса</span>
+              Курсы повышения<br />
+              квалификации — <span style={{ color: '#7B6EF6' }}>все в одном месте</span>
             </h1>
 
-            <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.5)', maxWidth: 500, margin: '0 auto 36px', lineHeight: 1.65 }}>
-              Один кабинет для всего цикла аккредитации: прогресс баллов, каталог курсов, напоминания о дедлайне и AI-ассистент.
+            <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 36px', lineHeight: 1.65 }}>
+              Найдите программу ПК по своей специальности — онлайн, очно, по ОМС. Соберём документы к аккредитации и напомним о сроках.
             </p>
 
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link href="/register" style={{ fontSize: 15, fontWeight: 700, color: '#fff', background: '#7B6EF6', padding: '13px 32px', borderRadius: 12, textDecoration: 'none', boxShadow: '0 0 32px rgba(123,110,246,0.35)' }}>
-                Начать бесплатно
+                Подобрать курс
               </Link>
               <Link href="/login" style={{ fontSize: 15, fontWeight: 600, color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', padding: '13px 32px', borderRadius: 12, textDecoration: 'none' }}>
                 Войти
@@ -77,10 +77,10 @@ export default async function RootPage() {
         <section style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
           <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
             {[
-              { num: '250', unit: 'ЗЕТ', label: 'за 5-летний цикл аккредитации' },
-              { num: '500+', unit: '', label: 'курсов в каталоге платформы' },
+              { num: '500', unit: '+', label: 'программ ПК и курсов в каталоге' },
+              { num: '144', unit: 'ч', label: 'типовой объём программы ПК' },
               { num: '36', unit: 'спец.', label: 'врачебных специализаций' },
-              { num: '10', unit: '/день', label: 'запросов к AI-ассистенту' },
+              { num: '1', unit: 'кабинет', label: 'для всего цикла аккредитации' },
             ].map((s, i) => (
               <div key={i} style={{ padding: '32px 24px', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.07)' : 'none', textAlign: 'center' }}>
                 <div className="font-display" style={{ fontSize: 40, fontWeight: 800, color: '#7B6EF6', letterSpacing: '-0.03em', lineHeight: 1 }}>
@@ -102,9 +102,9 @@ export default async function RootPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
               {[
-                { num: '01', icon: '👤', title: 'Зарегистрируйтесь', desc: 'Укажите специализацию и дату аккредитации. Система рассчитает нужный темп и покажет, сколько баллов осталось набрать.' },
-                { num: '02', icon: '📚', title: 'Выбирайте курсы', desc: 'Каталог аккредитованных курсов от проверенных организаций. Онлайн, очно, вебинары — с фильтром по формату и бюджету.' },
-                { num: '03', icon: '✦', title: 'Следите за прогрессом', desc: 'Дашборд с балансом ЗЕТ и прогнозом. Напоминания за 30 и 7 дней до дедлайна, чтобы не пропустить срок.' },
+                { num: '01', icon: '👤', title: 'Укажите специальность', desc: 'Специальность и дата аккредитации — этого достаточно, чтобы мы показали только подходящие вам программы.' },
+                { num: '02', icon: '📚', title: 'Выберите программу ПК', desc: 'Программы повышения квалификации с удостоверением от проверенных образовательных организаций. Фильтры по формату, объёму часов и бюджету.' },
+                { num: '03', icon: '✦', title: 'Закройте аккредитацию', desc: 'Храните удостоверения и сертификаты в одном месте. Напомним за 30 и 7 дней до срока, чтобы не пришлось торопиться.' },
               ].map((step) => (
                 <div key={step.num} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '32px 28px', position: 'relative', overflow: 'hidden' }}>
                   <div className="font-display" style={{ position: 'absolute', top: 20, right: 24, fontSize: 52, fontWeight: 800, color: 'rgba(255,255,255,0.04)', letterSpacing: '-0.03em', lineHeight: 1 }}>{step.num}</div>
@@ -122,7 +122,7 @@ export default async function RootPage() {
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 52 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: '#7B6EF6', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Возможности</div>
-              <h2 className="font-display" style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Всё для НМО в одном месте</h2>
+              <h2 className="font-display" style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Всё для аккредитации в одном месте</h2>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -132,11 +132,11 @@ export default async function RootPage() {
                 <div>
                   <div className="font-display" style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 10 }}>AI-ассистент</div>
                   <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.65 }}>
-                    Задайте вопрос про НМО или аккредитацию — Claude ответит с учётом вашей специализации, дедлайна и текущего прогресса. Никаких общих ответов — только конкретика по вашей ситуации.
+                    Спросите «какой курс мне нужен» или «что нужно для аккредитации» — ассистент ответит с учётом вашей специальности и срока. Без общих фраз — только конкретика по вашей ситуации.
                   </div>
                 </div>
                 <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {['Оценка прогресса и рисков', 'Подбор курсов под специализацию', 'Составление плана обучения'].map((f) => (
+                  {['Подбор программы под специальность', 'Что нужно для аккредитации', 'Проверка, успеваете ли к сроку'].map((f) => (
                     <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>
                       <span style={{ color: '#7B6EF6', fontWeight: 700 }}>✓</span> {f}
                     </div>
@@ -146,10 +146,10 @@ export default async function RootPage() {
 
               {/* Small features */}
               {[
-                { icon: '✦', title: 'Прогресс баллов', desc: 'Наглядный дашборд с балансом ЗЕТ, темпом и прогнозом на конец цикла.', accent: 'rgba(123,110,246,0.12)', border: 'rgba(123,110,246,0.2)' },
-                { icon: '⊞', title: 'Каталог курсов', desc: 'Сотни курсов с фильтром по специализации, формату и бюджету.', accent: 'rgba(52,199,123,0.08)', border: 'rgba(52,199,123,0.2)' },
-                { icon: '🔔', title: 'Напоминания', desc: 'Письма за 30 и 7 дней до дедлайна — не пропустите срок аккредитации.', accent: 'rgba(74,158,245,0.08)', border: 'rgba(74,158,245,0.2)' },
-                { icon: '📄', title: 'Сертификаты', desc: 'Храните подтверждения пройденных курсов в одном месте.', accent: 'rgba(240,164,41,0.08)', border: 'rgba(240,164,41,0.2)' },
+                { icon: '⊞', title: 'Каталог программ', desc: 'Повышение квалификации, модули НМО и конференции — в одном списке с фильтрами.', accent: 'rgba(123,110,246,0.12)', border: 'rgba(123,110,246,0.2)' },
+                { icon: '📄', title: 'Документы', desc: 'Удостоверения и сертификаты хранятся в кабинете — не потеряются к комиссии.', accent: 'rgba(240,164,41,0.08)', border: 'rgba(240,164,41,0.2)' },
+                { icon: '🔔', title: 'Напоминания', desc: 'Письма за 30 и 7 дней до даты аккредитации.', accent: 'rgba(74,158,245,0.08)', border: 'rgba(74,158,245,0.2)' },
+                { icon: '✦', title: 'Баллы НМО', desc: 'Если набираете цикл по частям — ведём учёт ЗЕТ и показываем прогноз.', accent: 'rgba(52,199,123,0.08)', border: 'rgba(52,199,123,0.2)' },
               ].map((f) => (
                 <div key={f.title} style={{ background: f.accent, border: `1px solid ${f.border}`, borderRadius: 16, padding: '24px 24px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <div style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{f.icon}</div>
@@ -171,7 +171,7 @@ export default async function RootPage() {
               <div style={{ position: 'absolute', bottom: -80, left: -40, width: 250, height: 250, background: 'rgba(0,0,0,0.1)', borderRadius: '50%', pointerEvents: 'none' }} />
               <div style={{ position: 'relative' }}>
                 <h2 className="font-display" style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', marginBottom: 14 }}>Готовы начать?</h2>
-                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', marginBottom: 32 }}>Регистрация бесплатна. Никаких скрытых платежей.</p>
+                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', marginBottom: 32 }}>Посмотрите каталог программ по своей специальности. Регистрация бесплатна.</p>
                 <Link href="/register" style={{ display: 'inline-block', fontSize: 15, fontWeight: 700, color: '#7B6EF6', background: '#fff', padding: '14px 36px', borderRadius: 12, textDecoration: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
                   Зарегистрироваться бесплатно
                 </Link>

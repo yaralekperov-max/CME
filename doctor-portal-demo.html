@@ -174,7 +174,7 @@ tbody tr:hover td{background:var(--surface2)}
   <nav class="sb-nav">
     <div class="sb-section">Главное</div>
     <div class="ni active" onclick="go('dash')"><span class="ni-ic">◈</span>Обзор</div>
-    <div class="ni" onclick="go('catalog')"><span class="ni-ic">⊞</span>Каталог курсов</div>
+    <div class="ni" onclick="go('catalog')"><span class="ni-ic">⊞</span>Каталог программ</div>
     <div class="ni" onclick="go('points')"><span class="ni-ic">✦</span>Мои баллы</div>
     <div class="sb-section">Учёт</div>
     <div class="ni" onclick="go('history')"><span class="ni-ic">◷</span>История обучения</div>
@@ -205,7 +205,7 @@ tbody tr:hover td{background:var(--surface2)}
     <div class="topbar-right">
       <div class="topbar-search">
         <span>🔍</span>
-        <input type="text" placeholder="Поиск по курсам...">
+        <input type="text" placeholder="Поиск по программам...">
       </div>
     </div>
   </div>
@@ -213,7 +213,7 @@ tbody tr:hover td{background:var(--surface2)}
   <!-- DASHBOARD -->
   <div class="screen active" id="s-dash">
     <div class="alert alert-warn">
-      ⚠️ До дедлайна аккредитации осталось <strong>14 месяцев</strong>. Нужно набрать ещё <strong>108 баллов</strong> — ускорьте темп.
+      ⚠️ До аккредитации осталось <strong>14 месяцев</strong>, а программа ПК ещё не пройдена. Одна программа на 144 часа закроет цикл целиком — <span style="text-decoration:underline;cursor:pointer" onclick="go('catalog')">посмотреть подходящие</span>.
     </div>
 
     <div class="g4">
@@ -272,30 +272,30 @@ tbody tr:hover td{background:var(--surface2)}
       </div>
 
       <div class="card">
-        <div class="card-title">Рекомендуемые курсы <span class="card-link" onclick="go('catalog')">Каталог →</span></div>
+        <div class="card-title">Рекомендуем вам <span class="card-link" onclick="go('catalog')">Каталог →</span></div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
-            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Фибрилляция предсердий: современные подходы 2025</div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <span class="badge badge-purple">36 б.</span>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Кардиология: программа повышения квалификации</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="badge badge-purple">ПК · удостоверение</span>
+              <span style="font-size:11px;color:var(--text2);font-weight:600">24 000 ₽</span>
+              <span style="font-size:11px;color:var(--text3)">Онлайн · 144ч</span>
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Функциональная диагностика в кардиологии</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="badge badge-purple">ПК · удостоверение</span>
+              <span style="font-size:11px;color:var(--text2);font-weight:600">18 000 ₽</span>
+              <span style="font-size:11px;color:var(--text3)">Очный · 72ч</span>
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Фибрилляция предсердий: современные подходы</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="badge badge-purple">ПК · удостоверение</span>
               <span class="badge badge-green">Бесплатно</span>
-              <span style="font-size:11px;color:var(--text3)">Онлайн · 72ч</span>
-            </div>
-          </div>
-          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
-            <div style="font-size:12px;font-weight:600;margin-bottom:4px">ЭКГ в клинической практике кардиолога</div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <span class="badge badge-purple">18 б.</span>
-              <span class="badge badge-blue">ОМС</span>
               <span style="font-size:11px;color:var(--text3)">Онлайн · 36ч</span>
-            </div>
-          </div>
-          <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
-            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Эхокардиография: расширенный курс</div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <span class="badge badge-purple">24 б.</span>
-              <span style="font-size:11px;color:var(--text2);font-weight:600">4 800 ₽</span>
-              <span style="font-size:11px;color:var(--text3)">Очный · 48ч</span>
             </div>
           </div>
         </div>
@@ -345,25 +345,32 @@ tbody tr:hover td{background:var(--surface2)}
         <div style="font-size:13px;font-weight:700;font-family:'Manrope',sans-serif;margin-bottom:12px">Фильтры</div>
 
         <div class="filter-group">
+          <div class="filter-label">Тип программы</div>
+          <label style="display:flex;gap:6px;align-items:flex-start;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="type" value="QUALIFICATION" onchange="filterCatalog()" style="margin-top:2px"> <span>Повышение квалификации<span style="display:block;font-size:11px;color:var(--text3)">с удостоверением</span></span></label>
+          <label style="display:flex;gap:6px;align-items:flex-start;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="type" value="MODULE" onchange="filterCatalog()" style="margin-top:2px"> <span>Образовательный модуль<span style="display:block;font-size:11px;color:var(--text3)">баллы НМО</span></span></label>
+          <label style="display:flex;gap:6px;align-items:flex-start;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="type" value="EVENT" onchange="filterCatalog()" style="margin-top:2px"> <span>Мероприятие<span style="display:block;font-size:11px;color:var(--text3)">конференция, вебинар</span></span></label>
+        </div>
+
+        <div class="filter-group">
           <div class="filter-label">Формат</div>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Онлайн</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Очный</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Вебинар</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Конференция</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Онлайн" onchange="filterCatalog()"> Онлайн</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Очный" onchange="filterCatalog()"> Очный</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Вебинар" onchange="filterCatalog()"> Вебинар</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Конференция" onchange="filterCatalog()"> Конференция</label>
         </div>
 
         <div class="filter-group">
           <div class="filter-label">Финансирование</div>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Бесплатно</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> ОМС</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" onchange="filterCatalog()"> Платно</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="funding" value="free" onchange="filterCatalog()"> Бесплатно</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="funding" value="oms" onchange="filterCatalog()"> ОМС</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="funding" value="paid" onchange="filterCatalog()"> Платно</label>
         </div>
 
         <div class="filter-group">
           <div class="filter-label">Баллы НМО</div>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" onchange="filterCatalog()"> 1–5 баллов</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" onchange="filterCatalog()"> 6–15 баллов</label>
-          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" onchange="filterCatalog()"> 16–36 баллов</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" value="1-5" onchange="filterCatalog()"> 1–5 баллов</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" value="6-15" onchange="filterCatalog()"> 6–15 баллов</label>
+          <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="radio" name="pts" value="16-36" onchange="filterCatalog()"> 16–36 баллов</label>
         </div>
 
         <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="resetFilters()">Сбросить</button>
@@ -372,11 +379,12 @@ tbody tr:hover td{background:var(--surface2)}
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <span style="font-size:13px;color:var(--text3)">Найдено: <strong style="color:var(--text)" id="catalog-count">8</strong></span>
-          <select style="font-size:12px;border:1px solid var(--border);border-radius:8px;padding:5px 10px;background:var(--surface);color:var(--text);outline:none" onchange="filterCatalog()">
-            <option>По новизне</option>
-            <option>По баллам ↓</option>
-            <option>По цене ↑</option>
-            <option>По дедлайну</option>
+          <select id="catalog-sort" style="font-size:12px;border:1px solid var(--border);border-radius:8px;padding:5px 10px;background:var(--surface);color:var(--text);outline:none" onchange="filterCatalog()">
+            <option value="">По новизне</option>
+            <option value="duration">Сначала объёмные программы</option>
+            <option value="points">По баллам ↓</option>
+            <option value="price">По цене ↑</option>
+            <option value="deadline">По дедлайну</option>
           </select>
         </div>
         <div id="catalog-list" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -469,10 +477,10 @@ tbody tr:hover td{background:var(--surface2)}
     <div class="chat-wrap" style="height:100%">
       <div class="quick-qs">
         <span style="font-size:11px;color:var(--text3);margin-right:4px">Быстрые вопросы:</span>
-        <div class="quick-q" onclick="sendQ(this)">Успею ли я к дедлайну?</div>
-        <div class="quick-q" onclick="sendQ(this)">Какие курсы выбрать кардиологу?</div>
-        <div class="quick-q" onclick="sendQ(this)">Что такое ЗЕТ и как считается?</div>
-        <div class="quick-q" onclick="sendQ(this)">Составь план на год</div>
+        <div class="quick-q" onclick="sendQ(this)">Что нужно для аккредитации?</div>
+        <div class="quick-q" onclick="sendQ(this)">Какую программу ПК выбрать кардиологу?</div>
+        <div class="quick-q" onclick="sendQ(this)">Чем ПК отличается от баллов НМО?</div>
+        <div class="quick-q" onclick="sendQ(this)">Успею ли я к сроку?</div>
       </div>
       <div class="chat-messages" id="chat-msgs">
         <div class="chat-msg ai">
@@ -548,7 +556,7 @@ tbody tr:hover td{background:var(--surface2)}
 
 <script>
 // ── Navigation ──────────────────────────────────────────────
-const TITLES = {dash:'Обзор',catalog:'Каталог курсов',points:'Мои баллы',history:'История обучения',certs:'Сертификаты',ai:'AI-ассистент',profile:'Профиль'}
+const TITLES = {dash:'Обзор',catalog:'Каталог программ',points:'Мои баллы',history:'История обучения',certs:'Сертификаты',ai:'AI-ассистент',profile:'Профиль'}
 function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'))
@@ -561,36 +569,71 @@ function go(id) {
 
 // ── Catalog data ─────────────────────────────────────────────
 const COURSES = [
-  {title:'Фибрилляция предсердий: современные подходы 2025',org:'РНИМУ им. Пирогова',pts:36,format:'Онлайн',funding:'free',price:0,duration:'72ч',deadline:'01.08.2025',spec:'Кардиология',enrolled:false},
-  {title:'ЭКГ в клинической практике кардиолога',org:'Первый МГМУ им. Сеченова',pts:18,format:'Онлайн',funding:'oms',price:0,duration:'36ч',deadline:'15.09.2025',spec:'Кардиология',enrolled:true},
-  {title:'Эхокардиография: расширенный курс',org:'РНИМУ им. Пирогова',pts:24,format:'Очный',funding:'paid',price:480000,duration:'48ч',deadline:'20.07.2025',spec:'Кардиология',enrolled:false},
-  {title:'Кардиоонкология: ведение пациентов на ХТ',org:'НМИЦо им. Блохина',pts:12,format:'Вебинар',funding:'free',price:0,duration:'24ч',deadline:'',spec:'Кардиология',enrolled:true},
-  {title:'Артериальная гипертензия: новые клинические рекомендации',org:'НМИЦ кардиологии',pts:36,format:'Онлайн',funding:'oms',price:0,duration:'72ч',deadline:'30.09.2025',spec:'Кардиология',enrolled:false},
-  {title:'Хроническая сердечная недостаточность 2025',org:'Первый МГМУ им. Сеченова',pts:18,format:'Онлайн',funding:'free',price:0,duration:'36ч',deadline:'',spec:'Кардиология',enrolled:false},
-  {title:'Конгресс кардиологов России 2025',org:'РКО',pts:8,format:'Конференция',funding:'paid',price:1500000,duration:'3 дня',deadline:'15.10.2025',spec:'Кардиология',enrolled:false},
-  {title:'Нарушения ритма сердца: диагностика и лечение',org:'НМИЦ кардиологии',pts:24,format:'Вебинар',funding:'oms',price:0,duration:'48ч',deadline:'',spec:'Кардиология',enrolled:false},
+  {title:'Кардиология: программа повышения квалификации',org:'Первый МГМУ им. Сеченова',type:'QUALIFICATION',pts:144,format:'Онлайн',funding:'paid',price:2400000,hours:144,duration:'144ч',deadline:'01.09.2026',spec:'Кардиология',enrolled:false},
+  {title:'Функциональная диагностика в кардиологии',org:'РНИМУ им. Пирогова',type:'QUALIFICATION',pts:72,format:'Очный',funding:'paid',price:1800000,hours:72,duration:'72ч',deadline:'20.07.2026',spec:'Кардиология',enrolled:false},
+  {title:'Фибрилляция предсердий: современные подходы',org:'РНИМУ им. Пирогова',type:'QUALIFICATION',pts:36,format:'Онлайн',funding:'free',price:0,hours:36,duration:'36ч',deadline:'01.08.2026',spec:'Кардиология',enrolled:false},
+  {title:'ЭКГ в клинической практике кардиолога',org:'Первый МГМУ им. Сеченова',type:'QUALIFICATION',pts:18,format:'Онлайн',funding:'oms',price:0,hours:18,duration:'18ч',deadline:'15.09.2026',spec:'Кардиология',enrolled:true},
+  {title:'Кардиоонкология: ведение пациентов на ХТ',org:'НМИЦ им. Блохина',type:'MODULE',pts:12,format:'Онлайн',funding:'free',price:0,hours:12,duration:'12ч',deadline:'',spec:'Кардиология',enrolled:true},
+  {title:'Хроническая сердечная недостаточность 2026',org:'Первый МГМУ им. Сеченова',type:'MODULE',pts:6,format:'Онлайн',funding:'free',price:0,hours:6,duration:'6ч',deadline:'',spec:'Кардиология',enrolled:false},
+  {title:'Конгресс кардиологов России 2026',org:'РКО',type:'EVENT',pts:8,format:'Конференция',funding:'paid',price:1500000,hours:0,duration:'3 дня',deadline:'15.10.2026',spec:'Кардиология',enrolled:false},
+  {title:'Нарушения ритма сердца: разбор клинических случаев',org:'НМИЦ кардиологии',type:'EVENT',pts:4,format:'Вебинар',funding:'oms',price:0,hours:4,duration:'4ч',deadline:'',spec:'Кардиология',enrolled:false},
 ]
+
+const TYPE_LABEL = {QUALIFICATION:'ПК · удостоверение', MODULE:'ИОМ', EVENT:'Мероприятие'}
+const TYPE_COLOR = {QUALIFICATION:'purple', MODULE:'blue', EVENT:'amber'}
+const PTS_RANGE = {'1-5':[1,5], '6-15':[6,15], '16-36':[16,36]}
 
 function fmtPrice(k){if(k===0)return'<span class="price-free">Бесплатно</span>';return'<span>'+new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(k/100)+'</span>'}
 function fundingBadge(f){return f==='free'?'<span class="badge badge-green">Бесплатно</span>':f==='oms'?'<span class="badge badge-blue">ОМС</span>':''}
 function fmtBadge(f){const c={Онлайн:'green',Очный:'amber',Вебинар:'blue',Конференция:'purple'};return`<span class="badge badge-${c[f]||'gray'}">${f}</span>`}
 
+function checkedValues(name){
+  return Array.from(document.querySelectorAll(`input[data-f="${name}"]:checked`)).map(i=>i.value)
+}
+
+function visibleCourses(){
+  const types=checkedValues('type'), formats=checkedValues('format'), fundings=checkedValues('funding')
+  const ptsEl=document.querySelector('input[name=pts]:checked')
+  const range=ptsEl?PTS_RANGE[ptsEl.value]:null
+  const sort=(document.getElementById('catalog-sort')||{}).value||''
+
+  let out=COURSES.filter(c=>
+    (!types.length||types.includes(c.type)) &&
+    (!formats.length||formats.includes(c.format)) &&
+    (!fundings.length||fundings.includes(c.funding)) &&
+    (!range||(c.pts>=range[0]&&c.pts<=range[1]))
+  )
+
+  if(sort==='duration') out=out.slice().sort((a,b)=>b.hours-a.hours)
+  if(sort==='points')   out=out.slice().sort((a,b)=>b.pts-a.pts)
+  if(sort==='price')    out=out.slice().sort((a,b)=>a.price-b.price)
+  if(sort==='deadline') out=out.slice().sort((a,b)=>(a.deadline||'99').split('.').reverse().join('').localeCompare((b.deadline||'99').split('.').reverse().join('')))
+  return out
+}
+
 function renderCatalog(){
   const list=document.getElementById('catalog-list')
   const cnt=document.getElementById('catalog-count')
-  const html=COURSES.map(c=>`
+  const shown=visibleCourses()
+  if(!shown.length){
+    list.innerHTML='<div class="card" style="text-align:center;padding:36px;font-size:13px;color:var(--text3)">По выбранным фильтрам программ нет</div>'
+    cnt.textContent=0
+    return
+  }
+  const html=shown.map(c=>`
     <div class="course-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px">
         <div class="course-title">${c.title}</div>
-        <span style="flex-shrink:0;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--accent-light);color:var(--accent);font-family:'Manrope',sans-serif">${c.pts} б.</span>
+        <span style="flex-shrink:0;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--accent-light);color:var(--accent);font-family:'Manrope',sans-serif">${c.type==='QUALIFICATION'?c.hours+' ч.':c.pts+' б.'}</span>
       </div>
       <div class="course-org">🏛 ${c.org}</div>
       <div class="course-meta">
-        ${c.duration?`<span>⏱ ${c.duration}</span>`:''}
+        ${c.type==='QUALIFICATION'?`<span>✦ ${c.pts} баллов НМО</span>`:(c.duration?`<span>⏱ ${c.duration}</span>`:'')}
         ${c.deadline?`<span>📅 до ${c.deadline}</span>`:''}
         <span>👥 ${Math.floor(Math.random()*300+50)}</span>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="badge badge-${TYPE_COLOR[c.type]}">${TYPE_LABEL[c.type]}</span>
         ${fmtBadge(c.format)} ${fundingBadge(c.funding)}
         <span class="badge badge-gray">${c.spec}</span>
       </div>
@@ -604,7 +647,7 @@ function renderCatalog(){
     </div>
   `).join('')
   list.innerHTML=html
-  cnt.textContent=COURSES.length
+  cnt.textContent=shown.length
 }
 
 function toggleEnroll(btn, idx){
@@ -613,8 +656,12 @@ function toggleEnroll(btn, idx){
   btn.className='btn '+(COURSES[idx].enrolled?'btn-ghost':'btn-primary')+' btn-sm'
 }
 
-function filterCatalog(){renderCatalog()} // simplified — in real app would filter
-function resetFilters(){document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);renderCatalog()}
+function filterCatalog(){renderCatalog()}
+function resetFilters(){
+  document.querySelectorAll('#s-catalog input[type=checkbox], #s-catalog input[type=radio]').forEach(i=>i.checked=false)
+  const sort=document.getElementById('catalog-sort'); if(sort) sort.value=''
+  renderCatalog()
+}
 
 // ── History ───────────────────────────────────────────────────
 const HISTORY = [
@@ -646,21 +693,21 @@ function renderHistory(f){
 }
 
 // ── AI Chat ────────────────────────────────────────────────────
-const AI_CONTEXT = `Профиль: Иванова Мария Сергеевна, кардиолог. Баллов набрано: 142 из 250. Дедлайн: июнь 2026 (14 месяцев). Осталось: 108 баллов. Темп: 35 б/год, нужно 46 б/год.`
+const AI_CONTEXT = `Профиль: Иванова Мария Сергеевна, кардиолог. Аккредитация: июнь 2026 (14 месяцев). Программа ПК за цикл пока не пройдена. Баллов НМО набрано: 142.`
 const AI_RESPONSES = {
-  'успею': 'При текущем темпе (35 б/год) к июню 2026 вы наберёте около 183 баллов — это не хватает 67 до нормы. Нужно набирать минимум **46 баллов в следующие 14 месяцев**.\n\nРекомендую записаться на курс по фибрилляции предсердий (36 б.) — это закроет треть потребности за один курс.',
-  'курс': 'Для кардиолога с вашим профилем рекомендую:\n\n1. **Фибрилляция предсердий 2025** — 36 б., бесплатно, онлайн\n2. **Артериальная гипертензия** — 36 б., ОМС\n3. **ЭКГ расширенный** — 18 б., онлайн\n\nЭтих трёх курсов хватит чтобы закрыть всю оставшуюся норму.',
-  'зет': 'ЗЕТ (зачётная единица трудоёмкости) — это единица измерения учебной нагрузки в НМО.\n\n**1 ЗЕТ = 1 академический час** обучения.\n\nЗа 5-летний цикл аккредитации врач должен набрать **250 ЗЕТ** из аккредитованных источников: курсы ДПО, конференции, вебинары, тесты.',
-  'план': 'Ваш план на ближайшие 14 месяцев:\n\n**Июнь–август 2025:** Фибрилляция предсердий онлайн — 36 б.\n**Сентябрь 2025:** Артериальная гипертензия (ОМС) — 36 б.\n**Октябрь 2025:** Конгресс РКО — 8 б.\n**Ноябрь–декабрь 2025:** Нарушения ритма (вебинар) — 24 б.\n**Январь–март 2026:** Эхокардиография очный — 24 б.\n\nИтого: **128 баллов** — закроете аккредитацию с запасом.',
+  'аккредитация': 'Для периодической аккредитации нужно портфолио за 5-летний цикл: сведения об образовании и отчёт о профессиональной деятельности.\n\nОбразовательную часть проще всего закрыть **одной программой повышения квалификации** — обычно это 144 часа, по итогам выдают удостоверение о ПК. Копить баллы по частям необязательно, хотя они тоже засчитываются.\n\nУ вас 14 месяцев — времени достаточно, программу лучше начать в ближайшие 2–3 месяца.\n\nТочный состав портфолио уточните в своей аккредитационной комиссии — требования немного различаются по регионам.',
+  'программа': 'Для кардиолога с вашим сроком подойдут:\n\n1. **Кардиология: программа ПК** — 144 ч, онлайн, 24 000 ₽. Закрывает цикл целиком.\n2. **Функциональная диагностика в кардиологии** — 72 ч, очно, 18 000 ₽.\n3. **Фибрилляция предсердий** — 36 ч, онлайн, бесплатно.\n\nПервый вариант — самый прямой путь: одно удостоверение и вопрос закрыт.',
+  'разница': 'Разница в том, какой документ вы получаете на выходе.\n\n**Повышение квалификации (ПК)** — программа ДПО, обычно 16–144 часа. По итогам выдаётся **удостоверение о повышении квалификации**. Это основной документ для аккредитации.\n\n**Баллы НМО (ЗЕТ)** — начисляются за короткие модули, вебинары и конференции. Удостоверения не дают, но идут в портфолио.\n\n1 ЗЕТ ≈ 1 академический час. Большинство врачей закрывают цикл именно программой ПК, а баллы набирают попутно.',
+  'успею': 'Да, при условии что начнёте в ближайшие месяцы.\n\nПрограмма ПК на 144 часа в онлайн-формате занимает обычно 2–3 месяца. До вашей аккредитации 14 месяцев — запас большой.\n\nГлавный риск не в сроке обучения, а в том, чтобы не отложить старт: ближе к дате комиссии на популярные программы бывает очередь. Рекомендую выбрать программу сейчас.',
 }
 
 function getBotReply(msg){
   const m=msg.toLowerCase()
-  if(m.includes('успе')||m.includes('дедлайн')||m.includes('хватит')) return AI_RESPONSES['успею']
-  if(m.includes('курс')||m.includes('выбр')||m.includes('рекоменд')) return AI_RESPONSES['курс']
-  if(m.includes('зет')||m.includes('что такое')||m.includes('считается')) return AI_RESPONSES['зет']
-  if(m.includes('план')||m.includes('год')) return AI_RESPONSES['план']
-  return 'Это хороший вопрос. Исходя из вашего профиля (142/250 баллов, 14 месяцев до дедлайна), рекомендую сосредоточиться на крупных онлайн-курсах по кардиологии — они дают до 36 баллов за один курс и проходятся в удобном темпе.\n\nЕсли хотите, могу составить конкретный план или подобрать курсы.'
+  if(m.includes('отлич')||m.includes('разниц')||m.includes('зет')||m.includes('чем ')) return AI_RESPONSES['разница']
+  if(m.includes('успе')||m.includes('срок')||m.includes('дедлайн')||m.includes('хватит')) return AI_RESPONSES['успею']
+  if(m.includes('аккредитац')||m.includes('что нужно')||m.includes('портфолио')||m.includes('документ')) return AI_RESPONSES['аккредитация']
+  if(m.includes('программ')||m.includes('курс')||m.includes('выбр')||m.includes('рекоменд')||m.includes('план')) return AI_RESPONSES['программа']
+  return 'Исходя из вашего профиля (кардиолог, аккредитация в июне 2026, программа ПК ещё не пройдена) — самый простой путь закрыть цикл это одна программа повышения квалификации на 144 часа.\n\nМогу подобрать конкретные программы по вашей специальности или рассказать, что ещё нужно для портфолио.'
 }
 
 function addMsg(role,text){

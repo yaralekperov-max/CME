@@ -3,10 +3,11 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'NMOBALL — Портал НМО',
+    default: 'NMOBALL — курсы повышения квалификации для врачей',
     template: '%s | NMOBALL',
   },
-  description: 'Управление баллами непрерывного медицинского образования для врачей',
+  description:
+    'Каталог программ повышения квалификации и курсов НМО для врачей: подбор по специальности, формату и бюджету, напоминания о сроках аккредитации',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

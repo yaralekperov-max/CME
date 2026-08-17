@@ -14,6 +14,7 @@ interface Course {
   description: string | null
   organizationId: string
   format: string
+  courseType: string
   specializations: string[]
   durationHours: number | null
   deadlineDate: Date | null
@@ -47,6 +48,7 @@ export function EditCourseForm({ course, organizations }: { course: Course; orga
     organizationId: course.organizationId,
     description: course.description ?? '',
     format: course.format,
+    courseType: course.courseType,
     specialization: course.specializations[0] ?? '',
     durationHours: course.durationHours ? String(course.durationHours) : '',
     deadlineDate: course.deadlineDate
@@ -116,6 +118,16 @@ export function EditCourseForm({ course, organizations }: { course: Course; orga
               </Select>
             </FormGroup>
           </div>
+          <FormGroup
+            label="Тип программы"
+            hint="Повышение квалификации — программа ДПО с выдачей удостоверения."
+          >
+            <Select value={form.courseType} onChange={(e) => set('courseType', e.target.value)}>
+              <option value="QUALIFICATION">Повышение квалификации (удостоверение)</option>
+              <option value="MODULE">Образовательный модуль НМО (ИОМ)</option>
+              <option value="EVENT">Мероприятие (конференция, вебинар)</option>
+            </Select>
+          </FormGroup>
           <FormGroup label="Описание">
             <Textarea value={form.description} onChange={(e) => set('description', e.target.value)} />
           </FormGroup>

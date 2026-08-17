@@ -11,6 +11,7 @@ const updateCourseSchema = z.object({
   description: z.string().optional(),
   specialization: z.string().optional(),
   format: z.enum(['ONLINE', 'IN_PERSON', 'WEBINAR', 'CONFERENCE']).optional(),
+  courseType: z.enum(['QUALIFICATION', 'MODULE', 'EVENT']).optional(),
   durationHours: z.coerce.number().positive().optional().nullable(),
   deadlineDate: z.string().optional().nullable(),
   nmoPoints: z.coerce.number().int().positive().optional(),

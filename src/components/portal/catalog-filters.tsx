@@ -4,6 +4,12 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { noun } from '@/lib/utils'
 
+const TYPE_OPTIONS = [
+  { value: 'QUALIFICATION', label: 'Повышение квалификации', hint: 'с удостоверением' },
+  { value: 'MODULE', label: 'Образовательный модуль', hint: 'баллы НМО' },
+  { value: 'EVENT', label: 'Мероприятие', hint: 'конференция, вебинар' },
+]
+
 const FORMAT_OPTIONS = [
   { value: 'ONLINE', label: 'Онлайн' },
   { value: 'IN_PERSON', label: 'Очный' },
@@ -25,6 +31,7 @@ const POINTS_OPTIONS = [
 
 export const SORT_OPTIONS = [
   { value: '', label: 'По релевантности' },
+  { value: 'duration', label: 'Сначала объёмные программы' },
   { value: 'points', label: 'Сначала больше баллов' },
   { value: 'deadline', label: 'Сначала ближайшие' },
   { value: 'price', label: 'Сначала бесплатные' },
@@ -42,6 +49,7 @@ export function CatalogFilters({ specializations, total }: Props) {
 
   const get = (key: string) => searchParams.get(key) ?? ''
 
+  const types = get('type').split(',').filter(Boolean)
   const formats = get('format').split(',').filter(Boolean)
   const fundings = get('funding').split(',').filter(Boolean)
   const points = get('points')
@@ -68,7 +76,7 @@ export function CatalogFilters({ specializations, total }: Props) {
     update('points', points === value ? '' : value)
   }
 
-  const hasFilters = formats.length || fundings.length || points || specs.length
+  const hasFilters = types.length || formats.length || fundings.length || points || specs.length
 
   return (
     <aside className="w-[200px] min-w-[200px] flex flex-col gap-3.5">
@@ -81,6 +89,18 @@ export function CatalogFilters({ specializations, total }: Props) {
           Сбросить фильтры
         </button>
       ) : null}
+
+      <FilterCard title="Тип программы">
+        {TYPE_OPTIONS.map(({ value, label, hint }) => (
+          <Checkbox
+            key={value}
+            label={label}
+            hint={hint}
+            checked={types.includes(value)}
+            onChange={() => toggleList('type', types, value)}
+          />
+        ))}
+      </FilterCard>
 
       <FilterCard title="Формат">
         {FORMAT_OPTIONS.map(({ value, label }) => (
@@ -173,16 +193,29 @@ function FilterCard({ title, children }: { title: string; children: React.ReactN
   )
 }
 
-function Checkbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
+function Checkbox({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string
+  hint?: string
+  checked: boolean
+  onChange: () => void
+}) {
   return (
-    <label className="flex items-center gap-2 text-[13px] cursor-pointer select-none">
+    <label className="flex items-start gap-2 text-[13px] cursor-pointer select-none">
       <input
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="accent-[var(--accent)] w-3.5 h-3.5"
+        className="accent-[var(--accent)] w-3.5 h-3.5 mt-0.5 flex-shrink-0"
       />
-      <span className={checked ? 'text-[var(--text)] font-medium' : 'text-[var(--text2)]'}>{label}</span>
+      <span className="leading-[1.35]">
+        <span className={checked ? 'text-[var(--text)] font-medium' : 'text-[var(--text2)]'}>{label}</span>
+        {hint && <span className="block text-[11px] text-[var(--text3)]">{hint}</span>}
+      </span>
     </label>
   )
 }

@@ -12,7 +12,7 @@ export default async function EditCoursePage({ params }: { params: { id: string 
       where: { id: params.id },
       select: {
         id: true, title: true, description: true, organizationId: true,
-        format: true, specializations: true, durationHours: true,
+        format: true, courseType: true, specializations: true, durationHours: true,
         deadlineDate: true, nmoPoints: true, nmoAccreditationNumber: true,
         externalUrl: true, fundingType: true, priceKopecks: true,
         maxParticipants: true, status: true,
