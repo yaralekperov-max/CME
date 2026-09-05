@@ -277,9 +277,9 @@ tbody tr:hover td{background:var(--surface2)}
           <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
             <div style="font-size:12px;font-weight:600;margin-bottom:4px">Кардиология: программа повышения квалификации</div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="badge badge-green">✓ Типовая программа</span>
               <span class="badge badge-purple">ПК · удостоверение</span>
-              <span style="font-size:11px;color:var(--text2);font-weight:600">24 000 ₽</span>
-              <span style="font-size:11px;color:var(--text3)">Онлайн · 144ч</span>
+              <span style="font-size:11px;color:var(--text3)">Смешанный · 144ч · Москва</span>
             </div>
           </div>
           <div style="padding:10px;background:var(--surface2);border-radius:10px;cursor:pointer" onclick="go('catalog')">
@@ -354,6 +354,7 @@ tbody tr:hover td{background:var(--surface2)}
         <div class="filter-group">
           <div class="filter-label">Формат</div>
           <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Онлайн" onchange="filterCatalog()"> Онлайн</label>
+          <label style="display:flex;gap:6px;align-items:flex-start;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Смешанный" onchange="filterCatalog()" style="margin-top:2px"> <span>Смешанный<span style="display:block;font-size:11px;color:var(--text3)">лекции онлайн, практика очно</span></span></label>
           <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Очный" onchange="filterCatalog()"> Очный</label>
           <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Вебинар" onchange="filterCatalog()"> Вебинар</label>
           <label style="display:flex;gap:6px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" data-f="format" value="Конференция" onchange="filterCatalog()"> Конференция</label>
@@ -479,6 +480,7 @@ tbody tr:hover td{background:var(--surface2)}
         <span style="font-size:11px;color:var(--text3);margin-right:4px">Быстрые вопросы:</span>
         <div class="quick-q" onclick="sendQ(this)">Что нужно для аккредитации?</div>
         <div class="quick-q" onclick="sendQ(this)">Какую программу ПК выбрать кардиологу?</div>
+        <div class="quick-q" onclick="sendQ(this)">Мне точно зачтут это удостоверение?</div>
         <div class="quick-q" onclick="sendQ(this)">Чем ПК отличается от баллов НМО?</div>
         <div class="quick-q" onclick="sendQ(this)">Успею ли я к сроку?</div>
       </div>
@@ -569,10 +571,10 @@ function go(id) {
 
 // ── Catalog data ─────────────────────────────────────────────
 const COURSES = [
-  {title:'Кардиология: программа повышения квалификации',org:'Первый МГМУ им. Сеченова',type:'QUALIFICATION',pts:144,format:'Онлайн',funding:'paid',price:2400000,hours:144,duration:'144ч',deadline:'01.09.2026',spec:'Кардиология',enrolled:false},
-  {title:'Функциональная диагностика в кардиологии',org:'РНИМУ им. Пирогова',type:'QUALIFICATION',pts:72,format:'Очный',funding:'paid',price:1800000,hours:72,duration:'72ч',deadline:'20.07.2026',spec:'Кардиология',enrolled:false},
-  {title:'Фибрилляция предсердий: современные подходы',org:'РНИМУ им. Пирогова',type:'QUALIFICATION',pts:36,format:'Онлайн',funding:'free',price:0,hours:36,duration:'36ч',deadline:'01.08.2026',spec:'Кардиология',enrolled:false},
-  {title:'ЭКГ в клинической практике кардиолога',org:'Первый МГМУ им. Сеченова',type:'QUALIFICATION',pts:18,format:'Онлайн',funding:'oms',price:0,hours:18,duration:'18ч',deadline:'15.09.2026',spec:'Кардиология',enrolled:true},
+  {title:'Кардиология: программа повышения квалификации',org:'Первый МГМУ им. Сеченова',type:'QUALIFICATION',pts:144,format:'Смешанный',city:'Москва',typical:'№ 412н от 21.07.2026',funding:'paid',price:2400000,hours:144,duration:'144ч',deadline:'01.12.2026',spec:'Кардиология',enrolled:false},
+  {title:'Функциональная диагностика в кардиологии',org:'РНИМУ им. Пирогова',type:'QUALIFICATION',pts:72,format:'Очный',city:'Москва',typical:'№ 389н от 15.06.2026',funding:'paid',price:1800000,hours:72,duration:'72ч',deadline:'20.11.2026',spec:'Кардиология',enrolled:false},
+  {title:'Фибрилляция предсердий: современные подходы',org:'РНИМУ им. Пирогова',type:'QUALIFICATION',pts:36,format:'Смешанный',city:'Санкт-Петербург',typical:'№ 401н от 30.06.2026',funding:'free',price:0,hours:36,duration:'36ч',deadline:'01.10.2026',spec:'Кардиология',enrolled:false},
+  {title:'ЭКГ в клинической практике кардиолога',org:'Первый МГМУ им. Сеченова',type:'QUALIFICATION',pts:18,format:'Смешанный',city:'Москва',typical:'№ 377н от 09.06.2026',funding:'oms',price:0,hours:18,duration:'18ч',deadline:'15.11.2026',spec:'Кардиология',enrolled:true},
   {title:'Кардиоонкология: ведение пациентов на ХТ',org:'НМИЦ им. Блохина',type:'MODULE',pts:12,format:'Онлайн',funding:'free',price:0,hours:12,duration:'12ч',deadline:'',spec:'Кардиология',enrolled:true},
   {title:'Хроническая сердечная недостаточность 2026',org:'Первый МГМУ им. Сеченова',type:'MODULE',pts:6,format:'Онлайн',funding:'free',price:0,hours:6,duration:'6ч',deadline:'',spec:'Кардиология',enrolled:false},
   {title:'Конгресс кардиологов России 2026',org:'РКО',type:'EVENT',pts:8,format:'Конференция',funding:'paid',price:1500000,hours:0,duration:'3 дня',deadline:'15.10.2026',spec:'Кардиология',enrolled:false},
@@ -585,7 +587,7 @@ const PTS_RANGE = {'1-5':[1,5], '6-15':[6,15], '16-36':[16,36]}
 
 function fmtPrice(k){if(k===0)return'<span class="price-free">Бесплатно</span>';return'<span>'+new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(k/100)+'</span>'}
 function fundingBadge(f){return f==='free'?'<span class="badge badge-green">Бесплатно</span>':f==='oms'?'<span class="badge badge-blue">ОМС</span>':''}
-function fmtBadge(f){const c={Онлайн:'green',Очный:'amber',Вебинар:'blue',Конференция:'purple'};return`<span class="badge badge-${c[f]||'gray'}">${f}</span>`}
+function fmtBadge(f){const c={Онлайн:'green',Смешанный:'green',Очный:'amber',Вебинар:'blue',Конференция:'purple'};return`<span class="badge badge-${c[f]||'gray'}">${f}</span>`}
 
 function checkedValues(name){
   return Array.from(document.querySelectorAll(`input[data-f="${name}"]:checked`)).map(i=>i.value)
@@ -629,10 +631,12 @@ function renderCatalog(){
       <div class="course-org">🏛 ${c.org}</div>
       <div class="course-meta">
         ${c.type==='QUALIFICATION'?`<span>✦ ${c.pts} баллов НМО</span>`:(c.duration?`<span>⏱ ${c.duration}</span>`:'')}
+        ${c.city?`<span>📍 ${c.city}</span>`:''}
         ${c.deadline?`<span>📅 до ${c.deadline}</span>`:''}
         <span>👥 ${Math.floor(Math.random()*300+50)}</span>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${c.typical?`<span class="badge badge-green" title="Типовая программа ${c.typical}">✓ Типовая программа Минздрава</span>`:''}
         <span class="badge badge-${TYPE_COLOR[c.type]}">${TYPE_LABEL[c.type]}</span>
         ${fmtBadge(c.format)} ${fundingBadge(c.funding)}
         <span class="badge badge-gray">${c.spec}</span>
@@ -696,13 +700,15 @@ function renderHistory(f){
 const AI_CONTEXT = `Профиль: Иванова Мария Сергеевна, кардиолог. Аккредитация: июнь 2026 (14 месяцев). Программа ПК за цикл пока не пройдена. Баллов НМО набрано: 142.`
 const AI_RESPONSES = {
   'аккредитация': 'Для периодической аккредитации нужно портфолио за 5-летний цикл: сведения об образовании и отчёт о профессиональной деятельности.\n\nОбразовательную часть проще всего закрыть **одной программой повышения квалификации** — обычно это 144 часа, по итогам выдают удостоверение о ПК. Копить баллы по частям необязательно, хотя они тоже засчитываются.\n\nУ вас 14 месяцев — времени достаточно, программу лучше начать в ближайшие 2–3 месяца.\n\nТочный состав портфолио уточните в своей аккредитационной комиссии — требования немного различаются по регионам.',
-  'программа': 'Для кардиолога с вашим сроком подойдут:\n\n1. **Кардиология: программа ПК** — 144 ч, онлайн, 24 000 ₽. Закрывает цикл целиком.\n2. **Функциональная диагностика в кардиологии** — 72 ч, очно, 18 000 ₽.\n3. **Фибрилляция предсердий** — 36 ч, онлайн, бесплатно.\n\nПервый вариант — самый прямой путь: одно удостоверение и вопрос закрыт.',
+  'программа': 'Для кардиолога с вашим сроком подойдут:\n\n1. **Кардиология: программа ПК** — 144 ч, смешанный формат, Москва, 24 000 ₽. Закрывает цикл целиком.\n2. **Функциональная диагностика в кардиологии** — 72 ч, очно, Москва, 18 000 ₽.\n3. **Фибрилляция предсердий** — 36 ч, смешанный, Санкт-Петербург, бесплатно.\n\nВсе три соответствуют типовым программам Минздрава — удостоверение примут. Первый вариант самый прямой: одно удостоверение и вопрос закрыт.',
+  'легитимность': 'С 1 марта 2026 года учиться можно только по **типовым программам**, которые Минздрав утверждает отдельным приказом на каждую специальность. Полностью дистанционный формат допустим, только если сама типовая программа это предусматривает — обычно лекции идут онлайн, а практика и итоговая аттестация очно.\n\nПоэтому в каталоге у проверенных программ стоит зелёная отметка «Типовая программа Минздрава» с номером приказа. Программы без неё мы не публикуем: по ним удостоверение могут не принять на аккредитации.',
   'разница': 'Разница в том, какой документ вы получаете на выходе.\n\n**Повышение квалификации (ПК)** — программа ДПО, обычно 16–144 часа. По итогам выдаётся **удостоверение о повышении квалификации**. Это основной документ для аккредитации.\n\n**Баллы НМО (ЗЕТ)** — начисляются за короткие модули, вебинары и конференции. Удостоверения не дают, но идут в портфолио.\n\n1 ЗЕТ ≈ 1 академический час. Большинство врачей закрывают цикл именно программой ПК, а баллы набирают попутно.',
   'успею': 'Да, при условии что начнёте в ближайшие месяцы.\n\nПрограмма ПК на 144 часа в онлайн-формате занимает обычно 2–3 месяца. До вашей аккредитации 14 месяцев — запас большой.\n\nГлавный риск не в сроке обучения, а в том, чтобы не отложить старт: ближе к дате комиссии на популярные программы бывает очередь. Рекомендую выбрать программу сейчас.',
 }
 
 function getBotReply(msg){
   const m=msg.toLowerCase()
+  if(m.includes('типов')||m.includes('легитим')||m.includes('примут')||m.includes('зачт')||m.includes('дистанц')) return AI_RESPONSES['легитимность']
   if(m.includes('отлич')||m.includes('разниц')||m.includes('зет')||m.includes('чем ')) return AI_RESPONSES['разница']
   if(m.includes('успе')||m.includes('срок')||m.includes('дедлайн')||m.includes('хватит')) return AI_RESPONSES['успею']
   if(m.includes('аккредитац')||m.includes('что нужно')||m.includes('портфолио')||m.includes('документ')) return AI_RESPONSES['аккредитация']

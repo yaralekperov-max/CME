@@ -86,6 +86,27 @@ export default async function OrgDetailPage({ params }: { params: { id: string }
               </div>
             ))}
           </div>
+
+          <div className="mt-4 pt-4 border-t border-[var(--border)]">
+            <div className="text-[11px] text-[var(--text3)] mb-1.5 uppercase tracking-[0.05em]">
+              Право реализовывать программы по типовым ДПП
+            </div>
+            {org.practiceApprovalNumber ? (
+              <div className="text-[13px] text-[var(--text2)] flex items-center gap-2">
+                <span className="text-[var(--green)] font-bold">✓</span>
+                Заключение № {org.practiceApprovalNumber}
+                {org.practiceApprovalDate && ` от ${formatDate(org.practiceApprovalDate)}`}
+              </div>
+            ) : (
+              <div className="text-[13px] text-[var(--text2)] flex items-start gap-2">
+                <span className="text-[var(--red)] font-bold">✕</span>
+                <span>
+                  Заключение по ПП РФ № 1942 не указано — курсы этой организации типа
+                  «Повышение квалификации» не пройдут модерацию.
+                </span>
+              </div>
+            )}
+          </div>
         </Card>
 
         {/* Metrics */}

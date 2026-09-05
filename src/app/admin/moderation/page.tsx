@@ -17,7 +17,9 @@ export default async function ModerationPage() {
 
   const courses = await db.course.findMany({
     where: { status: 'MODERATION' },
-    include: { organization: { select: { name: true } } },
+    include: {
+      organization: { select: { name: true, practiceApprovalNumber: true } },
+    },
     orderBy: { updatedAt: 'asc' },
   })
 

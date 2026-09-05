@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { Alert } from '@/components/ui/alert'
 import { Input, FormGroup } from '@/components/ui/input'
 import { formatPrice } from '@/lib/utils'
-import { FORMAT_LABELS } from '@/lib/constants'
-import type { CourseFormat } from '@/types'
+import { FORMAT_LABELS, COURSE_TYPE_LABELS } from '@/lib/constants'
+import { checkCompliance } from '@/lib/compliance'
+import type { CourseFormat, CourseType } from '@/types'
 
 type Action = 'approve' | 'reject' | 'request_changes'
 
@@ -24,11 +25,15 @@ interface Props {
     title: string
     description: string | null
     format: CourseFormat
+    courseType: CourseType
     durationHours: number | null
     nmoPoints: number
     nmoAccreditationNumber: string | null
+    typicalProgramOrder: string | null
+    typicalProgramTitle: string | null
+    inPersonCity: string | null
     priceKopecks: number
-    organization: { name: string }
+    organization: { name: string; practiceApprovalNumber: string | null }
   }
 }
 
@@ -74,7 +79,11 @@ export function ModerationCard({ course }: Props) {
     )
   }
 
-  const canApprove = accredNum.trim().length > 0
+  const issues = checkCompliance(course)
+  const blocking = issues.filter((i) => i.blocking)
+  const warnings = issues.filter((i) => !i.blocking)
+
+  const canApprove = accredNum.trim().length > 0 && blocking.length === 0
 
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg,16px)] p-4">
@@ -82,8 +91,10 @@ export function ModerationCard({ course }: Props) {
         <div>
           <div className="text-[14px] font-semibold text-[var(--text)] mb-1 font-display">{course.title}</div>
           <div className="text-[12px] text-[var(--text3)]">
-            {course.organization.name} · {course.durationHours} ч. · {course.nmoPoints} баллов ·{' '}
-            {FORMAT_LABELS[course.format]} · {formatPrice(course.priceKopecks)}
+            {course.organization.name} · {COURSE_TYPE_LABELS[course.courseType]} ·{' '}
+            {course.durationHours} ч. · {course.nmoPoints} баллов ·{' '}
+            {FORMAT_LABELS[course.format]}
+            {course.inPersonCity && ` · ${course.inPersonCity}`} · {formatPrice(course.priceKopecks)}
           </div>
         </div>
         <Badge color="amber">На модерации</Badge>
@@ -96,7 +107,40 @@ export function ModerationCard({ course }: Props) {
         </div>
       )}
 
-      {!canApprove && (
+      <div className="bg-[var(--surface2)] rounded-[var(--r-sm,6px)] p-3 mb-3">
+        <div className="text-[11px] text-[var(--text3)] mb-2 uppercase tracking-[0.05em]">
+          Проверка легитимности
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <CheckRow
+            ok={!!course.typicalProgramOrder?.trim()}
+            label="Типовая программа Минздрава"
+            value={course.typicalProgramOrder ?? 'не указана'}
+            muted={course.courseType !== 'QUALIFICATION'}
+          />
+          <CheckRow
+            ok={!!course.organization.practiceApprovalNumber?.trim()}
+            label="Заключение по ПП № 1942 у организации"
+            value={course.organization.practiceApprovalNumber ?? 'не указано'}
+            muted={course.courseType !== 'QUALIFICATION'}
+          />
+          <CheckRow
+            ok={!(course.courseType === 'QUALIFICATION' && course.format === 'ONLINE')}
+            label="Форма обучения допустима для ПК"
+            value={FORMAT_LABELS[course.format]}
+            muted={course.courseType !== 'QUALIFICATION'}
+          />
+        </div>
+      </div>
+
+      {blocking.map((issue) => (
+        <Alert variant="error" className="mb-3" key={issue.message}>{issue.message}</Alert>
+      ))}
+      {warnings.map((issue) => (
+        <Alert variant="warn" className="mb-3" key={issue.message}>{issue.message}</Alert>
+      ))}
+
+      {blocking.length === 0 && !accredNum.trim() && (
         <Alert variant="warn" className="mb-3">
           Укажите номер аккредитации НМО чтобы одобрить курс
         </Alert>
@@ -134,6 +178,29 @@ export function ModerationCard({ course }: Props) {
           </Button>
         ))}
       </div>
+    </div>
+  )
+}
+
+function CheckRow({
+  ok,
+  label,
+  value,
+  muted,
+}: {
+  ok: boolean
+  label: string
+  value: string
+  muted?: boolean
+}) {
+  // Для модулей и мероприятий требования к типовым программам не применяются —
+  // показываем строку справочно, но не как нарушение.
+  const color = muted ? 'text-[var(--text3)]' : ok ? 'text-[var(--green)]' : 'text-[var(--red)]'
+  return (
+    <div className="flex items-center gap-2 text-[12px]">
+      <span className={`font-bold ${color}`}>{muted ? '·' : ok ? '✓' : '✕'}</span>
+      <span className="text-[var(--text2)]">{label}:</span>
+      <span className={`font-medium ${muted ? 'text-[var(--text3)]' : 'text-[var(--text)]'}`}>{value}</span>
     </div>
   )
 }

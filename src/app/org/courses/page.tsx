@@ -11,10 +11,10 @@ import { Button } from '@/components/ui/button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '@/components/ui/table'
 import { formatPrice } from '@/lib/utils'
 import type { CourseStatus } from '@/types'
+import { FORMAT_LABELS } from '@/lib/constants'
 
 export const metadata: Metadata = { title: 'Мои курсы' }
 
-const FORMAT_LABEL: Record<string, string> = { ONLINE: 'Онлайн', IN_PERSON: 'Очный', WEBINAR: 'Вебинар', CONFERENCE: 'Конференция' }
 const STATUS_LABEL: Record<string, string> = { DRAFT: 'Черновик', MODERATION: 'На модерации', PUBLISHED: 'Опубликован', REJECTED: 'Отклонён', ARCHIVED: 'Архив' }
 const STATUS_COLOR: Record<string, 'gray' | 'amber' | 'green' | 'red' | 'blue'> = { DRAFT: 'gray', MODERATION: 'amber', PUBLISHED: 'green', REJECTED: 'red', ARCHIVED: 'blue' }
 
@@ -102,7 +102,7 @@ export default async function OrgCoursesPage({ searchParams }: { searchParams: {
                     )}
                   </Td>
                   <Td><span className="font-semibold text-[var(--accent)]">{course.nmoPoints}</span></Td>
-                  <Td className="text-[var(--text2)]">{FORMAT_LABEL[course.format]}</Td>
+                  <Td className="text-[var(--text2)]">{FORMAT_LABELS[course.format]}</Td>
                   <Td className="text-[var(--text2)]">{formatPrice(course.priceKopecks)}</Td>
                   <Td className="font-medium">{course._count.enrollments}</Td>
                   <Td className="text-[var(--text2)]">{course.enrollments.length}</Td>

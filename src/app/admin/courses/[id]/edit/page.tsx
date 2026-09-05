@@ -13,6 +13,7 @@ export default async function EditCoursePage({ params }: { params: { id: string 
       select: {
         id: true, title: true, description: true, organizationId: true,
         format: true, courseType: true, specializations: true, durationHours: true,
+        typicalProgramOrder: true, typicalProgramTitle: true, inPersonCity: true,
         deadlineDate: true, nmoPoints: true, nmoAccreditationNumber: true,
         externalUrl: true, fundingType: true, priceKopecks: true,
         maxParticipants: true, status: true,

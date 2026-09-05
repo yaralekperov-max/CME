@@ -34,6 +34,9 @@ export function NewCourseForm({ organizations, defaultOrganizationId }: NewCours
     deadlineDate: '',
     nmoPoints: '',
     nmoAccreditationNumber: '',
+    typicalProgramOrder: '',
+    typicalProgramTitle: '',
+    inPersonCity: '',
     externalUrl: '',
     fundingType: 'FREE',
     priceKopecks: '0',
@@ -122,6 +125,7 @@ export function NewCourseForm({ organizations, defaultOrganizationId }: NewCours
                 <FormGroup label="Формат">
                   <Select value={form.format} onChange={(e) => set('format', e.target.value)}>
                     <option value="ONLINE">Онлайн</option>
+                    <option value="BLENDED">Смешанный (лекции онлайн, практика очно)</option>
                     <option value="IN_PERSON">Очный</option>
                     <option value="WEBINAR">Вебинар</option>
                     <option value="CONFERENCE">Конференция</option>
@@ -134,6 +138,11 @@ export function NewCourseForm({ organizations, defaultOrganizationId }: NewCours
                   <Input type="date" value={form.deadlineDate} onChange={(e) => set('deadlineDate', e.target.value)} />
                 </FormGroup>
               </div>
+              {(form.format === 'IN_PERSON' || form.format === 'BLENDED') && (
+                <FormGroup label="Город очной части *" hint="Врачу нужно понимать, куда придётся приехать, до записи">
+                  <Input value={form.inPersonCity} onChange={(e) => set('inPersonCity', e.target.value)} placeholder="Москва" />
+                </FormGroup>
+              )}
             </div>
           </Card>
           <div className="flex justify-end gap-2.5">
@@ -192,6 +201,26 @@ export function NewCourseForm({ organizations, defaultOrganizationId }: NewCours
               <FormGroup label="Ссылка на курс (внешняя)" hint="Если курс проходит на НМФО или другой платформе — вставьте URL. Кнопка «Записаться» откроет внешний сайт.">
                 <Input type="url" value={form.externalUrl ?? ''} onChange={(e) => set('externalUrl', e.target.value)} placeholder="https://edu.rosminzdrav.ru/course/..." />
               </FormGroup>
+              {form.courseType === 'QUALIFICATION' && (
+                <>
+                  <div className="grid grid-cols-2 gap-3.5">
+                    <FormGroup label="Приказ об утверждении типовой программы *" hint="Например: № 373н от 08.06.2026">
+                      <Input value={form.typicalProgramOrder} onChange={(e) => set('typicalProgramOrder', e.target.value)} placeholder="№ 373н от 08.06.2026" />
+                    </FormGroup>
+                    <FormGroup label="Название типовой программы">
+                      <Input value={form.typicalProgramTitle} onChange={(e) => set('typicalProgramTitle', e.target.value)} placeholder="Клиническая фармакология" />
+                    </FormGroup>
+                  </div>
+                  <Alert variant="warn">
+                    ⚠️ С 01.03.2026 программы ПК реализуются только по типовым программам Минздрава. Без реквизитов приказа курс не пройдёт модерацию — удостоверение могут не принять на аккредитации.
+                  </Alert>
+                  {form.format === 'ONLINE' && (
+                    <Alert variant="error">
+                      Полностью дистанционный формат для программы ПК допустим, только если это предусмотрено самой типовой программой. Обычно нужно выбрать «Смешанный».
+                    </Alert>
+                  )}
+                </>
+              )}
               <Alert variant="info">ℹ️ Курс должен быть аккредитован Координационным советом по НМО. Баллы зачтутся только при наличии номера аккредитации.</Alert>
               <div className="grid grid-cols-2 gap-3.5">
                 <FormGroup label="Финансирование">

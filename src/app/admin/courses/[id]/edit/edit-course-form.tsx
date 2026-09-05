@@ -20,6 +20,9 @@ interface Course {
   deadlineDate: Date | null
   nmoPoints: number
   nmoAccreditationNumber: string | null
+  typicalProgramOrder: string | null
+  typicalProgramTitle: string | null
+  inPersonCity: string | null
   externalUrl: string | null
   fundingType: string
   priceKopecks: number
@@ -56,6 +59,9 @@ export function EditCourseForm({ course, organizations }: { course: Course; orga
       : '',
     nmoPoints: String(course.nmoPoints),
     nmoAccreditationNumber: course.nmoAccreditationNumber ?? '',
+    typicalProgramOrder: course.typicalProgramOrder ?? '',
+    typicalProgramTitle: course.typicalProgramTitle ?? '',
+    inPersonCity: course.inPersonCity ?? '',
     externalUrl: course.externalUrl ?? '',
     fundingType: course.fundingType,
     priceKopecks: String(course.priceKopecks),
@@ -135,6 +141,7 @@ export function EditCourseForm({ course, organizations }: { course: Course; orga
             <FormGroup label="Формат">
               <Select value={form.format} onChange={(e) => set('format', e.target.value)}>
                 <option value="ONLINE">Онлайн</option>
+                <option value="BLENDED">Смешанный (лекции онлайн, практика очно)</option>
                 <option value="IN_PERSON">Очный</option>
                 <option value="WEBINAR">Вебинар</option>
                 <option value="CONFERENCE">Конференция</option>
@@ -147,6 +154,21 @@ export function EditCourseForm({ course, organizations }: { course: Course; orga
               <Input type="date" value={form.deadlineDate} onChange={(e) => set('deadlineDate', e.target.value)} />
             </FormGroup>
           </div>
+          {(form.format === 'IN_PERSON' || form.format === 'BLENDED') && (
+            <FormGroup label="Город очной части" hint="Врачу нужно понимать, куда придётся приехать, до записи">
+              <Input value={form.inPersonCity} onChange={(e) => set('inPersonCity', e.target.value)} placeholder="Москва" />
+            </FormGroup>
+          )}
+          {form.courseType === 'QUALIFICATION' && (
+            <div className="grid grid-cols-2 gap-3.5">
+              <FormGroup label="Приказ об утверждении типовой программы" hint="Например: № 373н от 08.06.2026">
+                <Input value={form.typicalProgramOrder} onChange={(e) => set('typicalProgramOrder', e.target.value)} placeholder="№ 373н от 08.06.2026" />
+              </FormGroup>
+              <FormGroup label="Название типовой программы">
+                <Input value={form.typicalProgramTitle} onChange={(e) => set('typicalProgramTitle', e.target.value)} placeholder="Клиническая фармакология" />
+              </FormGroup>
+            </div>
+          )}
         </div>
       </Card>
 

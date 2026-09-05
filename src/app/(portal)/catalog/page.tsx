@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatPrice } from '@/lib/utils'
 import { FORMAT_LABELS, FORMAT_COLORS, COURSE_TYPE_SHORT, COURSE_TYPE_COLORS } from '@/lib/constants'
+import { isTypicalProgramConfirmed } from '@/lib/compliance'
 import type { CourseFormat, CourseType, FundingType } from '@/types'
 import type { Prisma } from '@prisma/client'
 
@@ -153,12 +154,20 @@ export default async function CatalogPage({ searchParams }: Props) {
                       📅 до {new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short' }).format(course.deadlineDate)}
                     </span>
                   )}
+                  {course.inPersonCity && (
+                    <span className="text-[11px] text-[var(--text2)] flex items-center gap-1">📍 {course.inPersonCity}</span>
+                  )}
                   <span className="text-[11px] text-[var(--text2)] flex items-center gap-1">
                     👥 {course._count.enrollments}
                   </span>
                 </div>
 
                 <div className="flex gap-1.5 flex-wrap mb-3">
+                  {isTypicalProgramConfirmed(course) && (
+                    <Badge color="green" title={`Типовая программа ${course.typicalProgramOrder}`}>
+                      ✓ Типовая программа Минздрава
+                    </Badge>
+                  )}
                   <Badge color={COURSE_TYPE_COLORS[course.courseType]}>
                     {COURSE_TYPE_SHORT[course.courseType]}
                   </Badge>

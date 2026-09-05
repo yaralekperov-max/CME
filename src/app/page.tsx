@@ -52,7 +52,7 @@ export default async function RootPage() {
             </h1>
 
             <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 36px', lineHeight: 1.65 }}>
-              Найдите программу ПК по своей специальности — онлайн, очно, по ОМС. Соберём документы к аккредитации и напомним о сроках.
+              Только программы, соответствующие типовым программам Минздрава — те, что примут на аккредитации. Подберём по специальности и напомним о сроках.
             </p>
 
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -66,7 +66,7 @@ export default async function RootPage() {
 
             {/* Trust row */}
             <div style={{ display: 'flex', gap: 28, justifyContent: 'center', marginTop: 36, flexWrap: 'wrap' }}>
-              {['✓ Бесплатная регистрация', '✓ Без ввода карты', '✓ Соответствует ФЗ-152'].map((t) => (
+              {['✓ Проверяем соответствие типовым программам', '✓ Бесплатная регистрация', '✓ Без ввода карты'].map((t) => (
                 <span key={t} style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}>{t}</span>
               ))}
             </div>
@@ -78,7 +78,7 @@ export default async function RootPage() {
           <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
             {[
               { num: '500', unit: '+', label: 'программ ПК и курсов в каталоге' },
-              { num: '144', unit: 'ч', label: 'типовой объём программы ПК' },
+              { num: '100', unit: '%', label: 'программ проверены на легитимность' },
               { num: '36', unit: 'спец.', label: 'врачебных специализаций' },
               { num: '1', unit: 'кабинет', label: 'для всего цикла аккредитации' },
             ].map((s, i) => (
@@ -103,7 +103,7 @@ export default async function RootPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
               {[
                 { num: '01', icon: '👤', title: 'Укажите специальность', desc: 'Специальность и дата аккредитации — этого достаточно, чтобы мы показали только подходящие вам программы.' },
-                { num: '02', icon: '📚', title: 'Выберите программу ПК', desc: 'Программы повышения квалификации с удостоверением от проверенных образовательных организаций. Фильтры по формату, объёму часов и бюджету.' },
+                { num: '02', icon: '📚', title: 'Выберите программу ПК', desc: 'Каждая программа проверена: соответствие типовой программе Минздрава, право организации учить, допустимый формат. Видно, в каком городе очная часть.' },
                 { num: '03', icon: '✦', title: 'Закройте аккредитацию', desc: 'Храните удостоверения и сертификаты в одном месте. Напомним за 30 и 7 дней до срока, чтобы не пришлось торопиться.' },
               ].map((step) => (
                 <div key={step.num} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '32px 28px', position: 'relative', overflow: 'hidden' }}>
@@ -147,9 +147,9 @@ export default async function RootPage() {
               {/* Small features */}
               {[
                 { icon: '⊞', title: 'Каталог программ', desc: 'Повышение квалификации, модули НМО и конференции — в одном списке с фильтрами.', accent: 'rgba(123,110,246,0.12)', border: 'rgba(123,110,246,0.2)' },
-                { icon: '📄', title: 'Документы', desc: 'Удостоверения и сертификаты хранятся в кабинете — не потеряются к комиссии.', accent: 'rgba(240,164,41,0.08)', border: 'rgba(240,164,41,0.2)' },
+                { icon: '✓', title: 'Проверка легитимности', desc: 'С марта 2026 учиться можно только по типовым программам Минздрава. Непроверенные к публикации не допускаем.', accent: 'rgba(52,199,123,0.08)', border: 'rgba(52,199,123,0.2)' },
                 { icon: '🔔', title: 'Напоминания', desc: 'Письма за 30 и 7 дней до даты аккредитации.', accent: 'rgba(74,158,245,0.08)', border: 'rgba(74,158,245,0.2)' },
-                { icon: '✦', title: 'Баллы НМО', desc: 'Если набираете цикл по частям — ведём учёт ЗЕТ и показываем прогноз.', accent: 'rgba(52,199,123,0.08)', border: 'rgba(52,199,123,0.2)' },
+                { icon: '📄', title: 'Документы', desc: 'Удостоверения и сертификаты хранятся в кабинете — не потеряются к комиссии.', accent: 'rgba(240,164,41,0.08)', border: 'rgba(240,164,41,0.2)' },
               ].map((f) => (
                 <div key={f.title} style={{ background: f.accent, border: `1px solid ${f.border}`, borderRadius: 16, padding: '24px 24px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <div style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{f.icon}</div>

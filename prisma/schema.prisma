@@ -113,6 +113,12 @@ model Organization {
   // For future НМО portal integration
   externalId   String?   @unique
 
+  // Заключение о соответствии требованиям к кадровому и материально-техническому
+  // обеспечению в части практической подготовки (ПП РФ № 1942 от 28.11.2025).
+  // Без него организация не вправе реализовывать программы по типовым ДПП.
+  practiceApprovalNumber String?
+  practiceApprovalDate   DateTime?
+
   status       OrgStatus @default(ACTIVE)
 
   courses              Course[]
@@ -147,6 +153,17 @@ model Course {
   format          CourseFormat
   courseType      CourseType   @default(MODULE)
   specializations String[]
+
+  // Соответствие типовой программе Минздрава. С 01.03.2026 обучение по программам
+  // ПК и переподготовки идёт только по типовым программам, утверждаемым отдельным
+  // приказом на каждую специальность. Пустое поле = соответствие не подтверждено,
+  // такой курс нельзя публиковать как QUALIFICATION.
+  typicalProgramOrder String? // реквизиты приказа, напр. «№ 373н от 08.06.2026»
+  typicalProgramTitle String? // название типовой программы
+
+  // Город очной части. Обязателен для IN_PERSON и BLENDED — врачу нужно понимать,
+  // куда придётся приехать, до того как он запишется.
+  inPersonCity String?
   durationHours   Int?
   maxParticipants Int?
   tags            String[]
@@ -185,9 +202,14 @@ model Course {
   @@index([deadlineDate])
 }
 
+/// Форма обучения. С 01.03.2026 (ФЗ № 28-ФЗ) программы ПК и переподготовки
+/// реализуются только по типовым программам, и полностью дистанционный формат
+/// допустим лишь если сама типовая программа это предусматривает. Типовой
+/// легальный вариант — BLENDED: лекции дистанционно, практика и аттестация очно.
 enum CourseFormat {
   ONLINE
   IN_PERSON
+  BLENDED
   WEBINAR
   CONFERENCE
 }

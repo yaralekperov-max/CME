@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { invalidate } from '@/lib/redis/client'
+import { checkCompliance } from '@/lib/compliance'
 
 const moderateSchema = z.object({
   action: z.enum(['approve', 'reject', 'request_changes']),
@@ -29,6 +30,33 @@ export async function POST(
   if (!parsed.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
 
   const { action, nmoAccreditationNumber, note } = parsed.data
+
+  // Публикация — единственное действие, которое выносит курс врачам, поэтому
+  // соответствие проверяем на сервере, а не полагаемся на заблокированную кнопку.
+  if (action === 'approve') {
+    const existing = await db.course.findUnique({
+      where: { id: params.courseId },
+      select: {
+        courseType: true,
+        format: true,
+        typicalProgramOrder: true,
+        inPersonCity: true,
+        organization: { select: { practiceApprovalNumber: true } },
+      },
+    })
+
+    if (!existing) {
+      return NextResponse.json({ error: { message: 'Курс не найден' } }, { status: 404 })
+    }
+
+    const blocking = checkCompliance(existing).filter((i) => i.blocking)
+    if (blocking.length > 0) {
+      return NextResponse.json(
+        { error: { message: blocking.map((i) => i.message).join(' ') } },
+        { status: 422 },
+      )
+    }
+  }
 
   const statusMap = {
     approve: 'PUBLISHED',

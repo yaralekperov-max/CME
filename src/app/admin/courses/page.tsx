@@ -7,12 +7,11 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '@/components/ui/table'
 import { formatPrice } from '@/lib/utils'
-import type { CourseFormat, CourseStatus } from '@/types'
+import { FORMAT_LABELS, FORMAT_COLORS } from '@/lib/constants'
+import type { CourseStatus } from '@/types'
 
 export const metadata: Metadata = { title: 'Курсы' }
 
-const FORMAT_LABEL: Record<CourseFormat, string> = { ONLINE: 'Онлайн', IN_PERSON: 'Очный', WEBINAR: 'Вебинар', CONFERENCE: 'Конференция' }
-const FORMAT_COLOR: Record<CourseFormat, 'green' | 'amber' | 'blue' | 'purple'> = { ONLINE: 'green', IN_PERSON: 'amber', WEBINAR: 'blue', CONFERENCE: 'purple' }
 const STATUS_LABEL: Record<CourseStatus, string> = { DRAFT: 'Черновик', MODERATION: 'На модерации', PUBLISHED: 'Опубликован', REJECTED: 'Отклонён', ARCHIVED: 'Архив' }
 const STATUS_COLOR: Record<CourseStatus, 'gray' | 'amber' | 'green' | 'red' | 'blue'> = { DRAFT: 'gray', MODERATION: 'amber', PUBLISHED: 'green', REJECTED: 'red', ARCHIVED: 'blue' }
 
@@ -101,7 +100,7 @@ export default async function AdminCoursesPage({
                   </Td>
                   <Td className="text-[var(--text2)]">{course.organization.name}</Td>
                   <Td><span className="font-semibold text-[var(--accent)]">{course.nmoPoints}</span></Td>
-                  <Td><Badge color={FORMAT_COLOR[course.format]}>{FORMAT_LABEL[course.format]}</Badge></Td>
+                  <Td><Badge color={FORMAT_COLORS[course.format]}>{FORMAT_LABELS[course.format]}</Badge></Td>
                   <Td className="text-[var(--text2)]">{formatPrice(course.priceKopecks)}</Td>
                   <Td className="font-medium">{course._count.enrollments}</Td>
                   <Td className="text-[var(--text2)]">{course.enrollments.length}</Td>

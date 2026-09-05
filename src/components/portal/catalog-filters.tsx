@@ -12,6 +12,7 @@ const TYPE_OPTIONS = [
 
 const FORMAT_OPTIONS = [
   { value: 'ONLINE', label: 'Онлайн' },
+  { value: 'BLENDED', label: 'Смешанный', hint: 'лекции онлайн, практика очно' },
   { value: 'IN_PERSON', label: 'Очный' },
   { value: 'WEBINAR', label: 'Вебинар' },
   { value: 'CONFERENCE', label: 'Конференция' },
@@ -103,10 +104,11 @@ export function CatalogFilters({ specializations, total }: Props) {
       </FilterCard>
 
       <FilterCard title="Формат">
-        {FORMAT_OPTIONS.map(({ value, label }) => (
+        {FORMAT_OPTIONS.map(({ value, label, hint }) => (
           <Checkbox
             key={value}
             label={label}
+            hint={hint}
             checked={formats.includes(value)}
             onChange={() => toggleList('format', formats, value)}
           />

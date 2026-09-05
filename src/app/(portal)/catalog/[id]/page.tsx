@@ -18,6 +18,7 @@ import {
   COURSE_TYPE_COLORS,
   COURSE_TYPE_HINTS,
 } from '@/lib/constants'
+import { isTypicalProgramConfirmed } from '@/lib/compliance'
 import type { CourseFormat, FundingType } from '@/types'
 
 const FUNDING_LABELS: Record<FundingType, string> = {
@@ -102,9 +103,31 @@ export default async function CourseDetailPage({ params }: Props) {
               ))}
             </div>
 
-            <div className="text-[12px] text-[var(--text3)] leading-[1.55] bg-[var(--surface2)] rounded-[var(--r,10px)] px-3 py-2.5 mb-4">
+            <div className="text-[12px] text-[var(--text3)] leading-[1.55] bg-[var(--surface2)] rounded-[var(--r,10px)] px-3 py-2.5 mb-3">
               {COURSE_TYPE_HINTS[course.courseType]}
             </div>
+
+            {isTypicalProgramConfirmed(course) && (
+              <div className="flex gap-2.5 text-[12px] leading-[1.55] bg-[var(--green-bg)] rounded-[var(--r,10px)] px-3 py-2.5 mb-3">
+                <span className="text-[var(--green)] font-bold flex-shrink-0">✓</span>
+                <span className="text-[var(--text2)]">
+                  <strong className="text-[var(--green)]">Соответствует типовой программе Минздрава</strong>
+                  {course.typicalProgramTitle && <> — «{course.typicalProgramTitle}»</>}
+                  , утверждена приказом {course.typicalProgramOrder}. Удостоверение принимается
+                  аккредитационной комиссией.
+                </span>
+              </div>
+            )}
+
+            {course.inPersonCity && (
+              <div className="flex gap-2.5 text-[12px] leading-[1.55] bg-[var(--amber-bg)] rounded-[var(--r,10px)] px-3 py-2.5 mb-4">
+                <span className="flex-shrink-0">📍</span>
+                <span className="text-[var(--text2)]">
+                  Очная часть проходит в городе <strong className="text-[var(--text)]">{course.inPersonCity}</strong>
+                  {course.format === 'BLENDED' && ' — лекции можно пройти дистанционно, но на практику и итоговую аттестацию нужно приехать.'}
+                </span>
+              </div>
+            )}
 
             <div className="grid grid-cols-3 gap-3 mb-5">
               {course.durationHours && (
