@@ -98,8 +98,8 @@ export default async function CatalogPage({ searchParams }: Props) {
   return (
     <>
       <PortalTopbar title="Каталог курсов" />
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="flex gap-5">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-5">
 
           <Suspense>
             <CatalogFilters specializations={specializations} total={courses.length} />
@@ -143,7 +143,7 @@ export default async function CatalogPage({ searchParams }: Props) {
                   🏛 {course.organization.name}
                 </div>
 
-                <div className="flex gap-3.5 mb-2.5">
+                <div className="flex flex-wrap gap-x-3.5 gap-y-1.5 mb-2.5">
                   {course.courseType === 'QUALIFICATION' ? (
                     <span className="text-[11px] text-[var(--text2)] flex items-center gap-1">✦ {course.nmoPoints} баллов НМО</span>
                   ) : course.durationHours ? (
@@ -178,7 +178,7 @@ export default async function CatalogPage({ searchParams }: Props) {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[var(--border)]">
                   <span className={`text-[14px] font-bold font-display ${course.priceKopecks === 0 ? 'text-[var(--green)]' : 'text-[var(--text)]'}`}>
                     {formatPrice(course.priceKopecks)}
                   </span>

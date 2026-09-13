@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
 import { PortalSidebar } from '@/components/portal/sidebar'
 import { SessionProvider } from '@/components/providers/session-provider'
+import { MobileNavProvider, MobileNavOverlay } from '@/components/portal/mobile-nav'
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions)
@@ -17,12 +18,15 @@ export default async function PortalLayout({ children }: { children: React.React
 
   return (
     <SessionProvider>
-      <div className="flex h-screen overflow-hidden bg-[var(--bg)]">
-        <PortalSidebar pointsEarned={pointsEarned} />
-        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-          {children}
+      <MobileNavProvider>
+        <div className="flex h-screen overflow-hidden bg-[var(--bg)]">
+          <PortalSidebar pointsEarned={pointsEarned} />
+          <MobileNavOverlay />
+          <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+            {children}
+          </div>
         </div>
-      </div>
+      </MobileNavProvider>
     </SessionProvider>
   )
 }

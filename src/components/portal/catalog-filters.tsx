@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { noun } from '@/lib/utils'
 
@@ -47,6 +49,9 @@ export function CatalogFilters({ specializations, total }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  // На телефоне панель фильтров занимает весь экран, поэтому сворачиваем её
+  // по умолчанию и открываем по кнопке. На широких экранах она всегда видна.
+  const [expanded, setExpanded] = useState(false)
 
   const get = (key: string) => searchParams.get(key) ?? ''
 
@@ -79,8 +84,28 @@ export function CatalogFilters({ specializations, total }: Props) {
 
   const hasFilters = types.length || formats.length || fundings.length || points || specs.length
 
+  const activeCount =
+    types.length + formats.length + fundings.length + specs.length + (points ? 1 : 0)
+
   return (
-    <aside className="w-[200px] min-w-[200px] flex flex-col gap-3.5">
+    <aside className="w-full lg:w-[200px] lg:min-w-[200px] flex flex-col gap-3.5">
+
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        className="lg:hidden flex items-center justify-between w-full px-3.5 py-2.5 text-[13px] font-medium bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r,10px)] text-[var(--text2)]"
+      >
+        <span>
+          Фильтры
+          {activeCount > 0 && (
+            <span className="ml-2 px-1.5 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] text-[11px] font-semibold">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <span className={cn('transition-transform', expanded && 'rotate-180')}>⌄</span>
+      </button>
+
+      <div className={cn('flex-col gap-3.5 lg:flex', expanded ? 'flex' : 'hidden')}>
 
       {hasFilters ? (
         <button
@@ -153,6 +178,8 @@ export function CatalogFilters({ specializations, total }: Props) {
 
       <div className="text-[12px] text-[var(--text3)] text-center">
         {total} {noun(total, ['курс', 'курса', 'курсов'])}
+      </div>
+
       </div>
     </aside>
   )

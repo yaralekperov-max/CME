@@ -1,5 +1,12 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
+
+// Без этого мобильные браузеры рендерят страницу в ~980px и масштабируют её,
+// то есть адаптивная вёрстка просто не включается.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
 
 export const metadata: Metadata = {
   title: {

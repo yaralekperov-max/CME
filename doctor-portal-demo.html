@@ -139,7 +139,7 @@ tbody tr:hover td{background:var(--surface2)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
 /* ALERT */
-.alert{padding:10px 14px;border-radius:10px;font-size:12px;display:flex;align-items:flex-start;gap:8px}
+.alert{padding:10px 14px;border-radius:10px;font-size:12px;line-height:1.55}
 .alert-warn{background:var(--amber-bg);color:var(--amber);border:1px solid #F0C86A}
 .alert-info{background:var(--blue-bg);color:var(--blue);border:1px solid #A3C4EC}
 .alert-success{background:var(--green-bg);color:var(--green);border:1px solid #86D5B2}
@@ -157,6 +157,47 @@ tbody tr:hover td{background:var(--surface2)}
 .toggle.on{background:var(--accent)}
 .toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .toggle.on::after{transform:translateX(18px)}
+
+.filters-head{font-size:13px;font-weight:700;font-family:'Manrope',sans-serif;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.filters-caret{display:none}
+.filters-count{margin-left:8px;padding:1px 7px;border-radius:99px;background:var(--accent-light);color:var(--accent);font-size:11px}
+.filters-count:empty{display:none}
+
+/* ── MOBILE ─────────────────────────────────────────────────── */
+.burger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:3px;width:34px;height:34px;margin-left:-6px;margin-right:4px;border:none;background:transparent;cursor:pointer;flex-shrink:0}
+.burger span{display:block;width:17px;height:1.5px;background:var(--text2);border-radius:2px}
+.nav-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40}
+.nav-overlay.show{display:block}
+
+@media (max-width: 900px){
+  .sb{position:fixed;inset:0 auto 0 0;z-index:50;transform:translateX(-100%);transition:transform .2s}
+  .sb.open{transform:translateX(0);box-shadow:0 0 30px rgba(0,0,0,.18)}
+  .burger{display:flex}
+  .topbar{padding:0 14px}
+  .topbar-search{display:none}
+  .screen{padding:14px}
+  .g4,.g3,.g2{grid-template-columns:1fr}
+  .catalog-layout{flex-direction:column}
+  .sidebar-filters{width:100%;min-width:0;position:static !important}
+  /* Развёрнутые фильтры занимают весь первый экран — сворачиваем их до кнопки */
+  .filters-head{margin-bottom:0;cursor:pointer}
+  .filters-caret{display:inline;transition:transform .2s}
+  #filter-body{display:none}
+  .sidebar-filters.open .filters-head{margin-bottom:12px}
+  .sidebar-filters.open .filters-caret{transform:rotate(180deg)}
+  .sidebar-filters.open #filter-body{display:block}
+  .course-meta{flex-wrap:wrap;gap:8px 12px}
+  .course-footer{flex-wrap:wrap;gap:8px}
+  /* Таблицы шире экрана — прокручиваем их, а не ломаем вёрстку страницы.
+     У карточек с таблицей overflow задан инлайном, поэтому !important. */
+  .card table{min-width:520px}
+  .card:has(table){overflow-x:auto !important}
+}
+
+@media (max-width: 560px){
+  .mc-val{font-size:21px}
+  .topbar-title{font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -198,9 +239,12 @@ tbody tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+<div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
+    <button class="burger" onclick="toggleNav()" aria-label="Меню"><span></span><span></span><span></span></button>
     <div class="topbar-title" id="page-title">Обзор</div>
     <div class="topbar-right">
       <div class="topbar-search">
@@ -342,7 +386,11 @@ tbody tr:hover td{background:var(--surface2)}
   <div class="screen" id="s-catalog">
     <div class="catalog-layout">
       <div class="sidebar-filters card" style="align-self:start;position:sticky;top:0;padding:14px">
-        <div style="font-size:13px;font-weight:700;font-family:'Manrope',sans-serif;margin-bottom:12px">Фильтры</div>
+        <div class="filters-head" onclick="toggleFilters()">
+          <span>Фильтры<span class="filters-count" id="filters-count"></span></span>
+          <span class="filters-caret" id="filters-caret">⌄</span>
+        </div>
+        <div id="filter-body">
 
         <div class="filter-group">
           <div class="filter-label">Тип программы</div>
@@ -375,6 +423,7 @@ tbody tr:hover td{background:var(--surface2)}
         </div>
 
         <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px" onclick="resetFilters()">Сбросить</button>
+        </div>
       </div>
 
       <div style="flex:1;min-width:0">
@@ -559,7 +608,17 @@ tbody tr:hover td{background:var(--surface2)}
 <script>
 // ── Navigation ──────────────────────────────────────────────
 const TITLES = {dash:'Обзор',catalog:'Каталог программ',points:'Мои баллы',history:'История обучения',certs:'Сертификаты',ai:'AI-ассистент',profile:'Профиль'}
+function toggleNav(){
+  document.querySelector('.sb').classList.toggle('open')
+  document.getElementById('nav-overlay').classList.toggle('show')
+}
+function closeNav(){
+  document.querySelector('.sb').classList.remove('open')
+  document.getElementById('nav-overlay').classList.remove('show')
+}
+
 function go(id) {
+  closeNav()
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'))
   document.getElementById('s-'+id).classList.add('active')
@@ -660,11 +719,20 @@ function toggleEnroll(btn, idx){
   btn.className='btn '+(COURSES[idx].enrolled?'btn-ghost':'btn-primary')+' btn-sm'
 }
 
-function filterCatalog(){renderCatalog()}
+function toggleFilters(){
+  document.querySelector('.sidebar-filters').classList.toggle('open')
+}
+
+function filterCatalog(){
+  renderCatalog()
+  // Счётчик рядом с кнопкой «Фильтры» — чтобы в свёрнутом виде было видно, что фильтры активны
+  const n = document.querySelectorAll('#s-catalog input:checked').length
+  document.getElementById('filters-count').textContent = n ? String(n) : ''
+}
 function resetFilters(){
   document.querySelectorAll('#s-catalog input[type=checkbox], #s-catalog input[type=radio]').forEach(i=>i.checked=false)
   const sort=document.getElementById('catalog-sort'); if(sort) sort.value=''
-  renderCatalog()
+  filterCatalog()
 }
 
 // ── History ───────────────────────────────────────────────────

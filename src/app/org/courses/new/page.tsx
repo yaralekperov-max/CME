@@ -21,7 +21,7 @@ export default async function OrgNewCoursePage() {
   return (
     <>
       <AdminTopbar title="Добавить курс" />
-      <main className="flex-1 overflow-y-auto p-[20px_22px]">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-[20px_22px]">
         <NewCourseForm organizations={[org]} defaultOrganizationId={org.id} />
       </main>
     </>

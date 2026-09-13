@@ -38,7 +38,7 @@ export default async function ProfilePage() {
   return (
     <>
       <PortalTopbar title="Профиль" showSearch={false} />
-      <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 max-w-[720px]">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-5 max-w-[720px]">
 
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#B5D4F4] to-[#8AB5E8] flex items-center justify-center text-[22px] font-bold text-[#0C447C] flex-shrink-0">

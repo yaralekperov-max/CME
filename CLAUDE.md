@@ -1,6 +1,20 @@
-# MedCME — Claude Session Guide
+# NMOBALL — Claude Session Guide
 
-Russian CME (НМО) tracker for doctors. **Marketplace model**: organizations list externally-hosted courses; doctors self-report completion and track accreditation points. Not an LMS — no content hosting.
+Russian marketplace of continuing-education programmes for doctors. Organizations
+list externally-hosted programmes; doctors find one, enrol, and self-report
+completion. Not an LMS — no content hosting.
+
+**Positioning (validated with doctors, Sept 2026):** doctors do *not* deliberately
+accumulate НМО points. They take one программа повышения квалификации (ПК) and that
+covers the accreditation cycle. The product leads with *finding a legitimate ПК
+programme*; point tracking is a secondary feature for those topping up a cycle.
+
+**Regulatory constraint (ФЗ № 28-ФЗ, in force 01.03.2026):** ПК programmes may only
+be delivered against a типовая программа approved by Minzdrav, by an organization
+holding a practice approval under ПП РФ № 1942. Fully-remote delivery is legal only
+where the типовая программа allows it — the usual legal shape is `BLENDED`
+(lectures remote, practice and assessment in person). See `src/lib/compliance.ts`;
+these rules block publication, they are not advisory.
 
 ---
 
@@ -27,13 +41,15 @@ src/
   app/
     (auth)/          # Login, register, forgot/reset password, verify-email
     (portal)/        # Doctor-facing app (layout has sidebar + topbar)
-      dashboard/     # Points progress, pace, upcoming deadlines
-      catalog/       # Course marketplace: list + detail + enroll
-      history/       # Enrollment history with ?status= ?year= filters
-      points/        # Points breakdown by year
-      certificates/  # Uploaded certificates
-      profile/       # Edit profile, notification settings
-      ai/            # Claude AI assistant chat
+      app/           # NOTE: real path segment — portal URLs are /app/*, not /*
+        dashboard/   # Points progress, pace, upcoming deadlines
+        catalog/     # Course marketplace: list + detail + enroll
+        history/     # Enrollment history with ?status= ?year= filters
+        points/      # Points breakdown by year
+        certificates/# Uploaded certificates
+        profile/     # Edit profile, notification settings
+        ai/          # Claude AI assistant chat
+    org/             # ORG_MANAGER portal: dashboard, courses, enrollments
     admin/           # Admin panel (separate layout)
       dashboard/     # Metrics overview
       courses/       # Course list + new + [id]/edit
@@ -73,7 +89,10 @@ src/
     email/client.ts  # SendPulse wrapper: sendEmail(to, subject, html)
     ai/client.ts     # Anthropic client singleton
     rate-limit.ts    # sliding-window rate limiter via Redis
-    constants.ts     # SPECIALIZATIONS, FORMAT_LABELS, FORMAT_COLORS
+    constants.ts     # SPECIALIZATIONS, FORMAT_*, COURSE_TYPE_* — import these,
+                     #   never re-declare label maps locally (a new enum value
+                     #   silently renders blank in every private copy)
+    compliance.ts    # Legitimacy rules for ПК programmes (ФЗ № 28-ФЗ)
     utils.ts         # formatPrice, formatDate, cn (clsx+tailwind-merge)
   types/             # Shared TypeScript types (CourseFormat, CourseStatus, etc.)
 prisma/
@@ -199,7 +218,7 @@ When changing the schema:
 ## Sentry
 
 Three config files: `sentry.client.config.ts`, `sentry.server.config.ts`, `sentry.edge.config.ts`.
-`next.config.ts` is wrapped with `withSentryConfig`.
+`next.config.mjs` is wrapped with `withSentryConfig` (Next.js 14 rejects a `.ts` config).
 `src/app/global-error.tsx` is the React error boundary that captures unhandled errors.
 Source maps are uploaded during `next build` via `SENTRY_AUTH_TOKEN`.
 
@@ -237,15 +256,34 @@ App runs on :3000, PostgreSQL on :5432, Redis on :6379. Set `DATABASE_URL` and `
 
 ---
 
-## Pending work (as of last session)
+## Responsive layout
 
-- **Organization portal** — ORG_MANAGER role needs its own dashboard to manage courses and view enrollments
-- **Payment flow** — courses have `priceKopecks`, no actual payment processing yet (YuKassa/Tinkoff)
-- **"Мои данные" page** — ФЗ-152 compliance: user can download/delete their personal data
-- **Admin analytics** — `admin/analytics/page.tsx` has stub data, needs real queries
-- **Certificate button** in history — button exists in UI but has no action (should link to `certificateFileUrl`)
-- **Docker + CI/CD** — `Dockerfile` exists, no CI pipeline yet
-- **Password strength indicator** on registration form
+The portal and org sidebars are drawers below `lg` and static columns above it.
+State lives in `src/components/portal/mobile-nav.tsx` because the sidebar is
+rendered by the layout while the burger button lives in each page's topbar.
+`MobileNavButton` renders nothing outside a `MobileNavProvider`, so the shared
+`AdminTopbar` stays inert in the admin panel (desktop-only by design).
+
+The root layout exports `viewport` — without it mobile browsers render at ~980px
+and no breakpoint ever matches.
+
+The landing page styles elements inline, which cannot carry media queries: any
+size or grid that must change across breakpoints belongs in `className`.
+
+## Pending work (as of Sept 2026)
+
+- **Payment flow** — courses have `priceKopecks`, no payment processing. Blocked on
+  the monetization decision (commission from organizations vs. subscription); build
+  nothing until that is settled.
+- **`SPECIALIZATIONS` is stale** — приказ № 435н (in force 01.09.2026) replaced the
+  nomenclature and its text was not reachable when the list was last touched. See
+  the TODO in `constants.ts`.
+- **`npm run db:seed` is broken** — the script points at `prisma/seed.ts`, which does
+  not exist in the repository.
+- **Admin panel is desktop-only** — deliberate, but tables there will not fit a phone.
+- **Coverage of типовые программы is unknown** — how many specialties Minzdrav has
+  approved decides whether the catalog can launch broadly or only for a few
+  specialties. Best source is a doctor's own ЛК on edu.rosminzdrav.ru.
 
 ---
 

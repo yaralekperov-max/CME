@@ -37,7 +37,7 @@ export default async function RootPage() {
       <main style={{ flex: 1 }}>
 
         {/* Hero */}
-        <section style={{ position: 'relative', overflow: 'hidden', padding: '90px 24px 80px' }}>
+        <section className="px-6 pt-[60px] pb-[56px] sm:pt-[90px] sm:pb-[80px]" style={{ position: 'relative', overflow: 'hidden' }}>
           {/* Glow */}
           <div style={{ position: 'absolute', top: -120, left: '50%', transform: 'translateX(-50%)', width: 700, height: 500, background: 'radial-gradient(ellipse, rgba(123,110,246,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
@@ -46,12 +46,12 @@ export default async function RootPage() {
               ✦ &nbsp;Для врачей России
             </div>
 
-            <h1 className="font-display" style={{ fontSize: 58, fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', color: '#fff', marginBottom: 22, textWrap: 'balance' } as React.CSSProperties}>
+            <h1 className="font-display text-[34px] sm:text-[46px] lg:text-[58px]" style={{ fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.03em', color: '#fff', marginBottom: 22, textWrap: 'balance' } as React.CSSProperties}>
               Курсы повышения<br />
               квалификации — <span style={{ color: '#7B6EF6' }}>все в одном месте</span>
             </h1>
 
-            <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 36px', lineHeight: 1.65 }}>
+            <p className="text-[15px] sm:text-[17px]" style={{ color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 36px', lineHeight: 1.65 }}>
               Только программы, соответствующие типовым программам Минздрава — те, что примут на аккредитации. Подберём по специальности и напомним о сроках.
             </p>
 
@@ -75,32 +75,35 @@ export default async function RootPage() {
 
         {/* Stats */}
         <section style={{ borderTop: '1px solid rgba(255,255,255,0.07)', borderBottom: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+          <div className="grid grid-cols-2 lg:grid-cols-4" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
             {[
               { num: '500', unit: '+', label: 'программ ПК и курсов в каталоге' },
               { num: '100', unit: '%', label: 'программ проверены на легитимность' },
               { num: '36', unit: 'спец.', label: 'врачебных специализаций' },
               { num: '1', unit: 'кабинет', label: 'для всего цикла аккредитации' },
             ].map((s, i) => (
-              <div key={i} style={{ padding: '32px 24px', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.07)' : 'none', textAlign: 'center' }}>
-                <div className="font-display" style={{ fontSize: 40, fontWeight: 800, color: '#7B6EF6', letterSpacing: '-0.03em', lineHeight: 1 }}>
-                  {s.num}<span style={{ fontSize: 22, color: 'rgba(255,255,255,0.4)' }}>{s.unit}</span>
+              <div
+                key={i}
+                className={`py-6 px-4 sm:py-8 sm:px-6 text-center border-white/[0.07] ${i % 2 === 0 ? 'border-r' : ''} ${i < 2 ? 'border-b' : ''} lg:border-b-0 ${i < 3 ? 'lg:border-r' : 'lg:border-r-0'}`}
+              >
+                <div className="font-display text-[30px] sm:text-[40px]" style={{ fontWeight: 800, color: '#7B6EF6', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                  {s.num}<span className="text-[17px] sm:text-[22px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.unit}</span>
                 </div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 8, lineHeight: 1.4 }}>{s.label}</div>
+                <div className="text-[12px] sm:text-[13px]" style={{ color: 'rgba(255,255,255,0.4)', marginTop: 8, lineHeight: 1.4 }}>{s.label}</div>
               </div>
             ))}
           </div>
         </section>
 
         {/* How it works */}
-        <section style={{ padding: '80px 24px' }}>
+        <section className="px-6 py-[56px] sm:py-20">
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 52 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: '#7B6EF6', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Как это работает</div>
-              <h2 className="font-display" style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Три шага до спокойной аккредитации</h2>
+              <h2 className="font-display text-[26px] sm:text-[36px]" style={{ fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Три шага до спокойной аккредитации</h2>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
                 { num: '01', icon: '👤', title: 'Укажите специальность', desc: 'Специальность и дата аккредитации — этого достаточно, чтобы мы показали только подходящие вам программы.' },
                 { num: '02', icon: '📚', title: 'Выберите программу ПК', desc: 'Каждая программа проверена: соответствие типовой программе Минздрава, право организации учить, допустимый формат. Видно, в каком городе очная часть.' },
@@ -118,16 +121,16 @@ export default async function RootPage() {
         </section>
 
         {/* Features */}
-        <section style={{ padding: '0 24px 80px' }}>
+        <section className="px-6 pb-[56px] sm:pb-20">
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 52 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: '#7B6EF6', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Возможности</div>
-              <h2 className="font-display" style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Всё для аккредитации в одном месте</h2>
+              <h2 className="font-display text-[26px] sm:text-[36px]" style={{ fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>Всё для аккредитации в одном месте</h2>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Big feature */}
-              <div style={{ background: 'linear-gradient(135deg, rgba(123,110,246,0.15) 0%, rgba(123,110,246,0.04) 100%)', border: '1px solid rgba(123,110,246,0.25)', borderRadius: 20, padding: '36px 32px', gridRow: 'span 2', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ background: 'linear-gradient(135deg, rgba(123,110,246,0.15) 0%, rgba(123,110,246,0.04) 100%)', border: '1px solid rgba(123,110,246,0.25)', borderRadius: 20, padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: 16 }} className="md:row-span-2">
                 <div style={{ width: 44, height: 44, background: 'rgba(123,110,246,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🤖</div>
                 <div>
                   <div className="font-display" style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 10 }}>AI-ассистент</div>
@@ -164,13 +167,13 @@ export default async function RootPage() {
         </section>
 
         {/* CTA */}
-        <section style={{ padding: '0 24px 80px' }}>
+        <section className="px-6 pb-[56px] sm:pb-20">
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ background: 'linear-gradient(135deg, #7B6EF6 0%, #5A4FD0 100%)', borderRadius: 24, padding: '60px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div className="py-10 px-6 sm:py-[60px] sm:px-12" style={{ background: 'linear-gradient(135deg, #7B6EF6 0%, #5A4FD0 100%)', borderRadius: 24, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, background: 'rgba(255,255,255,0.07)', borderRadius: '50%', pointerEvents: 'none' }} />
               <div style={{ position: 'absolute', bottom: -80, left: -40, width: 250, height: 250, background: 'rgba(0,0,0,0.1)', borderRadius: '50%', pointerEvents: 'none' }} />
               <div style={{ position: 'relative' }}>
-                <h2 className="font-display" style={{ fontSize: 36, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', marginBottom: 14 }}>Готовы начать?</h2>
+                <h2 className="font-display text-[26px] sm:text-[36px]" style={{ fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', marginBottom: 14 }}>Готовы начать?</h2>
                 <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', marginBottom: 32 }}>Посмотрите каталог программ по своей специальности. Регистрация бесплатна.</p>
                 <Link href="/register" style={{ display: 'inline-block', fontSize: 15, fontWeight: 700, color: '#7B6EF6', background: '#fff', padding: '14px 36px', borderRadius: 12, textDecoration: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
                   Зарегистрироваться бесплатно

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn, getInitials } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
+import { useMobileNav } from '@/components/portal/mobile-nav'
 
 const navItems = [
   { href: '/org/dashboard',   icon: '◈',  label: 'Обзор',        section: 'Главное' },
@@ -12,6 +13,7 @@ const navItems = [
 ]
 
 export function OrgSidebar({ orgName }: { orgName: string }) {
+  const { open } = useMobileNav()
   const pathname = usePathname()
   const { data: session } = useSession()
 
@@ -20,7 +22,13 @@ export function OrgSidebar({ orgName }: { orgName: string }) {
   let currentSection: string | null = null
 
   return (
-    <aside className="w-[228px] min-w-[228px] bg-[var(--surface)] border-r border-[var(--border)] flex flex-col h-full">
+    <aside
+      className={cn(
+        'w-[228px] min-w-[228px] bg-[var(--surface)] border-r border-[var(--border)] flex flex-col h-full',
+        'fixed inset-y-0 left-0 z-50 transition-transform duration-200 lg:static lg:translate-x-0',
+        open ? 'translate-x-0 shadow-xl' : '-translate-x-full',
+      )}
+    >
       <div className="px-5 py-5 pb-4 border-b border-[var(--border)] flex items-center gap-2.5">
         <div className="w-8 h-8 bg-[var(--accent)] rounded-[9px] flex items-center justify-center text-white text-base">
           🏛

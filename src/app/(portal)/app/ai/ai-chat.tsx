@@ -88,7 +88,7 @@ export function AiChat({ userContext, initialMessages }: AiChatProps) {
   }
 
   return (
-    <div className="flex-1 bg-[var(--surface)] border border-[var(--accent-mid)] rounded-[var(--r-lg,16px)] p-4 flex flex-col min-h-0 shadow-[0_0_0_3px_var(--accent-light)]">
+    <div className="flex-1 bg-[var(--surface)] border border-[var(--accent-mid)] rounded-[var(--r-lg,16px)] p-4 flex flex-col min-h-[60vh] lg:min-h-0 shadow-[0_0_0_3px_var(--accent-light)]">
       {/* Header */}
       <div className="flex items-center gap-2.5 mb-3 flex-shrink-0">
         <div className="w-7 h-7 rounded-[8px] bg-[var(--accent)] flex items-center justify-center text-sm text-white">✦</div>

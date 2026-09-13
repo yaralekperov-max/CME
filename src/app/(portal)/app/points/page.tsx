@@ -84,16 +84,16 @@ export default async function PointsPage() {
   return (
     <>
       <PortalTopbar title="Мои баллы" />
-      <main className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-5">
 
-        <div className="grid grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           <MetricCard label="Итого зачтено" value={pointsEarned} sub={`ЗЕТ из ${pointsRequired}`} progress={progressPct} progressColor="accent" />
           <MetricCard label="В процессе" value={pointsInProgress} sub="ЗЕТ ожидается" progress={pointsInProgress > 0 ? 100 : 0} progressColor="accent" />
           <MetricCard label="Темп / год" value={pacePerYear} sub={`нужно ${neededPerYear}/год`} progress={paceProgress} progressColor="amber" trendColor={paceTrendColor} trend={paceTrend} />
           <MetricCard label="Прогноз итога" value={`~${forecast}`} sub={`из ${pointsRequired} к дедлайну`} progress={forecastProgress} progressColor={forecastOk ? 'green' : 'red'} trendColor={forecastOk ? 'up' : 'down'} trend={forecastOk ? 'Успеваете' : 'Риск не успеть'} />
         </div>
 
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
           <Card>
             <CardTitle>Динамика по годам</CardTitle>
             <div className="flex items-end gap-2 h-[100px] mb-2">

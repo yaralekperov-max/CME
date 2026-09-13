@@ -52,9 +52,9 @@ export default async function OrgDashboardPage() {
   return (
     <>
       <AdminTopbar title="Обзор" />
-      <main className="flex-1 overflow-y-auto p-[20px_22px] flex flex-col gap-4">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-[20px_22px] flex flex-col gap-4">
 
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard label="Курсов опубликовано" value={publishedCourses} sub={`из ${courses.length} всего`} />
           <MetricCard label="Всего записей" value={totalEnrollments.toLocaleString('ru-RU')} />
           <MetricCard label="Завершили курс" value={completedEnrollments.toLocaleString('ru-RU')} sub={totalEnrollments > 0 ? `${Math.round((completedEnrollments / totalEnrollments) * 100)}% конверсия` : undefined} />

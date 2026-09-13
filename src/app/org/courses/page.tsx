@@ -54,7 +54,7 @@ export default async function OrgCoursesPage({ searchParams }: { searchParams: {
   return (
     <>
       <AdminTopbar title="Мои курсы" />
-      <main className="flex-1 overflow-y-auto p-[20px_22px] flex flex-col gap-4">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-[20px_22px] flex flex-col gap-4">
 
         <div className="flex gap-1.5 flex-wrap">
           {FILTERS.map(({ label, value }) => {

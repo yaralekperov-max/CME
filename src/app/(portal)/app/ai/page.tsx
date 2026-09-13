@@ -58,13 +58,13 @@ export default async function AiPage() {
   return (
     <>
       <PortalTopbar title="AI-ассистент" showSearch={false} />
-      <main className="flex-1 overflow-hidden p-6 flex gap-5">
+      <main className="flex-1 overflow-y-auto lg:overflow-hidden p-4 sm:p-6 flex flex-col lg:flex-row gap-4 lg:gap-5">
 
         {/* Chat */}
         <AiChat userContext={userContext} initialMessages={initialMessages} />
 
         {/* Sidebar */}
-        <aside className="w-[220px] min-w-[220px] flex flex-col gap-3.5">
+        <aside className="w-full lg:w-[220px] lg:min-w-[220px] flex flex-col gap-3.5 order-first lg:order-none">
           <Card className="p-3.5">
             <div className="text-[11px] font-semibold text-[var(--text3)] uppercase tracking-[0.06em] mb-2.5">
               Ваши данные

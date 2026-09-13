@@ -73,7 +73,7 @@ export function ProfileForm({ user }: { user: User }) {
           <FormGroup label="ФИО">
             <Input value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Иванов Иван Иванович" />
           </FormGroup>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormGroup label="Email">
               <Input value={user.email} disabled className="opacity-60 cursor-not-allowed" />
             </FormGroup>
@@ -81,7 +81,7 @@ export function ProfileForm({ user }: { user: User }) {
               <Input type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} placeholder="+7 (999) 000-00-00" />
             </FormGroup>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormGroup label="Место работы">
               <Input value={form.workplace} onChange={(e) => set('workplace', e.target.value)} placeholder="НМИЦ кардиологии" />
             </FormGroup>
@@ -107,7 +107,7 @@ export function ProfileForm({ user }: { user: User }) {
       <Card>
         <CardTitle>Параметры аккредитации</CardTitle>
         <div className="flex flex-col gap-3.5">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormGroup label="Дедлайн аккредитации" hint="Дата окончания текущего цикла НМО">
               <Input
                 type="date"

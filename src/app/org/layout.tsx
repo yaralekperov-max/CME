@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import { authOptions } from '@/lib/auth/config'
 import { db } from '@/lib/db'
+import { MobileNavProvider, MobileNavOverlay } from '@/components/portal/mobile-nav'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { OrgSidebar } from '@/components/org/sidebar'
 
@@ -19,12 +20,15 @@ export default async function OrgLayout({ children }: { children: React.ReactNod
 
   return (
     <SessionProvider>
-      <div className="flex h-screen overflow-hidden bg-[var(--bg)]">
-        <OrgSidebar orgName={org.name} />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {children}
+      <MobileNavProvider>
+        <div className="flex h-screen overflow-hidden bg-[var(--bg)]">
+          <OrgSidebar orgName={org.name} />
+          <MobileNavOverlay />
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            {children}
+          </div>
         </div>
-      </div>
+      </MobileNavProvider>
     </SessionProvider>
   )
 }

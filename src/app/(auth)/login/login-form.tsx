@@ -11,7 +11,9 @@ export function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
   const raw = params.get('callbackUrl') ?? ''
-  const callbackUrl = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/app/dashboard'
+  // Без явного callbackUrl отправляем на корень: там страница уже разводит
+  // по ролям (ADMIN → /admin, ORG_MANAGER → /org/dashboard, DOCTOR → /app/dashboard).
+  const callbackUrl = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

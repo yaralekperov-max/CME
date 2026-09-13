@@ -73,7 +73,7 @@ export default async function CourseDetailPage({ params }: Props) {
   return (
     <>
       <PortalTopbar title="Курс" showSearch={false} />
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="max-w-[720px] flex flex-col gap-5">
 
           <div className="text-[12px] text-[var(--text3)]">
@@ -129,7 +129,7 @@ export default async function CourseDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
               {course.durationHours && (
                 <Metric icon="⏱" label="Объём программы" value={`${course.durationHours} часов`} />
               )}
@@ -148,7 +148,7 @@ export default async function CourseDetailPage({ params }: Props) {
             </div>
 
             {(course.startDate || course.deadlineDate) && (
-              <div className="flex gap-4 mb-5">
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-5">
                 {course.startDate && (
                   <div className="text-[12px] text-[var(--text2)]">
                     <span className="text-[var(--text3)]">Начало: </span>
@@ -166,7 +166,7 @@ export default async function CourseDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[var(--border)]">
               <div>
                 <div className={`text-[20px] font-bold font-display ${course.priceKopecks === 0 ? 'text-[var(--green)]' : 'text-[var(--text)]'}`}>
                   {formatPrice(course.priceKopecks)}
